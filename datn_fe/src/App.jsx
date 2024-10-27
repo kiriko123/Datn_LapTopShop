@@ -164,8 +164,9 @@ export default function App() {
                 {
 
                     path: 'voucher',
-                    element: <ManageVoucherPage />,
-
+                    element: <ManageVoucherPage/>,
+                },
+                {
                     path: "statistics",
                     element: <ManageStatisticsPage/>,
 
