@@ -38,24 +38,24 @@ const StatisticTable = () => {
             } else if (year) {
                 res = await callOrdersByYear(year);
             } else {
-                // Lấy tất cả kết quả mà không cần phân trang
-                res = await callFetchOrder(); // Xóa `page=${current}&size=${pageSize}`
+                res = await callFetchOrder();
             }
 
             console.log("Response from API:", res);
             console.log("Data inside res.data:", res.data);
 
             if (res && res.data) {
+                let orders = [];
                 if (Array.isArray(res.data)) {
-                    setListOrder(res.data);
-                    setTotal(res.data.length);
+                    orders = res.data;
                 } else if (res.data.result) {
-                    setListOrder(res.data.result);
-                    setTotal(res.data.result.length);
-                } else {
-                    setListOrder([]);
-                    setTotal(0);
+                    orders = res.data.result;
                 }
+
+                // Lọc các đơn hàng có trạng thái là DELIVERED
+                const deliveredOrders = orders.filter(order => order.status === 'DELIVERED');
+                setListOrder(deliveredOrders);
+                setTotal(deliveredOrders.length);
             } else {
                 setListOrder([]);
                 setTotal(0);
