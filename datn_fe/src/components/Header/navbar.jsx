@@ -42,6 +42,9 @@ const Navbar = (props) => {
     const handleSearch = (value) => {
         if(value.trim()){
             navigate('/product', { state: { searchTerm: value.trim() } });
+        }else {
+            // Nếu không có từ khóa, gọi API lấy toàn bộ sản phẩm
+            navigate('/product', { state: { searchTerm: "" } });
         }
     };
 
