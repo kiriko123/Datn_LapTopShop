@@ -1,5 +1,5 @@
 import { FilterTwoTone, ReloadOutlined } from '@ant-design/icons';
-import { Row, Col, Form, Checkbox, Divider, InputNumber, Button, Rate, Tabs, Pagination, Spin } from 'antd';
+import { Row, Col, Form, Checkbox, Divider, InputNumber, Button, Rate, Tabs, Pagination, Spin, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { callFetchBrand, callFetchCategory, callFetchProduct } from '../../services/api';
 import './home.scss';
@@ -69,15 +69,21 @@ const Product = () => {
         });
 
     }, [search]); // Theo dõi khi URL thay đổi
+    //
+    // useEffect(() => {
+    //     const term = location.state?.searchTerm;
+    //     if (term) {
+    //         setSearchTerm(term);
+    //         updateFilter({ searchTerm: term });
+    //     } else {
+    //         fetchProduct(); // Gọi API nếu không có từ khóa
+    //     }
+    // }, [location.state?.searchTerm]);
 
     useEffect(() => {
-        const term = location.state?.searchTerm;
-        if (term) {
-            setSearchTerm(term);
-            updateFilter({ searchTerm: term });
-        } else {
-            fetchProduct(); // Gọi API nếu không có từ khóa
-        }
+        const term = location.state?.searchTerm || ""; // Đặt mặc định là chuỗi rỗng
+        setSearchTerm(term);
+        updateFilter({ searchTerm: term });
     }, [location.state?.searchTerm]);
 
     useEffect(() => {
@@ -126,6 +132,10 @@ const Product = () => {
         if (res && res.data) {
             setListProduct(res.data.result);
             setTotal(res.data.meta.total);
+
+            if (res.data.result.length === 0) {
+                message.info("Không tìm thấy sản phẩm"); // Hiển thị thông báo khi không có sản phẩm nào
+            }
         }
         setIsLoading(false);
     };
