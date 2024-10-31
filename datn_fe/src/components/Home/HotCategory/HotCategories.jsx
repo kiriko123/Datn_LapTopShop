@@ -11,20 +11,22 @@ const HotCategories = () => {
     const navigate = useNavigate(); 
     const { search } = useLocation(); // Lấy URL params hiện tại
 
-    const handleRedirectCategory = (category) => {
-        // Lấy các filter hiện có từ URL
-        const params = new URLSearchParams(search);
-        const currentFilter = params.get('filter') || "category.active:'true' and brand.active:'true' and active:'true' and quantity > 0";
-    
-        // Thêm filter mới cho category
-        const newFilter = `${currentFilter} and category.name:'${category.name}'`;
-        
-        // Điều hướng đến trang sản phẩm với bộ lọc kết hợp
-        navigate(`/product?filter=${encodeURIComponent(newFilter)}`);
+    // const handleRedirectCategory = (category) => {
+    //     // Lấy các filter hiện có từ URL
+    //     const params = new URLSearchParams(search);
+    //     const currentFilter = params.get('filter') || "category.active:'true' and brand.active:'true' and active:'true' and quantity > 0";
+    //
+    //     // Thêm filter mới cho category
+    //     const newFilter = `${currentFilter} and category.name:'${category.name}'`;
+    //
+    //     // Điều hướng đến trang sản phẩm với bộ lọc kết hợp
+    //     navigate(`/product?filter=${encodeURIComponent(newFilter)}`);
+    //
+    //     //Cuộn lên đầu trang khi lọc xong
+    //     window.scrollTo({top: 0, behavior: 'smooth'});
+    // };
 
-        //Cuộn lên đầu trang khi lọc xong
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    };  
+
     
 
     useEffect(() => {
@@ -51,6 +53,10 @@ const HotCategories = () => {
         fetchHotCategories();
     }, []);
 
+    const handleBrandClick = (categoryName) => {
+        navigate('/product', { state: { category: categoryName } });
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
     return (
         <div>
             <HotCategoryHeader />
@@ -62,7 +68,7 @@ const HotCategories = () => {
                         <HotCategoryCard 
                             key={category.id} 
                             category={category}
-                            onClick={() => handleRedirectCategory(category)} 
+                            onClick={() => handleBrandClick(category.name)}
                         />
                     ))
                 )}
