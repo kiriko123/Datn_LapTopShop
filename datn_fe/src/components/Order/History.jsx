@@ -1,40 +1,78 @@
-import {Badge, Descriptions, Divider, Space, Table, Tag, Drawer, Image} from "antd";
+import { Badge, Descriptions, Divider, Space, Table, Tag, Drawer, Image, Steps, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { callOrderHistory } from "../../services/api";
 import { useSelector } from "react-redux";
-import {EditTwoTone, EyeOutlined} from '@ant-design/icons';
-import CategoryUpdate from "../Admin/category/CategoryUpdate.jsx";
+import { EditTwoTone, EyeOutlined, CheckCircleOutlined, HourglassOutlined, ScheduleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import UserOrderUpdate from "./UserOrderUpdate.jsx";
+import { TruckOutlined } from '@ant-design/icons'; // Nhập icon xe tải
+
+const { Title } = Typography;
+const { Step } = Steps;
 
 const History = () => {
     const [orderHistory, setOrderHistory] = useState([]);
     const [openDrawer, setOpenDrawer] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedStatus, setSelectedStatus] = useState(null);
     const user = useSelector(state => state.account.user);
-
     const [openModalUpdate, setOpenModalUpdate] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
 
     useEffect(() => {
-
         fetchHistory();
     }, [user.id]);
+
     const fetchHistory = async () => {
         const res = await callOrderHistory(user.id);
         if (res && res.data) {
-            console.log(res.data);
             setOrderHistory(res.data);
         }
-    }
+    };
+
     const showDrawer = (record) => {
         setSelectedOrder(record);
+        setSelectedStatus(record.status);
         setOpenDrawer(true);
     };
 
     const closeDrawer = () => {
         setOpenDrawer(false);
-        setSelectedOrder(null);
+    };
+
+    const getCurrentStep = (status) => {
+        switch (status) {
+            case "PENDING":
+                return 0;
+            case "PROCESSING":
+                return 1;
+            case "SHIPPING":
+                return 2;
+            case "DELIVERED":
+                return 4; // Trả về 3 cho DELIVERED
+            // case "CANCELLED":
+            //     return 4;
+            default:
+                return 0;
+        }
+    };
+
+
+    const getStatusIcon = (status) => {
+        switch (status) {
+            case "PENDING":
+                return <HourglassOutlined style={{ color: "orange" }} />;
+            case "PROCESSING":
+                return <ScheduleOutlined style={{ color: "blue" }} />;
+            case "SHIPPING":
+                return <TruckOutlined style={{ color: "blue" }} />; // Thay đổi ở đây
+            case "DELIVERED":
+                return <CheckCircleOutlined style={{ color: "green" }} />;
+            // case "CANCELLED":
+            //     return <CloseCircleOutlined style={{ color: "red" }} />;
+            default:
+                return null;
+        }
     };
 
     const columns = [
@@ -47,16 +85,12 @@ const History = () => {
         {
             title: 'Thời gian',
             dataIndex: 'createdAt',
-            render: (item) => {
-                return moment(item).format('DD-MM-YYYY hh:mm:ss');
-            }
+            render: (item) => moment(item).format('DD-MM-YYYY hh:mm:ss'),
         },
         {
             title: 'Tổng số tiền',
             dataIndex: 'totalPrice',
-            render: (item) => {
-                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item);
-            }
+            render: (item) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item),
         },
         {
             title: 'Người nhận',
@@ -69,11 +103,14 @@ const History = () => {
         {
             title: 'Status',
             dataIndex: 'status',
-            // render: () => (
-            //     <Tag color={"green"}>
-            //
-            //     </Tag>
-            // )
+            render: (status) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                    <Tag color={status === "DELIVERED" ? "green" : status === "CANCELLED" ? "red" : "orange"} style={{ marginLeft: 8 }}>
+                        {status}
+                    </Tag>
+                </div>
+            )
         },
         {
             title: 'Payment method',
@@ -83,7 +120,6 @@ const History = () => {
             title: 'Description',
             dataIndex: 'description',
         },
-
         {
             title: '',
             key: 'action',
@@ -91,15 +127,13 @@ const History = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
                     <EyeOutlined onClick={() => showDrawer(record)} style={{ cursor: 'pointer' }} />
                     <EditTwoTone
-                        twoToneColor="#f57800" style={{cursor: "pointer"}}
+                        twoToneColor="#f57800" style={{ cursor: "pointer" }}
                         onClick={() => {
                             setDataUpdate(record);
                             setOpenModalUpdate(true);
                         }}
                     />
                 </div>
-
-
             ),
         },
     ];
@@ -107,27 +141,42 @@ const History = () => {
     return (
         <div className='mb-40 mx-10'>
             <div className="my-6 text-2xl font-bold text-gray-800">Lịch sử đặt hàng</div>
+
+            {/* Thanh trạng thái đơn hàng */}
+            {selectedStatus && (
+                <div style={{ marginBottom: 20 }}>
+                    <Title level={4}>Trạng thái đơn hàng: {selectedStatus}</Title>
+                    <Steps current={getCurrentStep(selectedStatus)} style={{ marginBottom: 20 }}>
+                        <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        <Step title={<ScheduleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        <Step title={<TruckOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        <Step title={<CheckCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        {/* <Step title={<CloseCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} /> */}
+                    </Steps>
+
+
+                </div>
+            )}
+
             <Table
                 columns={columns}
                 dataSource={orderHistory}
                 pagination={false}
                 rowKey="id"
-                scroll={{ x: 800 }} // Enables horizontal scrolling
+                scroll={{ x: 800 }}
             />
 
             <Drawer
                 title="Chi tiết đơn hàng"
                 placement="right"
-                width={'70%'} // 70% width for responsive drawer
+                width={'70%'}
                 onClose={closeDrawer}
                 visible={openDrawer}
             >
                 {selectedOrder && (
                     <Descriptions bordered>
                         {selectedOrder.orderDetails.map((item, index) => {
-                            // Calculate price after discount
                             const priceAfterDiscount = item.price - (item.price * item.discount / 100);
-
                             return (
                                 <Descriptions.Item key={index} label={`${index + 1} - Name: ${item.productName}`} span={3}>
                                     <div>

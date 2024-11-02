@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     AppstoreOutlined,
     ExceptionOutlined,
@@ -11,39 +11,39 @@ import {
     BarChartOutlined,
 
 } from '@ant-design/icons';
-import {Layout, Menu, Dropdown, Space, message, Avatar} from 'antd';
-import {Outlet, useNavigate, Link, useLocation} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
-import {callLogout} from "../../services/api.js";
-import {doLogoutAction} from "../../redux/account/accountSlice.js";
+import { Layout, Menu, Dropdown, Space, message, Avatar } from 'antd';
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { callLogout } from "../../services/api.js";
+import { doLogoutAction } from "../../redux/account/accountSlice.js";
 import './layout.scss';
-import {FaUserEdit} from "react-icons/fa";
-import {RiLogoutBoxFill} from "react-icons/ri";
-import {BiCategoryAlt} from "react-icons/bi";
-import {FaHome} from "react-icons/fa";
+import { FaUserEdit } from "react-icons/fa";
+import { RiLogoutBoxFill } from "react-icons/ri";
+import { BiCategoryAlt } from "react-icons/bi";
+import { FaHome } from "react-icons/fa";
 import ManageAccount from "../Account/ManageAccount.jsx";
 import { TfiLayoutSlider } from "react-icons/tfi";
 import { TbBrandAirtable } from "react-icons/tb";
 import { GrProductHunt } from "react-icons/gr";
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 
 const items = [
     {
         label: <Link to='/admin'>Dashboard</Link>,
         key: 'dashboard',
-        icon: <AppstoreOutlined/>
+        icon: <AppstoreOutlined />
     },
     {
         label: <Link to='/admin/user'>Users</Link>,
         key: 'user',
-        icon: <UserOutlined/>,
+        icon: <UserOutlined />,
     },
     {
 
         label: <Link to='/admin/category'>Categories</Link>,
         key: 'category',
-        icon: <BiCategoryAlt/>
+        icon: <BiCategoryAlt />
     },
     {
         label: <Link to='/admin/product'>Product</Link>,
@@ -64,20 +64,21 @@ const items = [
     {
         label: <Link to='/admin/order'>Orders</Link>,
         key: 'order',
-        icon: <DollarCircleOutlined/>
+        icon: <DollarCircleOutlined />
     },
     {
 
         label: <Link to='/admin/voucher'>Vouchers</Link>,
         key: 'voucher',
+
         icon: <TagOutlined/>
+
     },
     {
         label: <Link to='/admin/statistics'>statistics</Link>,
         key: 'statistics',
-        icon: <BarChartOutlined/>
-    },
-
+        icon: <BarChartOutlined />
+    }
 ];
 
 const LayoutAdmin = () => {
@@ -113,10 +114,10 @@ const LayoutAdmin = () => {
 
     const itemsDropdown = [
         {
-            label: <label style={{cursor: 'pointer'}}>
-                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}
-                     onClick={() => setShowManageAccount(true)}>
-                    <FaUserEdit/>
+            label: <label style={{ cursor: 'pointer' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                    onClick={() => setShowManageAccount(true)}>
+                    <FaUserEdit />
                     <span>Edit profile</span>
                 </div>
             </label>,
@@ -124,11 +125,11 @@ const LayoutAdmin = () => {
         },
         {
             label: <label
-                style={{cursor: 'pointer'}}
+                style={{ cursor: 'pointer' }}
                 onClick={() => navigate('/')}
             >
-                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                    <FaHome/>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FaHome />
                     <span>Home page</span>
                 </div>
             </label>,
@@ -136,11 +137,11 @@ const LayoutAdmin = () => {
         },
         {
             label: <label
-                style={{cursor: 'pointer'}}
+                style={{ cursor: 'pointer' }}
                 onClick={() => handleLogout()}
             >
-                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                    <RiLogoutBoxFill/>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <RiLogoutBoxFill />
                     <span>Logout</span>
                 </div>
             </label>,
@@ -152,7 +153,7 @@ const LayoutAdmin = () => {
 
     return (
         <Layout
-            style={{minHeight: '100vh', backgroundColor: '#f5f5f5'}} // Nền sáng nhẹ cho toàn bộ trang
+            style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }} // Nền sáng nhẹ cho toàn bộ trang
             className="layout-admin"
         >
             <Sider
@@ -168,7 +169,7 @@ const LayoutAdmin = () => {
                     height: '100vh' // Đặt chiều cao bằng chiều cao viewport
                 }}
             >
-                <div style={{height: 32, margin: 16, textAlign: 'center', color: '#fff', fontSize: 16}}>
+                <div style={{ height: 32, margin: 16, textAlign: 'center', color: '#fff', fontSize: 16 }}>
                     Admin
                 </div>
                 <Menu
@@ -176,26 +177,26 @@ const LayoutAdmin = () => {
                     mode="inline"
                     selectedKeys={[getKeyFromPathname()]} // Chọn đúng menu item dựa vào đường dẫn hiện tại
                     items={items}
-                    style={{backgroundColor: '#0f3460'}} // Màu nền sidebar menu đồng nhất
+                    style={{ backgroundColor: '#0f3460' }} // Màu nền sidebar menu đồng nhất
                 />
             </Sider>
 
             <Layout>
-                <div className='admin-header' style={{backgroundColor: '#0f3460', color: '#fff', padding: '0 16px'}}>
+                <div className='admin-header' style={{ backgroundColor: '#0f3460', color: '#fff', padding: '0 16px' }}>
                     <span>
                         {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                             className: 'trigger',
-                            style: {color: '#fff'}, // Icon màu trắng cho dễ nhìn
+                            style: { color: '#fff' }, // Icon màu trắng cho dễ nhìn
                             onClick: () => setCollapsed(!collapsed),
                         })}
                     </span>
-                    <Dropdown menu={{items: itemsDropdown}} trigger={['click']}>
-                        <a onClick={(e) => e.preventDefault()} style={{color: '#fff'}}>
-                            <Space style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                <Avatar src={urlAvatar}/>
+                    <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
+                        <a onClick={(e) => e.preventDefault()} style={{ color: '#fff' }}>
+                            <Space style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Avatar src={urlAvatar} />
                                 <span>
                                     <span>Welcome back: {user?.name} </span>
-                                    <DownOutlined/>
+                                    <DownOutlined />
                                 </span>
                             </Space>
                         </a>
@@ -209,7 +210,7 @@ const LayoutAdmin = () => {
                         backgroundColor: '#fff', // Vùng content nền trắng sáng
                     }}
                 >
-                    <Outlet/>
+                    <Outlet />
                 </Content>
             </Layout>
             <ManageAccount
