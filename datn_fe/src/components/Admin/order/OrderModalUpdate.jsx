@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Button, Col, Divider, Form, Input, InputNumber, message, Modal, notification, Row, Radio} from 'antd';
+import {Select, Button, Col, Divider, Form, Input, InputNumber, message, Modal, notification, Row, Radio} from 'antd';
 import {callAdminUpdateOrder, callFetchOrder, callUserUpdateOrder} from '../../../services/api';
 
 const OrderModalUpdate = (props) => {
@@ -71,13 +71,20 @@ const OrderModalUpdate = (props) => {
                     label="Trạng thái hiện tại"
                     name="currentStatus"
                 >
-                    <Radio.Group disabled>
-                        <Radio value="PENDING">PENDING</Radio>
-                        <Radio value="PROCESSING">PROCESSING</Radio>
-                        <Radio value="SHIPPING">SHIPPING</Radio>
-                        <Radio value="DELIVERED">DELIVERED</Radio>
-                        <Radio value="CANCELLED">CANCELLED</Radio>
-                    </Radio.Group>
+                    {/*<Radio.Group disabled>*/}
+                    {/*    <Radio value="PENDING">PENDING</Radio>*/}
+                    {/*    <Radio value="PROCESSING">PROCESSING</Radio>*/}
+                    {/*    <Radio value="SHIPPING">SHIPPING</Radio>*/}
+                    {/*    <Radio value="DELIVERED">DELIVERED</Radio>*/}
+                    {/*    <Radio value="CANCELLED">CANCELLED</Radio>*/}
+                    {/*</Radio.Group>*/}
+                    <Select disabled>
+                        <Select.Option value="PENDING">PENDING</Select.Option>
+                        <Select.Option value="PROCESSING">PROCESSING</Select.Option>
+                        <Select.Option value="SHIPPING">SHIPPING</Select.Option>
+                        <Select.Option value="DELIVERED">DELIVERED</Select.Option>
+                        <Select.Option value="CANCELLED">CANCELLED</Select.Option>
+                    </Select>
                 </Form.Item>
 
                 <Form.Item
@@ -87,13 +94,20 @@ const OrderModalUpdate = (props) => {
                     rules={[{ required: true, message: 'Vui lòng chọn trạng thái mới!' }]}
 
                 >
-                    <Radio.Group >
-                        <Radio value="PENDING">PENDING</Radio>
-                        <Radio value="PROCESSING">PROCESSING</Radio>
-                        <Radio value="SHIPPING">SHIPPING</Radio>
-                        <Radio value="DELIVERED">DELIVERED</Radio>
-                        <Radio value="CANCELLED">CANCELLED</Radio>
-                    </Radio.Group>
+                    {/*<Radio.Group >*/}
+                    {/*    <Radio value="PENDING">PENDING</Radio>*/}
+                    {/*    <Radio value="PROCESSING">PROCESSING</Radio>*/}
+                    {/*    <Radio value="SHIPPING">SHIPPING</Radio>*/}
+                    {/*    <Radio value="DELIVERED">DELIVERED</Radio>*/}
+                    {/*    <Radio value="CANCELLED">CANCELLED</Radio>*/}
+                    {/*</Radio.Group>*/}
+                    <Select>
+                        <Select.Option value="PENDING">PENDING</Select.Option>
+                        <Select.Option value="PROCESSING">PROCESSING</Select.Option>
+                        <Select.Option value="SHIPPING">SHIPPING</Select.Option>
+                        <Select.Option value="DELIVERED">DELIVERED</Select.Option>
+                        <Select.Option value="CANCELLED">CANCELLED</Select.Option>
+                    </Select>
                 </Form.Item>
 
                 <Form.Item

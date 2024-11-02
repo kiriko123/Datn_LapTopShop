@@ -1,83 +1,81 @@
 import { FilterTwoTone, ReloadOutlined } from '@ant-design/icons';
-import { Row, Col, Form, Checkbox, Divider, InputNumber, Button, Rate, Tabs, Pagination, Spin } from 'antd';
+import { Row, Col, Form, Checkbox, Divider, InputNumber, Button, Rate, Tabs, Pagination, Spin, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { callFetchBrand, callFetchCategory, callFetchProduct } from '../../services/api';
 import './home.scss';
 import { useNavigate, useOutletContext, useLocation } from "react-router-dom";
 
 const Product = () => {
-
-    // const [searchTerm, setSearchTerm] = useOutletContext();
-    const { search } = useLocation(); // Dùng useLocation để lấy URL params
+    // const { search } = useLocation(); // Dùng useLocation để lấy URL params
     const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [listCategory, setListCategory] = useState([]);
-
     const [listBrand, setListBrand] = useState([]);
-
     const navigate = useNavigate();
-
     const [listProduct, setListProduct] = useState([]);
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [total, setTotal] = useState(0);
-
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState("filter=category.active:'true' and brand.active:'true' and active:'true' and quantity > 0");
     const [sortQuery, setSortQuery] = useState("sort=sold,desc");
-
     const [form] = Form.useForm();
 
     // Lấy filter từ URL và giữ nguyên các filter trước đó
+    // useEffect(() => {
+    //     const params = new URLSearchParams(search);
+    //     const urlFilter = params.get('filter') || ''; // Lấy filter từ URL nếu có
+    //
+    //     // Kết hợp filter từ URL với filter mặc định
+    //     let combinedFilter = "filter=category.active:'true' and brand.active:'true' and active:'true' and quantity > 0";
+    //
+    //     if (urlFilter) {
+    //         combinedFilter += ` and (${urlFilter})`;  // Kết hợp filter từ URL với filter mặc định
+    //     }
+    //
+    //     setFilter(combinedFilter);  // Cập nhật filter state
+    //     console.log("Current Filter: ", urlFilter); // Kiểm tra filter hiện tại
+    //
+    //     // Cập nhật form với category tương ứng
+    //     const categoryMatches = urlFilter.match(/category\.name:'([^']+)'/);
+    //     if (categoryMatches && categoryMatches[1]) {
+    //         // Cập nhật giá trị cho category trong form
+    //         form.setFieldsValue({
+    //             category: [categoryMatches[1]] // Đặt giá trị cho category
+    //         });
+    //     } else {
+    //         // Nếu không có category nào được chọn, đặt lại giá trị cho category
+    //         form.setFieldsValue({
+    //             category: [] // Reset category nếu không có filter
+    //         });
+    //     }
+    //
+    //     // Cập nhật form với thương hiệu tương ứng
+    //     const brandMatches = urlFilter.match(/brand\.name:'([^']+)'/g) || [];
+    //     const selectedBrandNames = brandMatches.map(match => match.split(':')[1].replace(/'/g, ''));
+    //
+    //     // Cập nhật giá trị cho brand trong form
+    //     form.setFieldsValue({
+    //         brand: selectedBrandNames // Đặt giá trị cho thương hiệu
+    //     });
+    //
+    // }, [search]); // Theo dõi khi URL thay đổi
+
+
+    // useEffect(() => {
+    //     const term = location.state?.searchTerm;
+    //     if (term) {
+    //         setSearchTerm(term);
+    //         updateFilter({ searchTerm: term });
+    //     } else {
+    //         fetchProduct(); // Gọi API nếu không có từ khóa
+    //     }
+    // }, [location.state?.searchTerm]);
+
     useEffect(() => {
-        const params = new URLSearchParams(search);
-        const urlFilter = params.get('filter') || ''; // Lấy filter từ URL nếu có
-
-        // Kết hợp filter từ URL với filter mặc định
-        let combinedFilter = "filter=category.active:'true' and brand.active:'true' and active:'true' and quantity > 0";
-
-        if (urlFilter) {
-            combinedFilter += ` and (${urlFilter})`;  // Kết hợp filter từ URL với filter mặc định
-        }
-
-        setFilter(combinedFilter);  // Cập nhật filter state
-        console.log("Current Filter: ", urlFilter); // Kiểm tra filter hiện tại
-
-        // Cập nhật form với category tương ứng
-        const categoryMatches = urlFilter.match(/category\.name:'([^']+)'/);
-        if (categoryMatches && categoryMatches[1]) {
-            // Cập nhật giá trị cho category trong form
-            form.setFieldsValue({
-                category: [categoryMatches[1]] // Đặt giá trị cho category
-            });
-        } else {
-            // Nếu không có category nào được chọn, đặt lại giá trị cho category
-            form.setFieldsValue({
-                category: [] // Reset category nếu không có filter
-            });
-        }
-
-
-
-        // Cập nhật form với thương hiệu tương ứng
-        const brandMatches = urlFilter.match(/brand\.name:'([^']+)'/g) || [];
-        const selectedBrandNames = brandMatches.map(match => match.split(':')[1].replace(/'/g, ''));
-
-        // Cập nhật giá trị cho brand trong form
-        form.setFieldsValue({
-            brand: selectedBrandNames // Đặt giá trị cho thương hiệu
-        });
-
-    }, [search]); // Theo dõi khi URL thay đổi
-
-    useEffect(() => {
-        const term = location.state?.searchTerm;
-        if (term) {
-            setSearchTerm(term);
-            updateFilter({ searchTerm: term });
-        } else {
-            fetchProduct(); // Gọi API nếu không có từ khóa
-        }
+        const term = location.state?.searchTerm || ""; // Đặt mặc định là chuỗi rỗng
+        setSearchTerm(term);
+        updateFilter({ searchTerm: term });
     }, [location.state?.searchTerm]);
 
     useEffect(() => {
@@ -126,9 +124,35 @@ const Product = () => {
         if (res && res.data) {
             setListProduct(res.data.result);
             setTotal(res.data.meta.total);
+            if (res.data.result.length === 0) {
+                message.info("Không tìm thấy sản phẩm"); // Hiển thị thông báo khi không có sản phẩm nào
+            }
         }
         setIsLoading(false);
     };
+
+    // Kiểm tra nếu location.state có thương hiệu hoặc danh mục thì cập nhật filter
+    useEffect(() => {
+        const values = {}; // Đối tượng chứa các giá trị lọc
+        if (location.state?.brand) {
+            values.brand = [location.state.brand];
+            form.setFieldsValue({ brand: [location.state.brand] }); // Cập nhật form với brand từ state
+        }else {
+            form.setFieldsValue({ brand: [] }); // Reset brand nếu không có trong state
+        }
+        if (location.state?.category) {
+            values.category = [location.state.category];
+            form.setFieldsValue({ category: [location.state.category] }); // Cập nhật form với category từ state
+        }else {
+            form.setFieldsValue({ category: [] }); // Reset category nếu không có trong state
+        }
+
+        if (Object.keys(values).length > 0) {
+            updateFilter(values); // Gọi updateFilter với giá trị từ state
+        } else {
+            fetchProduct(); // Gọi fetchProduct() nếu không có giá trị lọc
+        }
+    }, [location.state]);
 
     const handleOnchangePage = (pagination) => {
         if (pagination && pagination.current !== current) {

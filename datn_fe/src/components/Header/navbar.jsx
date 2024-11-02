@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from "react-router-dom";
-import { callLogout } from "../../services/api.js";
+import { callLogout, callFetchProduct } from "../../services/api.js";
 import { doLogoutAction } from "../../redux/account/accountSlice.js";
 import './navbar.css'
 import { FaHome } from "react-icons/fa";
@@ -21,6 +21,8 @@ import { MdHistoryEdu } from "react-icons/md";
 import Head from "./head.jsx";
 import { FaBookQuran } from "react-icons/fa6";
 import { GrProductHunt } from "react-icons/gr";
+import { SearchBar } from './SearchBar';
+import { SearchResultsList } from './SearchResultsList';
 
 const Navbar = (props) => {
     const [openDrawer, setOpenDrawer] = useState(false);
@@ -34,15 +36,25 @@ const Navbar = (props) => {
     const carts = useSelector(state => state.order.carts);
 
     const [showManageAccount, setShowManageAccount] = useState(false);
+
+    const [results, setResults] = useState([]);
+
     const [searchTerm, setSearchTerm] = useState("");
     const [visible, setVisible] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleSearch = (value) => {
-        if (value.trim()) {
+
+        setResults([]);
+        if(value.trim()){
+
             navigate('/product', { state: { searchTerm: value.trim() } });
+        }else {
+            // Nếu không có từ khóa, gọi API lấy toàn bộ sản phẩm
+            navigate('/product', { state: { searchTerm: "" } });
         }
+
     };
 
     const handleLogout = async () => {
@@ -155,19 +167,33 @@ const Navbar = (props) => {
                 <div className="container-fluid">
                     <div className="nav">
                         <div className="logo">
-                            <i className="fas"> <FaBookQuran /> </i>
-                            <a href="" onClick={() => navigate('/')}>Electronic Store</a>
+                            <i className="fas"> <FaBookQuran/> </i>
+                            <a href="" onClick={() => navigate('/')}>Laptop Store</a>
                         </div>
 
+                        {/*<div className="search-bar">*/}
+                        {/*    <Input.Search*/}
+                        {/*        placeholder="Search "*/}
+                        {/*        enterButton*/}
+                        {/*        value={searchTerm}*/}
+                        {/*        onChange={(e) => setSearchTerm(e.target.value)}*/}
+                        {/*        onSearch={handleSearch}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                         <div className="search-bar">
-                            <Input.Search
-                                placeholder="Search "
-                                enterButton
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onSearch={handleSearch}
-                            />
+                            <SearchBar
+                                setResults={setResults}
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                handleSearch={handleSearch}/>
+                            {results.length > 0 && (
+                                <SearchResultsList
+                                    results={results}
+                                    setResults={setResults}
+                                    setSearchTerm={setSearchTerm}/>
+                            )}
                         </div>
+
 
                         <div className="mobileHidden">
                             <nav>
@@ -175,13 +201,17 @@ const Navbar = (props) => {
                                     <span onClick={() => navigate('/')}> <FaHome /> <p>{t('home')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/product')}> <GrProductHunt /> <p>{t('product')}</p></span>
+
+                                    <span
+                                        onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/about')}> <MdContactSupport /> <p>{t('about')}</p></span>
+                                    <span
+                                        onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
+
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/contact')}> <MdContactPhone /> <p>{t('contact')}</p></span>
+                                    <span onClick={() => navigate('/contact')}> <MdContactPhone/> <p>{t('contact')}</p></span>
                                 </div>
 
                                 <div>
@@ -227,6 +257,120 @@ const Navbar = (props) => {
                                 </div>
                             </nav>
                         </div>
+
+
+
+                        <div className="mobileVisible">
+                            <Button type="primary" onClick={showDrawer}>
+                                <i className="fas fa-bars"></i>
+                            </Button>
+                            <Drawer
+                                placement="right"
+                                closable={true}
+                                onClose={onClose}
+                                visible={visible}
+
+                            >
+                                {isAuthenticated && user && (
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between', // Align cart icon to the right
+                                        alignItems: 'center',
+                                        paddingBottom: '10px',
+                                    }}>
+                                        <Space style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                            <Avatar src={urlAvatar}/>
+                                            <span>
+                                                <span> {user?.name} </span>
+                                            </span>
+                                        </Space>
+                                        <Badge
+                                            count={carts?.length ?? 0}
+                                            size={"small"}
+                                            showZero
+                                        >
+                                            <FiShoppingCart onClick={() => navigate('/order')} className='icon-cart'
+                                                            size={'23px'}/>
+                                        </Badge>
+                                    </div>
+                                )}
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    marginTop: '10px'
+                                }}
+                                     onClick={() => navigate('/')}>
+                                    <FaHome/>
+                                    <p>{t('home')}</p>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    marginTop: '10px'
+                                }}
+                                     onClick={() => navigate('/product')}>
+                                    <FaHome/>
+                                    <p>Product</p>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    margin: '10px 0 10px 0',
+                                    cursor: 'pointer'
+                                }}
+                                     onClick={() => navigate('/about')}>
+                                    <MdContactSupport/>
+                                    <p>{t('about')}</p>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    margin: '10px 0 10px 0',
+                                    cursor: 'pointer'
+                                }}
+                                     onClick={() => navigate('/contact')}>
+                                    <MdContactPhone/>
+                                    <p>{t('contact')}</p>
+                                </div>
+
+                                {!isAuthenticated || user === null ?
+                                    <nav className="mobileVisible-nav">
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            cursor: 'pointer'
+                                        }}
+                                             onClick={() => navigate('/auth')}>
+                                            <RiLoginCircleFill/>
+                                            <p>{t('login_register')}</p>
+                                        </div>
+                                    </nav>
+
+                                    : <></>}
+
+                                {isAuthenticated && user && (
+                                    <nav className="mobileVisible-nav">
+                                        {items.map(item => (
+                                            <div key={item.key}>
+                                                {item.label}
+                                            </div>
+                                        ))}
+                                    </nav>
+                                )}
+                            </Drawer>
+                        </div>
+
                     </div>
                 </div>
             </div>

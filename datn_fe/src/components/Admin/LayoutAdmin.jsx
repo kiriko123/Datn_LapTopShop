@@ -70,7 +70,9 @@ const items = [
 
         label: <Link to='/admin/voucher'>Vouchers</Link>,
         key: 'voucher',
-        icon: <TagOutlined />
+
+        icon: <TagOutlined/>
+
     },
     {
         label: <Link to='/admin/statistics'>statistics</Link>,

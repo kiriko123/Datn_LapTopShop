@@ -84,13 +84,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Không thể xóa ADMIN");
         }
 
-        if(user.isEnabled()){
-            user.setEnabled(false);
-            userRepository.save(user);
-        }else{
-            userRepository.delete(user);
-        }
-
+//        if(user.isEnabled()){
+//            user.setEnabled(false);
+//            userRepository.save(user);
+//        }else{
+//            userRepository.delete(user);
+//        }
+        user.setEnabled(false);
+        userRepository.save(user);
     }
 
     @Override
