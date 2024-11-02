@@ -109,8 +109,37 @@ const Product = () => {
         fetchProduct();
     }, [current, pageSize, filter, sortQuery, searchTerm]); //searchTerm
 
+    // const fetchProduct = async () => {
+    //     setIsLoading(true);
+    //     let query = `page=${current}&size=${pageSize}`;
+    //     if (filter) {
+    //         query += `&${filter}`;
+    //     }
+    //     if (sortQuery) {
+    //         query += `&${sortQuery}`;
+    //     }
+    //
+    //     const res = await callFetchProduct(query);
+    //
+    //     if (res && res.data) {
+    //         setListProduct(res.data.result);
+    //         setTotal(res.data.meta.total);
+    //         if (res.data.result.length === 0) {
+    //             message.info("Không tìm thấy sản phẩm"); // Hiển thị thông báo khi không có sản phẩm nào
+    //         }
+    //     }
+    //     setIsLoading(false);
+    // };
+
+    const [noProductMessageShown, setNoProductMessageShown] = useState(false);
+
     const fetchProduct = async () => {
         setIsLoading(true);
+
+        // Hủy thông báo trước đó khi bắt đầu tìm kiếm mới
+        message.destroy();
+        setNoProductMessageShown(false); // Reset lại trạng thái khi bắt đầu tìm kiếm mới
+
         let query = `page=${current}&size=${pageSize}`;
         if (filter) {
             query += `&${filter}`;
@@ -124,12 +153,16 @@ const Product = () => {
         if (res && res.data) {
             setListProduct(res.data.result);
             setTotal(res.data.meta.total);
-            if (res.data.result.length === 0) {
-                message.info("Không tìm thấy sản phẩm"); // Hiển thị thông báo khi không có sản phẩm nào
+
+            // Hiển thị thông báo khi không có sản phẩm trong kết quả tìm kiếm
+            if (res.data.result.length === 0 && !noProductMessageShown) {
+                message.info("Không tìm thấy sản phẩm");
+                setNoProductMessageShown(true); // Đánh dấu thông báo đã hiển thị
             }
         }
         setIsLoading(false);
     };
+
 
     // Kiểm tra nếu location.state có thương hiệu hoặc danh mục thì cập nhật filter
     useEffect(() => {

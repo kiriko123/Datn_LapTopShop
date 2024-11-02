@@ -53,6 +53,7 @@ export const SearchResultsList = ({ results, setResults, setSearchTerm   }) => {
         setSearchTerm("");
         // Search xong lấy tên sản phẩm gắn lên ô input luôn
         // setSearchTerm(product.name);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
     return (
