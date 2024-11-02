@@ -42,7 +42,6 @@ public class VoucherController {
         log.info("Update Voucher: {}", voucherUpdateRequestDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(voucherService.update(voucherUpdateRequestDTO));
     }
-
     @DeleteMapping("/{id}")
     public RestResponse<?> deleteVoucher(@PathVariable Long id){
         log.info("Delete Voucher: {}", id);

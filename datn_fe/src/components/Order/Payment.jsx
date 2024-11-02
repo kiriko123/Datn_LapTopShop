@@ -98,7 +98,7 @@ const Payment = (props) => {
 
         if (paymentMethod === 'cod') {
             handlePlaceOrder();
-        } else if (paymentMethod === 'online') {
+        } else if (paymentMethod === 'pay with Stripe') {
             setIsCheckoutModalVisible(true);
         }
     };
@@ -190,7 +190,7 @@ const Payment = (props) => {
                             <div>Hình thức thanh toán</div>
                             <Radio.Group onChange={handlePaymentChange} value={paymentMethod}>
                                 <Radio value="cod">Thanh toán khi nhận hàng</Radio>
-                                <Radio value="online">Thanh toán trực tuyến</Radio>
+                                <Radio value="pay with Stripe">Thanh toán bằng Stripe</Radio>
                             </Radio.Group>
                         </div>
                     </Form>

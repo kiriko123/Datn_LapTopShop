@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from "react-router-dom";
-import { callLogout } from "../../services/api.js";
+import { callLogout, callFetchProduct } from "../../services/api.js";
 import { doLogoutAction } from "../../redux/account/accountSlice.js";
 import './navbar.css'
 import { FaHome } from "react-icons/fa";
@@ -21,6 +21,8 @@ import { MdHistoryEdu } from "react-icons/md";
 import Head from "./head.jsx";
 import { FaBookQuran } from "react-icons/fa6";
 import { GrProductHunt } from "react-icons/gr";
+import { SearchBar } from './SearchBar';
+import { SearchResultsList } from './SearchResultsList';
 
 
 const Navbar = (props) => {
@@ -37,12 +39,17 @@ const Navbar = (props) => {
     const carts = useSelector(state => state.order.carts);
 
     const [showManageAccount, setShowManageAccount] = useState(false);
-
+    const [results, setResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const handleSearch = (value) => {
+        setResults([]);
         if(value.trim()){
             navigate('/product', { state: { searchTerm: value.trim() } });
+        }else {
+            // Nếu không có từ khóa, gọi API lấy toàn bộ sản phẩm
+            navigate('/product', { state: { searchTerm: "" } });
         }
+
     };
 
     const handleLogout = async () => {
@@ -172,19 +179,33 @@ const Navbar = (props) => {
                 <div className="container-fluid">
                     <div className="nav">
                         <div className="logo">
-                            <i className="fas"> <FaBookQuran /> </i>
-                            <a href="" onClick={() => navigate('/')}>Electronic Store</a>
+                            <i className="fas"> <FaBookQuran/> </i>
+                            <a href="" onClick={() => navigate('/')}>Laptop Store</a>
                         </div>
 
+                        {/*<div className="search-bar">*/}
+                        {/*    <Input.Search*/}
+                        {/*        placeholder="Search "*/}
+                        {/*        enterButton*/}
+                        {/*        value={searchTerm}*/}
+                        {/*        onChange={(e) => setSearchTerm(e.target.value)}*/}
+                        {/*        onSearch={handleSearch}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                         <div className="search-bar">
-                            <Input.Search
-                                placeholder="Search "
-                                enterButton
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onSearch={handleSearch}
-                            />
+                            <SearchBar
+                                setResults={setResults}
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                handleSearch={handleSearch}/>
+                            {results.length > 0 && (
+                                <SearchResultsList
+                                    results={results}
+                                    setResults={setResults}
+                                    setSearchTerm={setSearchTerm}/>
+                            )}
                         </div>
+
 
                         <div className="mobileHidden">
                             <nav>
@@ -192,13 +213,15 @@ const Navbar = (props) => {
                                     <span onClick={() => navigate('/')}> <FaHome/> <p>{t('home')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
+                                    <span
+                                        onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
+                                    <span
+                                        onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/contact')}> <MdContactPhone /> <p>{t('contact')}</p></span>
+                                    <span onClick={() => navigate('/contact')}> <MdContactPhone/> <p>{t('contact')}</p></span>
                                 </div>
 
                                 <div>
@@ -252,7 +275,7 @@ const Navbar = (props) => {
 
                         <div className="mobileVisible">
                             <Button type="primary" onClick={showDrawer}>
-                            <i className="fas fa-bars"></i>
+                                <i className="fas fa-bars"></i>
                             </Button>
                             <Drawer
                                 placement="right"
@@ -329,7 +352,7 @@ const Navbar = (props) => {
                                     cursor: 'pointer'
                                 }}
                                      onClick={() => navigate('/contact')}>
-                                    <MdContactPhone />
+                                    <MdContactPhone/>
                                     <p>{t('contact')}</p>
                                 </div>
 

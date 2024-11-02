@@ -3,6 +3,7 @@ import ImageLayout from "../Home/ImageLayout/ImageLayout.jsx";
 import HotProducts from "../Home/HotProducts/HotProducts.jsx";
 import HotCategories from "../Home/HotCategory/HotCategories.jsx";
 import BrandList from "./BrandList.jsx";
+import VoucherList from "./VoucherList.jsx"
 // import Checkout from "./Checkout.jsx";
 // import {PayPalScriptProvider} from "@paypal/react-paypal-js";
 // const initialOptions = {
@@ -22,6 +23,7 @@ const Home = () => {
             <HotProducts />
             <ImageLayout />
             <HotCategories />
+            <VoucherList/>
         </>
     )
 }

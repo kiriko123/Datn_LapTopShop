@@ -27,7 +27,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/dbo_datn?useSSL=false&serverTimezone=UTC
     username: root
-    password: levansy190104
+    password: 123456
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
@@ -44,7 +44,7 @@ khang:
     refresh-token-validity-in-seconds: 604800  # 7 days = 604800 seconds
   upload-file:
 
-    base-uri: file:///D:/DATN/datn_fpoly/upload/
+    base-uri: file:///D:/Datn/datn_fpoly/upload/
     #"D:\datn\datn_fpoly\upload"
 stripe:
   api:

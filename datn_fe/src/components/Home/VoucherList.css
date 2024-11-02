@@ -1,0 +1,129 @@
+.voucher-list {
+    padding: 20px;
+    background-color: #f5f5f5; /* Màu nền cho vùng chứa danh sách */
+    border-radius: 8px; /* Bo góc cho vùng chứa */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho vùng chứa */
+}
+
+.voucher-list__title {
+    font-size: 24px; /* Kích thước chữ lớn hơn */
+    font-weight: bold; /* Chữ in đậm */
+    color: #ff6600; /* Màu sắc tiêu đề */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    display: flex; /* Sử dụng flex để căn chỉnh icon và tiêu đề */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+}
+
+.voucher-title-icon {
+    margin-right: 10px; /* Khoảng cách giữa icon và tiêu đề */
+    color: #ff6600; /* Màu sắc cho icon */
+    font-size: 28px; /* Kích thước của icon */
+}
+
+.voucher-list__cards {
+    display: flex;
+    flex-wrap: wrap; /* Để thẻ card tự động xuống dòng khi không đủ không gian */
+    justify-content: center; /* Căn giữa các card */
+}
+.voucher-card {
+    width: 240px; /* Giảm chiều rộng của card */
+    margin: 15px; /* Giảm khoảng cách giữa các card */
+    transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển đổi cho hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng cho card */
+    border-radius: 8px; /* Bo góc card */
+}
+
+.voucher-card:hover {
+    transform: scale(1.05); /* Tăng kích thước card khi hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Thay đổi bóng khi hover */
+}
+
+.voucher-card__header {
+    position: relative; /* Thiết lập vị trí tương đối để sử dụng pseudo-element */
+}
+
+.voucher-card__header h3 {
+    font-size: 1.4rem; /* Kích thước chữ tiêu đề */
+    text-align: center;
+    background: linear-gradient(to right, #ff6600, #ffd700); 
+    -webkit-background-clip: text; /* Cắt nền cho chữ */
+    -webkit-text-fill-color: transparent; /* Đổ màu chữ thành trong suốt */
+    font-weight: bold; /* Đậm chữ */
+    padding-bottom: 5px; /* Khoảng cách dưới đường */
+}
+
+/* Thêm pseudo-element cho đường dưới tiêu đề */
+.voucher-card__header h3::after {
+    content: ''; /* Tạo một nội dung rỗng */
+    display: block; /* Hiển thị như block */
+    height: 2px; /* Chiều cao của đường */
+    background: linear-gradient(to right, #ff6600, #ffd700); /* Gradient cho đường */
+    position: absolute; /* Đặt vị trí tuyệt đối */
+    left: 0; /* Căn trái */
+    right: 0; /* Căn phải */
+    bottom: -5px; /* Khoảng cách dưới tiêu đề */
+}
+
+.voucher-card__item {
+    margin: 5px 0; /* Khoảng cách giữa các đoạn văn */
+    font-size: 0.9rem; /* Kích thước chữ cho nội dung */
+    color: black; /* Màu sắc cho nội dung (có thể thay đổi tùy theo ý muốn) */
+    transition: none; /* Bỏ hiệu ứng chuyển đổi khi hover */
+}
+
+/* Không thay đổi màu sắc khi hover */
+.voucher-card__item:hover {
+    color: black; /* Giữ nguyên màu sắc khi hover */
+}
+
+.voucher-card__item strong {
+    background: linear-gradient(to right, #CD5C08, #FF9100); /* Gradient từ màu cam đến vàng */
+    -webkit-background-clip: text; /* Cắt nền cho chữ */
+    -webkit-text-fill-color: transparent; /* Đổ màu chữ thành trong suốt */
+}
+
+.voucher-list__buy-button {
+    display: block; /* Để nút chiếm toàn bộ chiều rộng */
+    width: 250px; /* Đặt chiều rộng nút lớn hơn */
+    height: 50px; /* Đặt chiều cao nút */
+    margin: 20px auto; /* Căn giữa nút */
+    font-size: 18px; /* Tăng kích thước chữ */
+    text-align: center; /* Căn giữa văn bản trong nút */
+    background-color: red; /* Màu nền của nút */
+    color: #fff; /* Màu chữ */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo góc nút */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi màu nền */
+}
+
+.voucher-list__buy-button:hover {
+    background-color: red; /* Màu nền khi hover */
+}
+
+.voucher-list__buy-container {
+    display: flex; /* Sử dụng flexbox để căn chỉnh nút */
+    justify-content: flex-start; /* Căn trái nút */
+    margin-top: 20px; /* Khoảng cách giữa các card và nút */
+    padding-left: 25px;
+}
+
+.voucher-button {
+    background-color: var(--primary); /* Thay đổi theo màu sắc chính của bạn */
+    color: var(--white); /* Màu chữ */
+    border: none;
+    width: 160px; /* Đặt chiều rộng nút lớn hơn */
+    height: 60px; /* Đặt chiều cao nút */
+    padding: 10px 20px; /* Giảm kích thước nút */
+    margin-left: 40px;
+    border-radius: 20px; /* Bo góc nút tròn mềm mại */
+    font-size: 1rem; /* Kích thước chữ của nút */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: var(--font-primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Thêm shadow để nút nổi bật */
+}
+
+.voucher-button:hover {
+    background-color: #3B1E54; /* Màu đậm hơn khi hover */
+}

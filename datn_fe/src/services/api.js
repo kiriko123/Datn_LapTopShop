@@ -219,3 +219,22 @@ export const callUpdateRating = ({ id, adminRespone }) => {
     return axios.put(`/api/v1/ratings`, { id, adminRespone });
 };
 
+
+// voucher
+export const callFetchListVoucher = (query) => {
+    return axios.get(`/api/v1/voucher?${query}`);
+}
+
+export const callDeleteVoucher = (voucherId) => {
+    return axios.delete(`/api/v1/voucher/${voucherId}`);
+}
+
+export const callCreateVoucher = ({ voucherCode, voucherValue, description, startDate, endDate }) => {
+    return axios.post('/api/v1/voucher', { voucherCode, voucherValue, description, startDate, endDate });
+}
+
+export const callUpdateVoucher = ({ id, voucherCode, voucherValue, description, startDate, endDate, active }) => {
+    return axios.put('/api/v1/voucher', { id, voucherCode, voucherValue, description, startDate, endDate, active });
+}
+
+

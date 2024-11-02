@@ -1,0 +1,147 @@
+:root {
+    --primary: #6a59ff;
+    --white: #ffffff;
+    --bg: #f5f5f5;
+}
+
+/* Thay đổi hình dáng và kích thước cho dots */
+.ant-carousel .slick-dots li {
+    width: 20px; /* Chiều rộng của dấu chấm */
+    height: 5px; /* Chiều cao của dấu chấm */
+    margin: 0 5px; /* Thêm khoảng cách giữa các dấu chấm */
+}
+
+.ant-carousel .slick-dots li button {
+    border-radius: 5px; /* Bo góc cho dấu chấm để tạo thành hình chữ nhật */
+    background: #333333; /* Màu sắc cho dấu chấm */
+    opacity: 0.5; /* Đặt độ mờ cho dấu chấm không hoạt động */
+    transition: background 0.3s, opacity 0.3s; /* Hiệu ứng chuyển đổi khi hover */
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+    background: #333333; /* Màu sắc cho dấu chấm đang hoạt động */
+    opacity: 1; /* Đặt độ mờ cho dấu chấm đang hoạt động */
+}
+
+.slider-container {
+    display: flex; /* Sử dụng Flexbox để tạo 2 cột */
+    justify-content: space-between; /* Căn chỉnh không gian giữa các cột */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    margin: 0 auto; /* Giữa */
+    padding: 20px; /* Thêm khoảng cách */
+}
+
+.text-column {
+    flex: 1;
+    padding: 20px;
+    text-align: left; /* Giữ văn bản canh trái */
+}
+
+.text-column h2 {
+    font-size: 35px; /* Kích thước chữ lớn hơn cho tiêu đề */
+    color: var(--primary); /* Màu sắc chủ đạo */
+    margin-bottom: 20px; /* Thêm khoảng cách dưới tiêu đề */
+    font-family: var(--font-primary);
+    line-height: 1.2; /* Điều chỉnh khoảng cách giữa các dòng */
+}
+
+.text-column p {
+    font-size: 18px; /* Kích thước chữ vừa phải */
+    color: var(--text-color); /* Màu chữ dễ đọc */
+    margin-bottom: 30px; /* Thêm khoảng cách dưới đoạn văn */
+    font-family: var(--font-primary);
+    line-height: 1.2; /* Giãn dòng giúp đọc dễ dàng hơn */
+    text-align: justify; /* Căn chỉnh văn bản đều hai bên */
+}
+
+.slider-button {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 15px 30px; /* Tăng kích thước nút */
+    border-radius: 20px; /* Bo góc nút tròn mềm mại */
+    font-size: 1.2rem; /* Tăng kích thước chữ của nút */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: var(--font-primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Thêm shadow để nút nổi bật */
+    width: auto; /* Đặt chiều rộng tự động cho nút */
+    margin: 0 auto; /* Giữa nút trong cột */
+    display: block; /* Hiển thị như block để căn giữa */
+}
+
+.slider-button:hover {
+    background-color: #574bc9; /* Màu đậm hơn khi hover */
+}
+
+.image-column {
+    flex: 1.5; /* Cột hình ảnh chiếm 1 phần */
+    padding: 20px; /* Thêm khoảng cách bên trong */
+}
+
+.image-column img {
+    width: 100%; /* Đặt chiều rộng của hình ảnh bằng 100% của cột */
+    height: auto; /* Chiều cao tự động để giữ tỷ lệ khung hình */
+    object-fit: cover; /* Đảm bảo hình ảnh không bị biến dạng */
+}
+
+/* Thêm chiều cao cho carousel */
+.image-column .ant-carousel .slick-slide {
+    height: 300px; /* Điều chỉnh chiều cao nếu cần */
+}
+
+/* Responsive cho màn hình nhỏ hơn */
+@media (max-width: 1024px) {
+    .slider-container {
+        flex-direction: column; /* Đổi thành cột trên màn hình nhỏ hơn */
+    }
+
+    .text-column {
+        text-align: center; /* Căn giữa văn bản */
+        padding: 10px;
+    }
+
+    .image-column {
+        padding: 10px;
+    }
+
+    .image-column img {
+        max-height: 300px; /* Điều chỉnh chiều cao tối đa của hình ảnh cho màn hình nhỏ */
+    }
+}
+
+/* Responsive cho màn hình rất nhỏ (điện thoại) */
+@media (max-width: 768px) {
+    .text-column {
+        padding: 5px; /* Giảm padding trên điện thoại */
+    }
+
+    .image-column {
+        padding: 5px;
+    }
+
+    .image-column img {
+        max-height: 250px; /* Giảm chiều cao tối đa cho hình ảnh trên màn hình điện thoại */
+    }
+
+    .slider-button {
+        width: 100%; /* Nút sẽ chiếm toàn bộ chiều rộng trên màn hình điện thoại */
+        padding: 8px 0;
+        margin: 10px 0; /* Thêm margin trên và dưới nút */
+    }
+}
+
+@media (max-width: 480px) {
+    .slider-container {
+        padding: 10px; /* Giảm padding toàn bộ */
+    }
+
+    .image-column img {
+        max-height: 200px; /* Chiều cao nhỏ hơn nữa cho điện thoại màn hình rất nhỏ */
+    }
+
+    .slider-button {
+        font-size: 14px; /* Điều chỉnh kích thước chữ cho nút */
+    }
+}

@@ -14,14 +14,16 @@ import AdminPage from "./pages/admin/index.jsx";
 import ManageUserPage from "./pages/admin/user/index.jsx";
 import Auth from "./pages/auth/index.jsx";
 import Slider from "./components/Slider/slider.jsx";
-
 import ForgotPage from "./pages/forgot/forgot.jsx";
+import Voucher from "./components/Voucher/voucher.jsx";
 // import ViewOrder from "./components/Order/ViewOrder.jsx";
 
 // import SliderCRUD from "./components/Account/SliderCRUD.jsx"; // Thêm import cho SliderCRUD
 import ManageBrandPage from './pages/admin/brand/index.jsx';
 import ManageCategoryPage from "./pages/admin/category/index.jsx";
 import ManageSliderPage from "./pages/admin/slider/index.jsx";
+import ManageVoucherPage from './pages/admin/voucher/index.jsx';
+
 
 // Thêm import cho SliderCRUD
 import ViewOrder from "./components/Order/ViewOrder.jsx";
@@ -35,6 +37,7 @@ import Contact from './pages/contact/contact.jsx';
 import History from "./components/Order/History.jsx";
 import ManageOrderPage from "./pages/admin/order/index.jsx";
 import ManageStatisticsPage from './pages/admin/statistics/index.jsx';
+
 
 
 
@@ -159,8 +162,14 @@ export default function App() {
                     element: <ManageOrderPage />,
                 },
                 {
+
+                    path: 'voucher',
+                    element: <ManageVoucherPage/>,
+                },
+                {
                     path: "statistics",
                     element: <ManageStatisticsPage/>,
+
                 }
 
             ]
