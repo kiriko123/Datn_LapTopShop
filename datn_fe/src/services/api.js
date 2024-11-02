@@ -215,10 +215,7 @@ export const callFetchRatings = (productId) => {
 export const callSubmitRating = (productId, ratingData) => {
     return axios.post(`/api/v1/ratings/${productId}`, ratingData);
 };
-// Gửi phản hồi từ admin cho đánh giá
-export const callSubmitAdminResponse = (ratingId, responseData) => {
-    return axios.put(`/api/v1/ratings/${ratingId}`, {
-        adminRespone: responseData, // Gửi phản hồi admin
-    });
+export const callUpdateRating = ({ id, adminRespone }) => {
+    return axios.put(`/api/v1/ratings`, { id, adminRespone });
 };
 
