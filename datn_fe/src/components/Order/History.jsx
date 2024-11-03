@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { callOrderHistory } from "../../services/api";
 import { useSelector } from "react-redux";
-import { EditTwoTone, EyeOutlined, CheckCircleOutlined, HourglassOutlined, ScheduleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { EditTwoTone, EyeOutlined, CheckCircleOutlined, HourglassOutlined, ScheduleOutlined, CloseCircleOutlined, TruckOutlined } from '@ant-design/icons';
 import UserOrderUpdate from "./UserOrderUpdate.jsx";
-import { TruckOutlined } from '@ant-design/icons'; // Nhập icon xe tải
 
 const { Title } = Typography;
 const { Step } = Steps;
@@ -30,6 +29,10 @@ const History = () => {
         }
     };
 
+    const countStatusOrders = (status) => {
+        return orderHistory.filter(order => order.status === status).length;
+    };
+
     const showDrawer = (record) => {
         setSelectedOrder(record);
         setSelectedStatus(record.status);
@@ -49,14 +52,11 @@ const History = () => {
             case "SHIPPING":
                 return 2;
             case "DELIVERED":
-                return 4; // Trả về 3 cho DELIVERED
-            // case "CANCELLED":
-            //     return 4;
+                return 4;
             default:
                 return 0;
         }
     };
-
 
     const getStatusIcon = (status) => {
         switch (status) {
@@ -65,11 +65,9 @@ const History = () => {
             case "PROCESSING":
                 return <ScheduleOutlined style={{ color: "blue" }} />;
             case "SHIPPING":
-                return <TruckOutlined style={{ color: "blue" }} />; // Thay đổi ở đây
+                return <TruckOutlined style={{ color: "blue" }} />;
             case "DELIVERED":
                 return <CheckCircleOutlined style={{ color: "green" }} />;
-            // case "CANCELLED":
-            //     return <CloseCircleOutlined style={{ color: "red" }} />;
             default:
                 return null;
         }
@@ -105,7 +103,6 @@ const History = () => {
             dataIndex: 'status',
             render: (status) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-
                     <Tag color={status === "DELIVERED" ? "green" : status === "CANCELLED" ? "red" : "orange"} style={{ marginLeft: 8 }}>
                         {status}
                     </Tag>
@@ -142,21 +139,30 @@ const History = () => {
         <div className='mb-40 mx-10'>
             <div className="my-6 text-2xl font-bold text-gray-800">Lịch sử đặt hàng</div>
 
-            {/* Thanh trạng thái đơn hàng */}
-            {selectedStatus && (
-                <div style={{ marginBottom: 20 }}>
-                    <Title level={4}>Trạng thái đơn hàng: {selectedStatus}</Title>
-                    <Steps current={getCurrentStep(selectedStatus)} style={{ marginBottom: 20 }}>
-                        <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        <Step title={<ScheduleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        <Step title={<TruckOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        <Step title={<CheckCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        {/* <Step title={<CloseCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} /> */}
-                    </Steps>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '60px', marginBottom: '20px' }}>
+                <Badge count={countStatusOrders("PENDING")} offset={[10, 0]}>
+                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+                        <HourglassOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
+                    </Tag>
+                </Badge>
+                <Badge count={countStatusOrders("PROCESSING")} offset={[10, 0]}>
+                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+                        <ScheduleOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
+                    </Tag>
+                </Badge>
+                <Badge count={countStatusOrders("SHIPPING")} offset={[10, 0]}>
+                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+                        <TruckOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
+                    </Tag>
+                </Badge>
+                <Badge count={countStatusOrders("DELIVERED")} offset={[10, 0]}>
+                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+                        <CheckCircleOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
+                    </Tag>
+                </Badge>
+            </div>
 
 
-                </div>
-            )}
 
             <Table
                 columns={columns}
@@ -173,29 +179,43 @@ const History = () => {
                 onClose={closeDrawer}
                 visible={openDrawer}
             >
+                {/* Thanh trạng thái đơn hàng */}
+                <div style={{ marginTop: 20 }}>
+                    <Title level={4}>Trạng thái đơn hàng</Title>
+                    <Steps current={getCurrentStep(selectedStatus)}>
+                        <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        <Step title={<ScheduleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        <Step title={<TruckOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                        <Step title={<CheckCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+                    </Steps>
+                </div>
                 {selectedOrder && (
-                    <Descriptions bordered>
-                        {selectedOrder.orderDetails.map((item, index) => {
-                            const priceAfterDiscount = item.price - (item.price * item.discount / 100);
-                            return (
-                                <Descriptions.Item key={index} label={`${index + 1} - Name: ${item.productName}`} span={3}>
-                                    <div>
-                                        <Image
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
-                                            alt={item.productName}
-                                            width={50}
-                                        />
+                    <>
+                        <Descriptions bordered>
+                            {selectedOrder.orderDetails.map((item, index) => {
+                                const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+                                return (
+                                    <Descriptions.Item key={index} label={`${index + 1} - Name: ${item.productName}`} span={3}>
                                         <div>
-                                            Số lượng: {item.quantity},
-                                            Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)},
-                                            Discount: {item.discount} %,
-                                            Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
+                                            <Image
+                                                src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
+                                                alt={item.productName}
+                                                width={50}
+                                            />
+                                            <div>
+                                                Số lượng: {item.quantity},
+                                                Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)},
+                                                Discount: {item.discount} %,
+                                                Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
+                                            </div>
                                         </div>
-                                    </div>
-                                </Descriptions.Item>
-                            );
-                        })}
-                    </Descriptions>
+                                    </Descriptions.Item>
+                                );
+                            })}
+                        </Descriptions>
+
+
+                    </>
                 )}
             </Drawer>
 
