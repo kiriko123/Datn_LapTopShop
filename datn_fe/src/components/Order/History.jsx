@@ -138,29 +138,34 @@ const History = () => {
     return (
         <div className='mb-40 mx-10'>
             <div className="my-6 text-2xl font-bold text-gray-800">Lịch sử đặt hàng</div>
-
             <div style={{ display: 'flex', justifyContent: 'center', gap: '60px', marginBottom: '20px' }}>
-                <Badge count={countStatusOrders("PENDING")} offset={[10, 0]}>
-                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-                        <HourglassOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-                    </Tag>
+                <Badge count={countStatusOrders("PENDING")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <HourglassOutlined style={{ fontSize: '30px' }} />
+                        <span style={{ display: 'block' }}>Đang chờ</span>
+                    </div>
                 </Badge>
-                <Badge count={countStatusOrders("PROCESSING")} offset={[10, 0]}>
-                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-                        <ScheduleOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-                    </Tag>
+                <Badge count={countStatusOrders("PROCESSING")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <ScheduleOutlined style={{ fontSize: '30px' }} />
+                        <span style={{ display: 'block' }}>Đang xử lý</span>
+                    </div>
                 </Badge>
-                <Badge count={countStatusOrders("SHIPPING")} offset={[10, 0]}>
-                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-                        <TruckOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-                    </Tag>
+                <Badge count={countStatusOrders("SHIPPING")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <TruckOutlined style={{ fontSize: '30px' }} />
+                        <span style={{ display: 'block' }}>Đang giao hàng</span>
+                    </div>
                 </Badge>
-                <Badge count={countStatusOrders("DELIVERED")} offset={[10, 0]}>
-                    <Tag style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-                        <CheckCircleOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-                    </Tag>
+                <Badge count={countStatusOrders("DELIVERED")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <CheckCircleOutlined style={{ fontSize: '30px' }} />
+                        <span style={{ display: 'block' }}>Đã giao</span>
+                    </div>
                 </Badge>
             </div>
+
+
 
 
 
