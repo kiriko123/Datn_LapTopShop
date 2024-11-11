@@ -44,27 +44,38 @@ public class EmailServiceImpl implements EmailService {
         emailContent.append("<p>Xin chào, " + order.getUser().getName() + "</p>");
         emailContent.append("<p>Cảm ơn bạn đã đặt hàng!</p>");
         emailContent.append("<p>Dưới đây là thông tin đơn hàng của bạn:</p>");
-        emailContent.append("<ul>");
 
+        // Tạo bảng sản phẩm
+        emailContent.append("<table style='width:100%; border-collapse: collapse;'>");
+        emailContent.append("<tr>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>STT</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Sản phẩm</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Giá</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Số lượng</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Giảm giá</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Tổng</th>")
+                .append("</tr>");
+
+        int stt = 1;
         for (OrderDetail detail : order.getOrderDetails()) {
-            double total = detail.getPrice() * detail.getQuantity();
-            emailContent.append("<li>")
-                    .append(detail.getProductName())
-                    .append(" - Giá: ")
-//                    .append(detail.getPrice())
-                    .append(currencyFormatter.format(detail.getPrice()))
-                    .append(" VNĐ, Số lượng: ")
-                    .append(detail.getQuantity())
-                    .append(", Tổng: ")
-//                    .append(detail.getPrice() * detail.getQuantity())
-                    .append(currencyFormatter.format(total))
-                    .append(" VNĐ")
-                    .append("</li>");
+            double total = detail.getPrice() * detail.getQuantity() * (1 - detail.getDiscount() / 100.0);
+            emailContent.append("<tr>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(stt++).append("</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(detail.getProductName()).append("</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(currencyFormatter.format(detail.getPrice())).append(" VNĐ</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(detail.getQuantity()).append("</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append((int) detail.getDiscount()).append("%</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(currencyFormatter.format(total)).append(" VNĐ</td>")
+                    .append("</tr>");
         }
 
-        emailContent.append("</ul>");
-//        emailContent.append("<p>Tổng số tiền: " + order.getTotalPrice() + " VNĐ</p>");
-        emailContent.append("<p>Tổng số tiền: " + currencyFormatter.format(order.getTotalPrice()) + " VNĐ</p>");
+        // Hàng tổng tiền
+        emailContent.append("<tr>")
+                .append("<td colspan='5' style='border: 1px solid #dddddd; padding: 8px; text-align: right;'><strong>Tổng tiền</strong></td>")
+                .append("<td style='border: 1px solid #dddddd; padding: 8px;'><strong>").append(currencyFormatter.format(order.getTotalPrice())).append(" VNĐ</strong></td>")
+                .append("</tr>");
+        emailContent.append("</table>");
+
         emailContent.append("<p>Địa chỉ giao hàng: " + order.getReceiverAddress() + "</p>");
         emailContent.append("<p>Số điện thoại: " + order.getReceiverPhone() + "</p>");
         emailContent.append("<p>Chúc bạn một ngày tốt lành!</p>");
@@ -79,4 +90,55 @@ public class EmailServiceImpl implements EmailService {
 
         emailSender.send(message);
     }
+
+    @Override
+    public void sendOrderStatusUpdateEmail(String to, Order order) throws MessagingException {
+        String subject = "Cập nhật trạng thái đơn hàng #" + order.getId();
+        StringBuilder emailContent = new StringBuilder();
+
+        emailContent.append("<h1>Trạng thái đơn hàng của bạn đã được cập nhật</h1>");
+        emailContent.append("<p>Xin chào, " + order.getUser().getName() + "</p>");
+        emailContent.append("<p>Trạng thái mới của đơn hàng #" + order.getId() + " là: <strong>" + order.getStatus() + "</strong></p>");
+        emailContent.append("<p>Thông tin đơn hàng:</p>");
+
+        // Thêm chi tiết đơn hàng vào email
+        emailContent.append("<table style='width:100%; border-collapse: collapse;'>");
+        emailContent.append("<tr>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>STT</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Sản phẩm</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Giá</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Số lượng</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Giảm giá</th>")
+                .append("<th style='border: 1px solid #dddddd; padding: 8px;'>Tổng</th>")
+                .append("</tr>");
+
+        NumberFormat currencyFormatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        int stt = 1;
+        for (OrderDetail detail : order.getOrderDetails()) {
+            double total = detail.getPrice() * detail.getQuantity() * (1 - detail.getDiscount() / 100.0);
+            emailContent.append("<tr>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(stt++).append("</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(detail.getProductName()).append("</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(currencyFormatter.format(detail.getPrice())).append(" VNĐ</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(detail.getQuantity()).append("</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append((int) detail.getDiscount()).append("%</td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(currencyFormatter.format(total)).append(" VNĐ</td>")
+                    .append("</tr>");
+        }
+        emailContent.append("</table>");
+
+        // Thông tin giao hàng
+        emailContent.append("<p>Địa chỉ giao hàng: " + order.getReceiverAddress() + "</p>");
+        emailContent.append("<p>Số điện thoại: " + order.getReceiverPhone() + "</p>");
+        emailContent.append("<p>Chúc bạn một ngày tốt lành!</p>");
+
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(emailContent.toString(), true);
+
+        emailSender.send(message);
+    }
+
 }
