@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, Form, Input, message, Modal, notification, Radio } from 'antd';
 import { callUserUpdateOrder } from '../../services/api';
+import { EditTwoTone, EyeOutlined, CheckCircleOutlined, HourglassOutlined, ScheduleOutlined, CloseCircleOutlined, TruckOutlined } from '@ant-design/icons';
+
 
 const UserOrderUpdate = (props) => {
     const { openModalUpdate, setOpenModalUpdate, dataUpdate, setDataUpdate, fetchCategory } = props;
@@ -8,6 +10,7 @@ const UserOrderUpdate = (props) => {
 
     const [form] = Form.useForm();
 
+    // Hàm xử lý gửi form
     const onFinish = async (values) => {
         const { newStatus, description, receiverAddress } = values;
         setIsSubmit(true);
@@ -33,14 +36,33 @@ const UserOrderUpdate = (props) => {
         setIsSubmit(false);
     };
 
+    // Đặt giá trị mặc định cho form khi mở modal
     useEffect(() => {
         form.setFieldsValue({
-            currentStatus: dataUpdate?.status, // Đặt giá trị mặc định là trạng thái hiện tại
+            currentStatus: dataUpdate?.status, // Trạng thái hiện tại
             newStatus: dataUpdate?.status,
             description: dataUpdate?.description,
-            receiverAddress: dataUpdate?.receiverAddress // Địa chỉ
+            receiverAddress: dataUpdate?.receiverAddress // Địa chỉ nhận hàng
         });
     }, [dataUpdate]);
+
+    // Hàm trả về icon trạng thái
+    const getStatusIcon = (status) => {
+        switch (status) {
+            case "PENDING":
+                return <HourglassOutlined style={{ color: "orange" }} />;
+            case "PROCESSING":
+                return <ScheduleOutlined style={{ color: "blue" }} />;
+            case "SHIPPING":
+                return <TruckOutlined style={{ color: "blue" }} />;
+            case "DELIVERED":
+                return <CheckCircleOutlined style={{ color: "green" }} />;
+            case "CANCELLED":
+                return <CloseCircleOutlined style={{ fontSize: '20px', color: 'red' }} />;
+            default:
+                return null;
+        }
+    };
 
     return (
         <Modal
@@ -72,27 +94,28 @@ const UserOrderUpdate = (props) => {
                     name="currentStatus"
                 >
                     <Radio.Group disabled>
-                        <Radio value="PENDING">PENDING</Radio>
-                        <Radio value="PROCESSING">PROCESSING</Radio>
-                        <Radio value="SHIPPING">SHIPPING</Radio>
-                        <Radio value="DELIVERED">DELIVERED</Radio>
-                        <Radio value="CANCELLED">CANCELLED</Radio>
+                        <Radio value="PENDING">{getStatusIcon("PENDING")} PENDING</Radio>
+                        <Radio value="PROCESSING">{getStatusIcon("PROCESSING")} PROCESSING</Radio>
+                        <Radio value="SHIPPING">{getStatusIcon("SHIPPING")} SHIPPING</Radio>
+                        <Radio value="DELIVERED">{getStatusIcon("DELIVERED")} DELIVERED</Radio>
+                        <Radio value="CANCELLED">{getStatusIcon("CANCELLED")} CANCELLED</Radio>
                     </Radio.Group>
                 </Form.Item>
 
+                {/* Trạng thái mới */}
                 <Form.Item
                     labelCol={{ span: 24 }}
                     label="Trạng thái mới"
                     name="newStatus"
                     rules={[{ required: true, message: 'Vui lòng chọn trạng thái mới!' }]}
-
                 >
-                    <Radio.Group >
-                        <Radio value="PENDING">PENDING</Radio>
-                        <Radio value="CANCELLED">CANCELLED</Radio>
+                    <Radio.Group>
+                        <Radio value="PENDING">{getStatusIcon("PENDING")} PENDING</Radio>
+                        <Radio value="CANCELLED">{getStatusIcon("CANCELLED")} CANCELLED</Radio>
                     </Radio.Group>
                 </Form.Item>
 
+                {/* Địa chỉ nhận hàng */}
                 <Form.Item
                     labelCol={{ span: 24 }}
                     label="Địa chỉ nhận hàng"
