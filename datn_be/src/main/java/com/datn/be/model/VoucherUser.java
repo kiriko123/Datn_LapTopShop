@@ -18,26 +18,29 @@ public class VoucherUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    long id;  // ID của bản ghi
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    User user;  // Liên kết với bảng User
+    User user;  // Liên kết với bảng User, trường user_id là khóa ngoại
 
     @ManyToOne
     @JoinColumn(name = "voucher_id", nullable = false)
-    Voucher voucher;  // Liên kết với bảng Voucher
+    Voucher voucher;  // Liên kết với bảng Voucher, trường voucher_id là khóa ngoại
 
     @Column(name = "use_date")
-    Instant useDate; // Lưu ngày sử dụng voucher của người dùng
+    Instant useDate;  // Lưu ngày sử dụng voucher của người dùng
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    Instant createdAt = Instant.now();  // Thêm trường createdAt để lưu ngày tạo bản ghi
+    Instant createdAt = Instant.now();  // Lưu thời gian tạo bản ghi
 
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {
-            this.createdAt = Instant.now();
+            this.createdAt = Instant.now();  // Đảm bảo createdAt luôn có giá trị khi thêm mới
+        }
+        if (this.useDate == null) {
+            this.useDate = Instant.now();  // Mặc định useDate khi không có giá trị
         }
     }
 }

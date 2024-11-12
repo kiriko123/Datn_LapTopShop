@@ -12,9 +12,6 @@ const VoucherList = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Giả sử bạn lấy userId từ localStorage hoặc context
-    const userId = localStorage.getItem("userId") || "defaultUserId"; // Thay đổi theo cách lấy userId thực tế trong ứng dụng của bạn
-
     useEffect(() => {
         const fetchVouchers = async () => {
             setLoading(true);
@@ -25,9 +22,11 @@ const VoucherList = () => {
                     setVouchers(activeVouchers);
                 } else {
                     console.error('Dữ liệu không phải là mảng:', response.data);
+                    message.error("Không thể tải danh sách voucher.");
                 }
             } catch (error) {
                 console.error("Lỗi khi tải voucher:", error);
+                message.error("Không thể tải danh sách voucher.");
             } finally {
                 setLoading(false);
             }
@@ -42,6 +41,14 @@ const VoucherList = () => {
 
     // Hàm xử lý nhấp vào voucher và lưu vào backend
     const handleVoucherClick = async (voucherCode) => {
+        const userId = localStorage.getItem("userId");  // Lấy userId lại mỗi lần click
+        console.log("userId:", userId);  // Đảm bảo rằng userId có giá trị hợp lệ
+
+        if (!userId) {
+            message.error('Bạn chưa đăng nhập, vui lòng đăng nhập để lưu voucher.');
+            return;
+        }
+
         try {
             const response = await axios.post('/api/voucher/save', {
                 userId, 
@@ -51,10 +58,11 @@ const VoucherList = () => {
             if (response.data.success) {
                 message.success(`Voucher ${voucherCode} đã được lưu thành công!`);
             } else {
-                message.error('Lỗi khi lưu voucher.');
+                message.error('Lỗi khi lưu voucher. Vui lòng thử lại.');
             }
         } catch (error) {
-            message.error('Lỗi khi lưu voucher.');
+            console.error("Lỗi khi lưu voucher:", error);
+            message.error('Lỗi khi lưu voucher. Vui lòng thử lại.');
         }
     };
 
@@ -76,7 +84,7 @@ const VoucherList = () => {
                             hoverable
                             onClick={() => handleVoucherClick(voucher.voucherCode)} // Xử lý sự kiện click
                         >
-                             <div className="voucher-card__header">
+                            <div className="voucher-card__header">
                                 <h3>{voucher.voucherCode}</h3>
                             </div>
                             <div className="voucher-card__item">
@@ -95,7 +103,7 @@ const VoucherList = () => {
                 <Alert message="Không có voucher nào đang áp dụng." type="info" showIcon />
             )}
             <div className="voucher-list__buy-container">
-                <button className="voucher-button" onClick={handleBuyNow}>MUA NGAY</button>
+                <Button className="voucher-button" onClick={handleBuyNow}>MUA NGAY</Button>
             </div>
         </div>
     );
