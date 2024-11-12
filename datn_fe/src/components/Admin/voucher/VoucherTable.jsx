@@ -163,10 +163,10 @@ const VoucherTable = () => {
                     visible={dropdownVisible}
                     onVisibleChange={setDropdownVisible}
                 >
-                    <Button icon={<EditTwoTone />} type="primary">Chọn Cột</Button>
+                    <Button icon={<EditTwoTone />} type="primary">Select Columns</Button>
                 </Dropdown>
-                <Button icon={<ExportOutlined />} type="primary" onClick={handleExportData}>Xuất dữ liệu</Button>
-                <Button icon={<PlusOutlined />} type="primary" onClick={() => setOpenModalCreate(true)}>Thêm mới</Button>
+                <Button icon={<ExportOutlined />} type="primary" onClick={handleExportData}>Export</Button>
+                <Button icon={<PlusOutlined />} type="primary" onClick={() => setOpenModalCreate(true)}>Add New</Button>
                 <Button type="ghost" onClick={() => {
                     setFilter("");
                     setSortQuery("");

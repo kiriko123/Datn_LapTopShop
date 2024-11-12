@@ -9,7 +9,7 @@ import { doLogoutAction } from "../../redux/account/accountSlice.js";
 import './navbar.css'
 import { FaHome } from "react-icons/fa";
 import { MdContactSupport } from "react-icons/md";
-import { MdContactPhone  } from "react-icons/md";
+import { MdContactPhone } from "react-icons/md";
 import { RiLoginCircleFill } from "react-icons/ri";
 import { RiAdminFill } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa";
@@ -22,23 +22,19 @@ import Head from "./head.jsx";
 import { FaBookQuran } from "react-icons/fa6";
 import { GrProductHunt } from "react-icons/gr";
 
-
 const Navbar = (props) => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const isAuthenticated = useSelector(state => state.account.isAuthenticated);
     const role = useSelector(state => state.account.user.role.name);
-    console.log("check menu", role);
     const user = useSelector(state => state.account.user);
     const { t, i18n } = useTranslation();
-    console.log(user);
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const carts = useSelector(state => state.order.carts);
 
     const [showManageAccount, setShowManageAccount] = useState(false);
-
     const [searchTerm, setSearchTerm] = useState("");
+
     const handleSearch = (value) => {
         if(value.trim()){
             navigate('/product', { state: { searchTerm: value.trim() } });
@@ -47,13 +43,12 @@ const Navbar = (props) => {
 
     const handleLogout = async () => {
         const res = await callLogout();
-        console.log('logout res: ', res);
         if (res && res.statusCode === 200) {
             dispatch(doLogoutAction());
             message.success('Đăng xuất thành công');
             navigate('/auth');
         }
-    }
+    };
 
     const items = [
         {
@@ -67,7 +62,7 @@ const Navbar = (props) => {
             </label>,
             key: 'account',
         },
-        {
+        ...(role === 'ROLE_USER' ? [{
             label: <label style={{ cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
                     onClick={() => navigate('/history')}
@@ -77,7 +72,7 @@ const Navbar = (props) => {
                 </div>
             </label>,
             key: 'history',
-        },
+        }] : []),
         ...(role === 'ROLE_ADMIN' ? [{
             label: <label
                 style={{ cursor: 'pointer' }}
@@ -113,11 +108,12 @@ const Navbar = (props) => {
     const onClose = () => {
         setVisible(false);
     };
+
     const [isSticky, setIsSticky] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsSticky(window.scrollY > 100); // Adjust the number as needed
+            setIsSticky(window.scrollY > 100);
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -129,6 +125,7 @@ const Navbar = (props) => {
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/storage/avatar/${user?.imageUrl}`;
     const [isModalVisible, setIsModalVisible] = useState(false);
+
     const showModal = () => {
         setIsModalVisible(true);
     };
@@ -162,8 +159,7 @@ const Navbar = (props) => {
                 </div>
             </div>
         )
-    }
-
+    };
 
     return (
         <>
@@ -202,39 +198,32 @@ const Navbar = (props) => {
                                 </div>
 
                                 <div>
-                                    {!isAuthenticated || user === null ?
-                                        <span
-                                            onClick={() => navigate('/auth')}><RiLoginCircleFill/> <p>{t('login_register')}</p></span>
+                                    {!isAuthenticated || user === null ? 
+                                        <span onClick={() => navigate('/auth')}><RiLoginCircleFill/> <p>{t('login_register')}</p></span>
                                         :
-
-
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            gap: '25px'
-                                        }}>
-                                            <div>
-                                                <Popover
-                                                    className="popover-carts"
-                                                    placement="topRight"
-                                                    rootClassName="popover-carts"
-                                                    title={"Sản phẩm mới thêm"}
-                                                    content={contentPopover}
-                                                    arrow={true}>
-                                                    <Badge
-                                                        count={carts?.length ?? 0}
-                                                        size='default'
-                                                        showZero
-                                                        color={"#214167"}
-                                                    >
-                                                        <FiShoppingCart size={'23px'} className='icon-cart'/>
-                                                    </Badge>
-                                                </Popover>
-
-                                            </div>
+                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '25px' }}>
+                                            {role !== 'ROLE_ADMIN' && (
+                                                <div>
+                                                    <Popover
+                                                        className="popover-carts"
+                                                        placement="topRight"
+                                                        rootClassName="popover-carts"
+                                                        title={"Sản phẩm mới thêm"}
+                                                        content={contentPopover}
+                                                        arrow={true}>
+                                                        <Badge
+                                                            count={carts?.length ?? 0}
+                                                            size='default'
+                                                            showZero
+                                                            color={"#214167"}
+                                                        >
+                                                            <FiShoppingCart size={'23px'} className='icon-cart'/>
+                                                        </Badge>
+                                                    </Popover>
+                                                </div>
+                                            )}
                                             <Dropdown menu={{items}} trigger={['click']}>
-                                                <Space style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                                <Space style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                     <Avatar src={urlAvatar}/>
                                                     <span>
                                                         <span> {user?.name} </span>
@@ -243,133 +232,66 @@ const Navbar = (props) => {
                                                 </Space>
                                             </Dropdown>
                                         </div>
-
                                     }
                                 </div>
                             </nav>
                         </div>
 
-
                         <div className="mobileVisible">
                             <Button type="primary" onClick={showDrawer}>
-                            <i className="fas fa-bars"></i>
+                                <i className="fas fa-bars"></i>
                             </Button>
                             <Drawer
                                 placement="right"
                                 closable={true}
                                 onClose={onClose}
                                 visible={visible}
-
                             >
                                 {isAuthenticated && user && (
                                     <div style={{
                                         display: 'flex',
-                                        justifyContent: 'space-between', // Align cart icon to the right
+                                        justifyContent: 'space-between',
                                         alignItems: 'center',
                                         paddingBottom: '10px',
                                     }}>
-                                        <Space style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                            <Avatar src={urlAvatar}/>
-                                            <span>
-                                                <span> {user?.name} </span>
-                                            </span>
+                                        <Space style={{ gap: '10px' }}>
+                                            <Avatar src={urlAvatar} />
+                                            <span> {user?.name} </span>
                                         </Space>
-                                        <Badge
-                                            count={carts?.length ?? 0}
-                                            size={"small"}
-                                            showZero
-                                        >
-                                            <FiShoppingCart onClick={() => navigate('/order')} className='icon-cart'
-                                                            size={'23px'}/>
-                                        </Badge>
+                                        <i onClick={onClose} className="fas fa-times" style={{
+                                            cursor: 'pointer', fontSize: '20px'
+                                        }}></i>
                                     </div>
                                 )}
-
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    cursor: 'pointer',
-                                    marginTop: '10px'
-                                }}
-                                     onClick={() => navigate('/')}>
-                                    <FaHome/>
-                                    <p>{t('home')}</p>
+                                <div className="nav-mobile">
+                                    <div onClick={() => navigate('/')}><FaHome /><span>{t('home')}</span></div>
+                                    <div onClick={() => navigate('/product')}><GrProductHunt /><span>{t('product')}</span></div>
+                                    <div onClick={() => navigate('/about')}><MdContactSupport /><span>{t('about')}</span></div>
+                                    <div onClick={() => navigate('/contact')}><MdContactPhone /><span>{t('contact')}</span></div>
+                                    {!isAuthenticated || user === null ? 
+                                        <div onClick={() => navigate('/auth')}><RiLoginCircleFill /><span>{t('login_register')}</span></div> :
+                                        <>
+                                            {role !== 'ROLE_ADMIN' && (
+                                                <div onClick={() => navigate('/order')}>Giỏ hàng</div>
+                                            )}
+                                            <div onClick={() => navigate('/history')}><MdHistoryEdu /><span>History</span></div>
+                                            <div onClick={() => navigate('/admin')}><RiAdminFill /><span>Admin page</span></div>
+                                            <div onClick={handleLogout}><RiLogoutBoxFill /><span>{t('logout')}</span></div>
+                                        </>
+                                    }
                                 </div>
-
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    cursor: 'pointer',
-                                    marginTop: '10px'
-                                }}
-                                     onClick={() => navigate('/product')}>
-                                    <FaHome/>
-                                    <p>Product</p>
-                                </div>
-
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    margin: '10px 0 10px 0',
-                                    cursor: 'pointer'
-                                }}
-                                     onClick={() => navigate('/about')}>
-                                    <MdContactSupport/>
-                                    <p>{t('about')}</p>
-                                </div>
-
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    margin: '10px 0 10px 0',
-                                    cursor: 'pointer'
-                                }}
-                                     onClick={() => navigate('/contact')}>
-                                    <MdContactPhone />
-                                    <p>{t('contact')}</p>
-                                </div>
-
-                                {!isAuthenticated || user === null ?
-                                    <nav className="mobileVisible-nav">
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '10px',
-                                            cursor: 'pointer'
-                                        }}
-                                             onClick={() => navigate('/auth')}>
-                                            <RiLoginCircleFill/>
-                                            <p>{t('login_register')}</p>
-                                        </div>
-                                    </nav>
-
-                                    : <></>}
-
-                                {isAuthenticated && user && (
-                                    <nav className="mobileVisible-nav">
-                                        {items.map(item => (
-                                            <div key={item.key}>
-                                                {item.label}
-                                            </div>
-                                        ))}
-                                    </nav>
-                                )}
                             </Drawer>
                         </div>
-
                     </div>
                 </div>
             </div>
+
             <ManageAccount
-                isModalOpen={showManageAccount}
-                setIsModalOpen={setShowManageAccount}
+                show={showManageAccount}
+                onCancel={() => setShowManageAccount(false)}
             />
         </>
-    )
+    );
 };
 
 export default Navbar;
