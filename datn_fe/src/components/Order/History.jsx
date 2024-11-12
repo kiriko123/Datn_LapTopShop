@@ -1,13 +1,9 @@
-
 import { Badge, Descriptions, Divider, Space, Table, Tag, Drawer, Image, Steps, Typography } from "antd";
-
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { callOrderHistory } from "../../services/api";
 import { useSelector } from "react-redux";
-
 import { EditTwoTone, EyeOutlined, CheckCircleOutlined, HourglassOutlined, ScheduleOutlined, CloseCircleOutlined, TruckOutlined } from '@ant-design/icons';
-
 import UserOrderUpdate from "./UserOrderUpdate.jsx";
 
 const { Title } = Typography;
@@ -17,11 +13,7 @@ const History = () => {
     const [orderHistory, setOrderHistory] = useState([]);
     const [openDrawer, setOpenDrawer] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
-
-    const [filteredHistory, setFilteredHistory] = useState([]);
-
     const [selectedStatus, setSelectedStatus] = useState(null);
-
     const user = useSelector(state => state.account.user);
     const [openModalUpdate, setOpenModalUpdate] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -34,15 +26,7 @@ const History = () => {
         const res = await callOrderHistory(user.id);
         if (res && res.data) {
             setOrderHistory(res.data);
-            setFilteredHistory(res.data);  // Initialize filtered history
         }
-
-    }
-
-    const showDrawer = (record, index) => {
-        const validIndex = typeof index === 'number' && !isNaN(index) ? index + 1 : null;
-        setSelectedOrder({ ...record, index: validIndex });
-
     };
 
     const countStatusOrders = (status) => {
@@ -52,7 +36,6 @@ const History = () => {
     const showDrawer = (record) => {
         setSelectedOrder(record);
         setSelectedStatus(record.status);
-
         setOpenDrawer(true);
     };
 
@@ -90,18 +73,6 @@ const History = () => {
         }
     };
 
-    const handlePaymentFilter = (value) => {
-        // Filter orders based on payment method
-        const filtered = orderHistory.filter(order => order.paymentMethod === value);
-        setFilteredHistory(filtered);
-    };
-
-    const handleStatusFilter = (value) => {
-        // Filter orders based on status
-        const filtered = orderHistory.filter(order => order.status === value);
-        setFilteredHistory(filtered);
-    };
-
     const columns = [
         {
             title: 'STT',
@@ -128,40 +99,31 @@ const History = () => {
             dataIndex: 'receiverAddress',
         },
         {
-            title: 'Trạng thái',
+            title: 'Status',
             dataIndex: 'status',
-
             filters: [
+                { text: 'Đang chờ', value: 'PENDING' },
                 { text: 'Đang xử lý', value: 'PROCESSING' },
+                { text: 'Đang giao hàng', value: 'SHIPPING' },
                 { text: 'Đã giao', value: 'DELIVERED' },
                 { text: 'Đã hủy', value: 'CANCELLED' },
-                { text: 'Chờ xử lý', value: 'PENDING' },  // Thêm trạng thái Pending
             ],
-            onFilter: (value, record) => record.status.includes(value),
-            filterMultiple: false, // Allow only one filter at a time
-
+            onFilter: (value, record) => record.status.indexOf(value) === 0,
             render: (status) => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Tag color={status === "DELIVERED" ? "green" : status === "CANCELLED" ? "red" : "orange"} style={{ marginLeft: 8 }}>
-                        {status}
-                    </Tag>
-                </div>
-            )
+                <Tag color={status === "DELIVERED" ? "green" : status === "CANCELLED" ? "red" : "orange"}>
+                    {status}
+                </Tag>
+            ),
+        },
+        
+        
 
-        },
         {
-            title: 'Phương thức thanh toán',
+            title: 'Payment method',
             dataIndex: 'paymentMethod',
-            filters: [
-                { text: 'Credit Card', value: 'Credit Card' },
-                { text: 'Cash', value: 'Cash' },
-                { text: 'Paypal', value: 'Paypal' },
-            ],
-            onFilter: (value, record) => record.paymentMethod.includes(value),
-            filterMultiple: false, // Allow only one filter at a time
         },
         {
-            title: 'Mô tả',
+            title: 'Description',
             dataIndex: 'description',
         },
         {
@@ -171,17 +133,13 @@ const History = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
                     <EyeOutlined onClick={() => showDrawer(record)} style={{ cursor: 'pointer' }} />
                     <EditTwoTone
-
-                        twoToneColor={record.status?.trim().toUpperCase() === 'DELIVERED' ? '#d9d9d9' : '#f57800'}
+                        twoToneColor={record.status === "DELIVERED" ? "rgba(255, 87, 34, 0.5)" : "#f57800"} // Làm mờ nếu trạng thái là DELIVERED
                         style={{
-                            cursor: record.status?.trim().toUpperCase() === 'DELIVERED' ? 'not-allowed' : 'pointer',
-                            opacity: record.status?.trim().toUpperCase() === 'DELIVERED' ? 0.5 : 1
+                            cursor: record.status === "DELIVERED" ? "not-allowed" : "pointer",
+                            opacity: record.status === "DELIVERED" ? 0.5 : 1, // Làm mờ
                         }}
-
-                        twoToneColor="#f57800" style={{ cursor: "pointer" }}
-
                         onClick={() => {
-                            if (record.status?.trim().toUpperCase() !== 'DELIVERED') {
+                            if (record.status !== "DELIVERED") {
                                 setDataUpdate(record);
                                 setOpenModalUpdate(true);
                             }
@@ -191,6 +149,8 @@ const History = () => {
             ),
         },
     ];
+    
+    
 
     return (
         <div className='mb-40 mx-10'>
@@ -228,93 +188,74 @@ const History = () => {
 
             <Table
                 columns={columns}
-                dataSource={filteredHistory}
+                dataSource={orderHistory}
                 pagination={false}
                 rowKey="id"
                 scroll={{ x: 800 }}
             />
 
-            <Drawer
-                title="Chi tiết đơn hàng"
-                placement="right"
-                width={'70%'}
-                onClose={closeDrawer}
-                visible={openDrawer}
-            >
-                {/* Thanh trạng thái đơn hàng */}
-                <div style={{ marginTop: 20 }}>
-                    <Title level={4}>Trạng thái đơn hàng</Title>
-                    <Steps current={getCurrentStep(selectedStatus)}>
-                        <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        <Step title={<ScheduleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        <Step title={<TruckOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                        <Step title={<CheckCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
-                    </Steps>
-                </div>
-                {selectedOrder && (
+<Drawer
+    title="Chi tiết đơn hàng"
+    placement="right"
+    width={'70%'}
+    onClose={closeDrawer}
+    visible={openDrawer}
+>
+    {/* Thanh trạng thái đơn hàng */}
+    <div style={{ marginTop: 20 }}>
+        <Title level={4}>Trạng thái đơn hàng</Title>
+        <Steps current={getCurrentStep(selectedStatus)}>
+            <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+            <Step title={<ScheduleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+            <Step title={<TruckOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+            <Step title={<CheckCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} />
+        </Steps>
+    </div>
+    {selectedOrder && (
+        <>
+            <Descriptions bordered column={2}>
+                {/* Hiển thị thông tin đơn hàng */}
+                <Descriptions.Item label="Mã đơn hàng">{selectedOrder.id}</Descriptions.Item>
+                <Descriptions.Item label="Thời gian đặt hàng">{moment(selectedOrder.createdAt).format('DD-MM-YYYY hh:mm:ss')}</Descriptions.Item>
+                <Descriptions.Item label="Trạng thái">{selectedOrder.status}</Descriptions.Item>
+                <Descriptions.Item label="Phương thức thanh toán">{selectedOrder.paymentMethod}</Descriptions.Item>
+                <Descriptions.Item label="Tổng tiền">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedOrder.totalPrice)}</Descriptions.Item>
+                <Descriptions.Item label="Người nhận">{selectedOrder.receiverName}</Descriptions.Item>
+                <Descriptions.Item label="Địa chỉ nhận">{selectedOrder.receiverAddress}</Descriptions.Item>
+                <Descriptions.Item label="Mô tả">{selectedOrder.description}</Descriptions.Item>
+            </Descriptions>
 
-                    <Descriptions bordered column={1}>
-                        <Descriptions.Item label="Người nhận">{selectedOrder.receiverName}</Descriptions.Item>
-                        <Descriptions.Item label="Thời gian đặt hàng">
-                            {moment(selectedOrder.createdAt).format('DD-MM-YYYY hh:mm:ss')}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Tổng số tiền">
-                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedOrder.totalPrice)}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Địa chỉ">{selectedOrder.receiverAddress}</Descriptions.Item>
-                        <Descriptions.Item label="Trạng thái">
-                            <Tag color="green">{selectedOrder.status}</Tag>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Phương thức thanh toán">{selectedOrder.paymentMethod}</Descriptions.Item>
-                        <Descriptions.Item label="Ghi chú">{selectedOrder.description}</Descriptions.Item>
-                        <Descriptions.Item label="Chi tiết sản phẩm">
-                            {selectedOrder.orderDetails.map((item, index) => {
-                                const priceAfterDiscount = item.price - (item.price * item.discount / 100);
-                                return (
-                                    <div key={index} style={{ marginBottom: '16px' }}>
-                                        <b>{index + 1}. {item.productName}</b>
+            <Divider />
 
-                    <>
-                        <Descriptions bordered>
-                            {selectedOrder.orderDetails.map((item, index) => {
-                                const priceAfterDiscount = item.price - (item.price * item.discount / 100);
-                                return (
-                                    <Descriptions.Item key={index} label={`${index + 1} - Name: ${item.productName}`} span={3}>
-
-                                        <div>
-                                            <Image
-                                                src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
-                                                alt={item.productName}
-                                                width={50}
-                                            />
-                                            <div>
-                                                Số lượng: {item.quantity},
-                                                Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)},
-
-                                                Giảm giá: {item.discount}%, 
-                                                Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+            {/* Chi tiết các sản phẩm trong đơn hàng */}
+            <Title level={4}>Chi tiết sản phẩm</Title>
+            {selectedOrder.orderDetails.map((item, index) => {
+                const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+                return (
+                    <Descriptions bordered key={index}>
+                        <Descriptions.Item label={`Sản phẩm ${index + 1}`} span={3}>
+                            <div>
+                                <Image
+                                    src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
+                                    alt={item.productName}
+                                    width={50}
+                                />
+                                <div>
+                                    Tên sản phẩm: {item.productName}<br />
+                                    Số lượng: {item.quantity}<br />
+                                    Giá gốc: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}<br />
+                                    Giảm giá: {item.discount}%<br />
+                                    Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
+                                </div>
+                            </div>
                         </Descriptions.Item>
                     </Descriptions>
+                );
+            })}
+        </>
+    )}
+</Drawer>
 
-                                                Discount: {item.discount} %,
-                                                Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
-                                            </div>
-                                        </div>
-                                    </Descriptions.Item>
-                                );
-                            })}
-                        </Descriptions>
-
-
-                    </>
-
-                )}
-            </Drawer>
 
             <UserOrderUpdate
                 openModalUpdate={openModalUpdate}
