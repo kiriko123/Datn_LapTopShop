@@ -202,16 +202,35 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(currentOrder);
     }
 
+//    @Override
+//    public Order AdminUpdateOrder(UserOrderUpdateDTO orderUpdateDTO) {
+//        Order currentOrder = orderRepository.findById(orderUpdateDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+//
+//        currentOrder.setReceiverAddress(orderUpdateDTO.getAddress());
+//        currentOrder.setDescription(orderUpdateDTO.getDescription());
+//
+//        currentOrder.setStatus(orderUpdateDTO.getNewStatus());
+//
+//        return orderRepository.save(currentOrder);
+//    }
+
     @Override
     public Order AdminUpdateOrder(UserOrderUpdateDTO orderUpdateDTO) {
         Order currentOrder = orderRepository.findById(orderUpdateDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         currentOrder.setReceiverAddress(orderUpdateDTO.getAddress());
         currentOrder.setDescription(orderUpdateDTO.getDescription());
-
         currentOrder.setStatus(orderUpdateDTO.getNewStatus());
 
-        return orderRepository.save(currentOrder);
+        Order updatedOrder = orderRepository.save(currentOrder);
+        if(orderUpdateDTO.getNewStatus() == OrderStatus.DELIVERED) {
+            try {
+                emailService.sendOrderStatusUpdateEmail(currentOrder.getUser().getEmail(), updatedOrder);
+            } catch (MessagingException e) {
+                throw new RuntimeException("Error sending order status update email.", e);
+            }
+        }
+        return updatedOrder;
     }
 
 }

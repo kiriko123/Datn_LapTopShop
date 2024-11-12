@@ -90,7 +90,7 @@ const InputSearchVoucher = (props) => {
             <Row>
                 <Col span={24} style={{ textAlign: 'right' }}>
                     <Button type="primary" htmlType="submit">
-                        Tìm Kiếm
+                        Search
                     </Button>
                     <Button
                         style={{ margin: '0 8px' }}
@@ -99,7 +99,7 @@ const InputSearchVoucher = (props) => {
                             props.setFilter("");
                         }}
                     >
-                        Xóa
+                        Clear
                     </Button>
                 </Col>
             </Row>
