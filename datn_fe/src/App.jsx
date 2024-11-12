@@ -110,7 +110,7 @@ export default function App() {
                 },
                 {
                     path: "history",
-                    element: <History/>
+                    element: <History />
                 },
             ]
 
@@ -162,13 +162,16 @@ export default function App() {
                     element: <ManageOrderPage />,
                 },
                 {
-
                     path: 'voucher',
+
                     element: <ManageVoucherPage />,
                 },
+
+
+
                 {
                     path: "statistics",
-                    element: <ManageStatisticsPage/>,
+                    element: <ManageStatisticsPage />,
 
                 }
 

@@ -1,28 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { callSubmitRating, callFetchRatings, callSubmitAdminResponse } from '../../services/api';
+import { callSubmitRating, callFetchRatings, callUpdateRating } from '../../services/api';
 import './RatingForm.css';
 import moment from 'moment';
-import { message } from 'antd'; // Thêm dòng này nếu chưa có
-import {useDispatch, useSelector} from "react-redux"
-
+import { message } from 'antd';
+import { useSelector } from "react-redux";
 
 const RatingForm = ({ productId }) => {
     const [content, setContent] = useState('');
-    const [updatedContent, setUpdatedContent] = useState('');
     const [numberStars, setNumberStars] = useState(0);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [ratings, setRatings] = useState([]);
     const [adminResponse, setAdminResponse] = useState('');
     const [selectedRatingId, setSelectedRatingId] = useState(null);
-    const [showAllRatings, setShowAllRatings] = useState(false); // Trạng thái hiển thị tất cả đánh giá
-    const [collapsed, setCollapsed] = useState(true); // Trạng thái thu gọn danh sách đánh giá
+    const [showAllRatings, setShowAllRatings] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     const user = useSelector(state => state.account.user);
 
-
-
-    // Lấy danh sách đánh giá từ API
     const fetchRatings = async () => {
         try {
             const response = await callFetchRatings(productId);
@@ -47,19 +42,15 @@ const RatingForm = ({ productId }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if(user.email === ""){
+        if (user.email === "") {
             message.info("Vui lòng đăng nhập!");
-            console.log("User: ",user);
-        return;
+            return;
         }
-       
 
-        // Kiểm tra nếu người dùng chưa chọn số sao
-    if (numberStars < 1) {
-        message.info("Vui lòng chọn số sao đánh giá!");
-        return;
-    }
-
+        if (numberStars < 1) {
+            message.info("Vui lòng chọn số sao đánh giá!");
+            return;
+        }
 
         try {
             const rating = { content, numberStars };
@@ -76,16 +67,31 @@ const RatingForm = ({ productId }) => {
     };
 
     const handleAdminResponseSubmit = async (ratingId) => {
-        try {
-            const ratingData = {
-                content: updatedContent, // Các trường khác nếu cần
-                adminRespone: adminResponse, // Phản hồi admin
-            };
+        if (!adminResponse) {
+            setError("Vui lòng nhập nội dung phản hồi.");
+            return;
+        }
 
-            await callSubmitAdminResponse(ratingId, ratingData);
-            setAdminResponse('');
-            setSelectedRatingId(null);
-            fetchRatings();
+        try {
+            await callUpdateRating({ id: ratingId, adminRespone: adminResponse });
+            // Cập nhật adminResponse trực tiếp vào `ratings`
+        setRatings(prevRatings => prevRatings.map(rating => {
+            if (rating.id === ratingId) {
+                return {
+                    ...rating,
+                    adminResponse: {
+                        content: adminResponse,
+                        createdAt: new Date(), // Giả lập thời gian phản hồi
+                        userName: user.name,   // Thêm tên của admin
+                        userImage: user.imageUrl // Thêm ảnh của admin
+                    }
+                };
+            }
+            return rating;
+        }));
+            setAdminResponse(''); // Clear response input
+            setSelectedRatingId(null); // Deselect rating after submitting response
+            // fetchRatings(); // Refresh ratings list after successful submission
         } catch (err) {
             console.error('Lỗi khi gửi phản hồi:', err);
             setError('Đã có lỗi xảy ra khi gửi phản hồi.');
@@ -153,7 +159,7 @@ const RatingForm = ({ productId }) => {
                     ))}
                 </div>
             </div>
-            <h2></h2>
+
             <form onSubmit={handleSubmit}>
                 <div className="star-rating">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -200,7 +206,7 @@ const RatingForm = ({ productId }) => {
                                 <div className="rating-info" style={{ flexGrow: 1 }}>
                                     <div className="name-user">
                                         <p>
-                                            <strong>{rating.userName}</strong>{' '}
+                                            <strong>{rating.userName || 'Người dùng ẩn danh'}</strong>{' '}
                                             <span className="rating-date">({moment(rating.createdAt).format('DD/MM/YYYY HH:mm')})</span>
                                         </p>
                                     </div>
@@ -211,13 +217,25 @@ const RatingForm = ({ productId }) => {
                                             </span>
                                         ))}
                                     </div>
-                                    {rating.content}
+                                    <div>{rating.content}</div> {/* Hiển thị nội dung đánh giá ở đây */}
 
                                     {rating.adminResponse && (
-                                        <div className="admin-response">
-                                            <strong>Phản hồi từ admin:</strong> {rating.adminResponse}
-                                        </div>
-                                    )}
+    <div className="admin-response" style={{ marginTop: '10px', paddingLeft: '10px', borderLeft: '2px solid #ccc' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <img
+                src={`${import.meta.env.VITE_BACKEND_URL}/storage/avatar/${rating.adminResponse.userImage}`} // Thay đổi từ `rating.user.imageUrl` sang `rating.adminResponse.userImage`
+                alt="Admin"
+                style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }}
+            />
+            <div>
+                <strong>{rating.adminResponse.userName}</strong> // Thay đổi từ "Admin" thành `{rating.adminResponse.userName}`
+                <span className="response-date"> ({moment(rating.adminResponse.createdAt).format('DD/MM/YYYY HH:mm')})</span>
+            </div>
+        </div>
+        <p>{rating.adminResponse.content}</p>
+    </div>
+)}
+
 
                                     <div className="admin-reply">
                                         {selectedRatingId === rating.id ? (
@@ -240,29 +258,17 @@ const RatingForm = ({ productId }) => {
                                 </div>
                             </div>
                         ))}
-                        <div style={{ marginTop: '10px' }}>
-                            {showAllRatings ? (
-                                <button onClick={() => {
-                                    setShowAllRatings(false);
-                                    setCollapsed(true); // Thu gọn lại đánh giá khi nhấn nút này
-                                }}>Thu gọn đánh giá</button>
+                        <div style={{ marginTop: '20px' }}>
+                            {collapsed ? (
+                                <button onClick={() => setCollapsed(false)}>Xem tất cả đánh giá</button>
                             ) : (
-                                <>
-                                    {!collapsed && (
-                                        <button onClick={() => setCollapsed(true)}>Thu gọn đánh giá</button>
-                                    )}
-                                    {ratings.length > 2 && (
-                                        <button onClick={() => {
-                                            setShowAllRatings(true); // Hiển thị tất cả đánh giá
-                                            setCollapsed(false); // Mở rộng danh sách đánh giá
-                                        }}>Xem {ratings.length - 2} đánh giá còn lại</button>
-                                    )}
-                                </>
+                                <button onClick={() => setCollapsed(true)}>Thu gọn</button>
                             )}
                         </div>
                     </>
                 )}
             </div>
+
         </div>
     );
 };

@@ -11,14 +11,17 @@ import com.datn.be.repository.OrderDetailRepository;
 import com.datn.be.repository.OrderRepository;
 import com.datn.be.repository.ProductRepository;
 import com.datn.be.repository.UserRepository;
+import com.datn.be.service.EmailService;
 import com.datn.be.service.OrderService;
 import com.datn.be.util.constant.OrderStatus;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final EmailService emailService;
 
     @Override
     public Order createOrder(OrderCreateDTO orderCreateDTO) {
@@ -56,37 +60,54 @@ public class OrderServiceImpl implements OrderService {
         orderCreateDTO.getOrderDetails().forEach(detail -> {
             var product = productMap.get(detail.getProductId());
             product.setQuantity(product.getQuantity() - detail.getQuantity());
-            // Assuming you have a soldQuantity field in your Product entity
             product.setSold(product.getSold() + detail.getQuantity());
-            productRepository.save(product); // Save the updated product quantity
+            productRepository.save(product);
         });
 
-        // Create the order
-        Order order = orderRepository.save(Order.builder()
+        // Lưu đối tượng Order vào cơ sở dữ liệu để có ID cho quan hệ
+        Order order = Order.builder()
                 .receiverName(orderCreateDTO.getReceiverName())
                 .receiverAddress(orderCreateDTO.getReceiverAddress())
                 .receiverPhone(orderCreateDTO.getReceiverPhone())
                 .totalPrice(orderCreateDTO.getTotalPrice())
-                .paymentMethod(orderCreateDTO.getPaymentMethod()) // Add payment method
-                .status(orderCreateDTO.getStatus()) // Add status
+                .paymentMethod(orderCreateDTO.getPaymentMethod())
+                .status(orderCreateDTO.getStatus())
                 .user(user)
-                .build());
+                .build();
 
-        // Create the order details
+        // Đảm bảo orderDetails không null
+        order.setOrderDetails(new ArrayList<>());
+
+        // Lưu đơn hàng vào cơ sở dữ liệu trước
+        Order savedOrder = orderRepository.save(order);
+
+        // Lưu từng OrderDetail và gắn vào savedOrder
         orderCreateDTO.getOrderDetails().forEach(detail -> {
-            orderDetailRepository.save(
-                    OrderDetail.builder()
-                            .product(productMap.get(detail.getProductId()))
-                            .order(order)
-                            .productName(detail.getProductName())
-                            .price(detail.getPrice())
-                            .discount(detail.getDiscount()) // Add discount
-                            .quantity(detail.getQuantity())
-                            .build()
-            );
+            OrderDetail orderDetail = OrderDetail.builder()
+                    .product(productMap.get(detail.getProductId()))
+                    .order(savedOrder)
+                    .productName(detail.getProductName())
+                    .price(detail.getPrice())
+                    .discount(detail.getDiscount())
+                    .quantity(detail.getQuantity())
+                    .build();
+            orderDetailRepository.save(orderDetail);
+
+            // Thêm orderDetail vào danh sách của savedOrder
+            savedOrder.getOrderDetails().add(orderDetail);
         });
 
-        return order;
+        // Lưu lại Order để cập nhật danh sách OrderDetail
+        orderRepository.save(savedOrder);
+
+        // Gửi email xác nhận hóa đơn
+        try {
+            emailService.sendOrderInvoice(user.getEmail(), savedOrder);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error sending invoice email.", e);
+        }
+
+        return savedOrder;
     }
 
     @Override
@@ -181,16 +202,35 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(currentOrder);
     }
 
+//    @Override
+//    public Order AdminUpdateOrder(UserOrderUpdateDTO orderUpdateDTO) {
+//        Order currentOrder = orderRepository.findById(orderUpdateDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+//
+//        currentOrder.setReceiverAddress(orderUpdateDTO.getAddress());
+//        currentOrder.setDescription(orderUpdateDTO.getDescription());
+//
+//        currentOrder.setStatus(orderUpdateDTO.getNewStatus());
+//
+//        return orderRepository.save(currentOrder);
+//    }
+
     @Override
     public Order AdminUpdateOrder(UserOrderUpdateDTO orderUpdateDTO) {
         Order currentOrder = orderRepository.findById(orderUpdateDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         currentOrder.setReceiverAddress(orderUpdateDTO.getAddress());
         currentOrder.setDescription(orderUpdateDTO.getDescription());
-
         currentOrder.setStatus(orderUpdateDTO.getNewStatus());
 
-        return orderRepository.save(currentOrder);
+        Order updatedOrder = orderRepository.save(currentOrder);
+        if(orderUpdateDTO.getNewStatus() == OrderStatus.DELIVERED) {
+            try {
+                emailService.sendOrderStatusUpdateEmail(currentOrder.getUser().getEmail(), updatedOrder);
+            } catch (MessagingException e) {
+                throw new RuntimeException("Error sending order status update email.", e);
+            }
+        }
+        return updatedOrder;
     }
 
 }

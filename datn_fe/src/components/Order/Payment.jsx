@@ -45,6 +45,49 @@ const Payment = (props) => {
         setPaymentMethod(e.target.value);
     };
 
+    // const handlePlaceOrder = async (paymentIntent = null) => {
+    //     setIsSubmit(true);
+    //
+    //
+    //     // Tạo danh sách chi tiết đơn hàng từ giỏ hàng
+    //     const detailOrder = carts.map(item => ({
+    //         productId: item.detail.id,
+    //         productName: item.detail.name,
+    //         price: item.detail.price,
+    //         discount: item.detail.discount,
+    //         quantity: item.quantity
+    //     }));
+    //
+    //     // Chuẩn bị dữ liệu cho đơn hàng
+    //     const data = {
+    //         receiverName: form.getFieldValue('name'),
+    //         receiverAddress: fullAddress,
+    //         receiverPhone: form.getFieldValue('phone'),
+    //         totalPrice: totalPrice,
+    //         paymentMethod: paymentMethod,
+    //         orderDetails: detailOrder,
+    //         userId: user.id,
+    //         status: 'PENDING',
+    //         paymentIntentId: paymentIntent?.id ?? null
+    //     };
+    // //
+    //     // Gọi API để đặt hàng
+    //     const res = await callPlaceOrder1(data);
+    //     console.log(res);
+    //     if (res && res.data){
+    //         message.success('Đặt hàng thành công!');
+    //         dispatch(doPlaceOrderAction()); // Xóa giỏ hàng sau khi đặt hàng thành công
+    //         props.setCurrentStep(2);
+    //     }else {
+    //         notification.error({
+    //             message: "Đã có lỗi xảy ra",
+    //             description: res.message || 'Không có thông điệp lỗi từ server',
+    //         });
+    //     }
+    //
+    //     setIsSubmit(false);
+    // };
+
     const handlePlaceOrder = async (paymentIntent = null) => {
         setIsSubmit(true);
 
@@ -70,17 +113,20 @@ const Payment = (props) => {
             orderDetails: detailOrder,
             paymentIntentId: paymentIntent?.id ?? null
         };
-        console.log(data);
+        console.log("data",data);
 
+        // Gọi API để đặt hàng
         const res = await callPlaceOrder(data);
+        console.log('res:', res);
+        
         if (res && res.data) {
-            message.success('Đặt hàng thành công !');
-            dispatch(doPlaceOrderAction());
+            message.success('Đặt hàng thành công!');
+            dispatch(doPlaceOrderAction()); // Xóa giỏ hàng sau khi đặt hàng thành công
             props.setCurrentStep(2);
         } else {
             notification.error({
                 message: "Đã có lỗi xảy ra",
-                description: res.message
+                description: res.message || 'Không có thông điệp lỗi từ server',
             });
         }
 
@@ -98,7 +144,7 @@ const Payment = (props) => {
 
         if (paymentMethod === 'cod') {
             handlePlaceOrder();
-        } else if (paymentMethod === 'online') {
+        } else if (paymentMethod === 'pay with Stripe') {
             setIsCheckoutModalVisible(true);
         }
     };
@@ -190,7 +236,7 @@ const Payment = (props) => {
                             <div>Hình thức thanh toán</div>
                             <Radio.Group onChange={handlePaymentChange} value={paymentMethod}>
                                 <Radio value="cod">Thanh toán khi nhận hàng</Radio>
-                                <Radio value="online">Thanh toán trực tuyến</Radio>
+                                <Radio value="pay with Stripe">Thanh toán bằng Stripe</Radio>
                             </Radio.Group>
                         </div>
                     </Form>

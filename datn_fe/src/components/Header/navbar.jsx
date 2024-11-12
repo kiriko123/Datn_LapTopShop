@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from "react-router-dom";
-import { callLogout } from "../../services/api.js";
+import { callLogout, callFetchProduct } from "../../services/api.js";
 import { doLogoutAction } from "../../redux/account/accountSlice.js";
 import './navbar.css'
 import { FaHome } from "react-icons/fa";
@@ -22,23 +22,44 @@ import Head from "./head.jsx";
 import { FaBookQuran } from "react-icons/fa6";
 import { GrProductHunt } from "react-icons/gr";
 
+import { SearchBar } from './SearchBar';
+import { SearchResultsList } from './SearchResultsList';
+
+
 const Navbar = (props) => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const isAuthenticated = useSelector(state => state.account.isAuthenticated);
     const role = useSelector(state => state.account.user.role.name);
     const user = useSelector(state => state.account.user);
     const { t, i18n } = useTranslation();
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const carts = useSelector(state => state.order.carts);
 
     const [showManageAccount, setShowManageAccount] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [results, setResults] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [visible, setVisible] = useState(false);
+    const [isSticky, setIsSticky] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+
     const handleSearch = (value) => {
+
+        setResults([]);
         if(value.trim()){
+
             navigate('/product', { state: { searchTerm: value.trim() } });
+        }else {
+            // Nếu không có từ khóa, gọi API lấy toàn bộ sản phẩm
+            navigate('/product', { state: { searchTerm: "" } });
         }
+
     };
 
     const handleLogout = async () => {
@@ -62,7 +83,12 @@ const Navbar = (props) => {
             </label>,
             key: 'account',
         },
+
         ...(role === 'ROLE_USER' ? [{
+
+        // Conditionally show History for non-admin users
+        ...(role !== 'ROLE_ADMIN' ? [{
+
             label: <label style={{ cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
                     onClick={() => navigate('/history')}
@@ -74,8 +100,7 @@ const Navbar = (props) => {
             key: 'history',
         }] : []),
         ...(role === 'ROLE_ADMIN' ? [{
-            label: <label
-                style={{ cursor: 'pointer' }}
+            label: <label style={{ cursor: 'pointer' }}
                 onClick={() => navigate('/admin')}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -86,8 +111,7 @@ const Navbar = (props) => {
             key: 'admin',
         }] : []),
         {
-            label: <label
-                style={{ cursor: 'pointer' }}
+            label: <label style={{ cursor: 'pointer' }}
                 onClick={() => handleLogout()}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -99,8 +123,6 @@ const Navbar = (props) => {
         },
     ];
 
-    const [visible, setVisible] = useState(false);
-
     const showDrawer = () => {
         setVisible(true);
     };
@@ -109,7 +131,9 @@ const Navbar = (props) => {
         setVisible(false);
     };
 
+
     const [isSticky, setIsSticky] = useState(false);
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -124,6 +148,7 @@ const Navbar = (props) => {
     }, []);
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/storage/avatar/${user?.imageUrl}`;
+
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const showModal = () => {
@@ -134,25 +159,24 @@ const Navbar = (props) => {
         setIsModalVisible(false);
     };
 
+
+
     const contentPopover = () => {
         return (
             <div className='pop-cart-body'>
                 <div className='pop-cart-content'>
-                    {carts?.map((book, index) => {
-                        return (
-                            <div className='book' key={`book-${index}`}>
-                                <img alt=''
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${book?.detail?.thumbnail}`} />
-                                <div>{book?.detail?.name}</div>
-                                <div className='price'>
-                                    {new Intl.NumberFormat('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND'
-                                    }).format(book?.detail?.price ?? 0)}
-                                </div>
+                    {carts?.map((book, index) => (
+                        <div className='book' key={`book-${index}`}>
+                            <img alt='' src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${book?.detail?.thumbnail}`} />
+                            <div>{book?.detail?.name}</div>
+                            <div className='price'>
+                                {new Intl.NumberFormat('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                }).format(book?.detail?.price ?? 0)}
                             </div>
-                        )
-                    })}
+                        </div>
+                    ))}
                 </div>
                 <div className='pop-cart-footer'>
                     <button onClick={() => navigate('/order')}>Xem giỏ hàng</button>
@@ -168,36 +192,55 @@ const Navbar = (props) => {
                 <div className="container-fluid">
                     <div className="nav">
                         <div className="logo">
-                            <i className="fas"> <FaBookQuran /> </i>
-                            <a href="" onClick={() => navigate('/')}>Electronic Store</a>
+                            <i className="fas"> <FaBookQuran/> </i>
+                            <a href="" onClick={() => navigate('/')}>Laptop Store</a>
                         </div>
 
+                        {/*<div className="search-bar">*/}
+                        {/*    <Input.Search*/}
+                        {/*        placeholder="Search "*/}
+                        {/*        enterButton*/}
+                        {/*        value={searchTerm}*/}
+                        {/*        onChange={(e) => setSearchTerm(e.target.value)}*/}
+                        {/*        onSearch={handleSearch}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                         <div className="search-bar">
-                            <Input.Search
-                                placeholder="Search "
-                                enterButton
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onSearch={handleSearch}
-                            />
+                            <SearchBar
+                                setResults={setResults}
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                handleSearch={handleSearch}/>
+                            {results.length > 0 && (
+                                <SearchResultsList
+                                    results={results}
+                                    setResults={setResults}
+                                    setSearchTerm={setSearchTerm}/>
+                            )}
                         </div>
+
 
                         <div className="mobileHidden">
                             <nav>
                                 <div>
-                                    <span onClick={() => navigate('/')}> <FaHome/> <p>{t('home')}</p></span>
+                                    <span onClick={() => navigate('/')}> <FaHome /> <p>{t('home')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
+
+                                    <span
+                                        onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
+                                    <span
+                                        onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
+
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/contact')}> <MdContactPhone /> <p>{t('contact')}</p></span>
+                                    <span onClick={() => navigate('/contact')}> <MdContactPhone/> <p>{t('contact')}</p></span>
                                 </div>
 
                                 <div>
+
                                     {!isAuthenticated || user === null ? 
                                         <span onClick={() => navigate('/auth')}><RiLoginCircleFill/> <p>{t('login_register')}</p></span>
                                         :
@@ -225,9 +268,42 @@ const Navbar = (props) => {
                                             <Dropdown menu={{items}} trigger={['click']}>
                                                 <Space style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                     <Avatar src={urlAvatar}/>
+
+                                    {!isAuthenticated || user === null ?
+                                        <span onClick={() => navigate('/auth')}><RiLoginCircleFill /> <p>{t('login_register')}</p></span>
+                                        :
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            gap: '25px'
+                                        }}>
+                                            {/* Conditionally show cart icon for non-admin users */}
+                                            {role !== 'ROLE_ADMIN' && (
+                                                <Popover
+                                                    className="popover-carts"
+                                                    placement="topRight"
+                                                    rootClassName="popover-carts"
+                                                    title={"Sản phẩm mới thêm"}
+                                                    content={contentPopover}
+                                                    arrow={true}>
+                                                    <Badge
+                                                        count={carts?.length ?? 0}
+                                                        size='default'
+                                                        showZero
+                                                        color={"#214167"}
+                                                    >
+                                                        <FiShoppingCart size={'23px'} className='icon-cart' />
+                                                    </Badge>
+                                                </Popover>
+                                            )}
+                                            <Dropdown menu={{ items }} trigger={['click']}>
+                                                <Space style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <Avatar src={urlAvatar} />
+
                                                     <span>
                                                         <span> {user?.name} </span>
-                                                        <DownOutlined/>
+                                                        <DownOutlined />
                                                     </span>
                                                 </Space>
                                             </Dropdown>
@@ -236,6 +312,8 @@ const Navbar = (props) => {
                                 </div>
                             </nav>
                         </div>
+
+
 
                         <div className="mobileVisible">
                             <Button type="primary" onClick={showDrawer}>
@@ -263,6 +341,7 @@ const Navbar = (props) => {
                                         }}></i>
                                     </div>
                                 )}
+
                                 <div className="nav-mobile">
                                     <div onClick={() => navigate('/')}><FaHome /><span>{t('home')}</span></div>
                                     <div onClick={() => navigate('/product')}><GrProductHunt /><span>{t('product')}</span></div>
@@ -279,6 +358,55 @@ const Navbar = (props) => {
                                             <div onClick={handleLogout}><RiLogoutBoxFill /><span>{t('logout')}</span></div>
                                         </>
                                     }
+
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    marginTop: '10px'
+                                }}
+                                     onClick={() => navigate('/')}>
+                                    <FaHome/>
+                                    <p>{t('home')}</p>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    marginTop: '10px'
+                                }}
+                                     onClick={() => navigate('/product')}>
+                                    <FaHome/>
+                                    <p>Product</p>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    margin: '10px 0 10px 0',
+                                    cursor: 'pointer'
+                                }}
+                                     onClick={() => navigate('/about')}>
+                                    <MdContactSupport/>
+                                    <p>{t('about')}</p>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    margin: '10px 0 10px 0',
+                                    cursor: 'pointer'
+                                }}
+                                     onClick={() => navigate('/contact')}>
+                                    <MdContactPhone/>
+                                    <p>{t('contact')}</p>
+
                                 </div>
                             </Drawer>
                         </div>
