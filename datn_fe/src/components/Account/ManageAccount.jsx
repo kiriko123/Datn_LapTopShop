@@ -1,4 +1,4 @@
-import {Drawer, Modal, Tabs} from "antd";
+import {Drawer, Tabs} from "antd";
 import UserInfo from "./UserInfo";
 import ChangePassword from "./ChangePassword";
 import { useSelector } from "react-redux";
@@ -51,7 +51,6 @@ const ManageAccount = (props) => {
             title="Quản lý tài khoản"
             open={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-
             width={drawerWidth}
             bodyStyle={{ padding: '0px 10px 0px 10px' }}
             className="manage-account-modal"
