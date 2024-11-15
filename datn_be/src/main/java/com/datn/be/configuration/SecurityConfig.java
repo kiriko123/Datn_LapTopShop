@@ -70,7 +70,7 @@ public class SecurityConfig {
                 "/api/v1/email/**",
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
-                "/swagger-ui.html"
+                "/swagger-ui.html",
         };
 
         http
@@ -87,6 +87,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/category/getAll").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/brand/getAll").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/product").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/payment/vn-pay-callback").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/user").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("ADMIN")
 
