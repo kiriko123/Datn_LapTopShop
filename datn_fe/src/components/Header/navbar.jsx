@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Badge, Drawer, message, Button, Anchor, Avatar, Modal, Input, Popover } from 'antd';
+import {Divider, Badge, Drawer, message, Button, Anchor, Avatar, Modal, Input, Popover, Breadcrumb} from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { callLogout } from "../../services/api.js";
 import { doLogoutAction } from "../../redux/account/accountSlice.js";
 import './navbar.css'
@@ -20,6 +20,7 @@ import ManageAccount from "../Account/ManageAccount.jsx";
 import { MdHistoryEdu } from "react-icons/md";
 import Head from "./head.jsx";
 import { FaBookQuran } from "react-icons/fa6";
+import { CiHome } from "react-icons/ci";
 import { GrProductHunt } from "react-icons/gr";
 
 const Navbar = (props) => {
@@ -39,6 +40,27 @@ const Navbar = (props) => {
         if(value.trim()){
             navigate('/product', { state: { searchTerm: value.trim() } });
         }
+    };
+
+    // Helper function to create breadcrumb items
+    const renderBreadcrumbItems = () => {
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+
+        // Skip rendering breadcrumbs if on the home page
+        if (pathSegments.length === 0) return null;
+
+        return [
+            <Breadcrumb.Item key="home">
+                <Link to="/">Home</Link>
+            </Breadcrumb.Item>,
+            ...pathSegments.map((segment, index) => (
+                <Breadcrumb.Item key={index}>
+                    <Link to={`/${pathSegments.slice(0, index + 1).join('/')}`}>
+                        {segment.charAt(0).toUpperCase() + segment.slice(1)}
+                    </Link>
+                </Breadcrumb.Item>
+            ))
+        ];
     };
 
     const handleLogout = async () => {
@@ -285,10 +307,16 @@ const Navbar = (props) => {
                     </div>
                 </div>
             </div>
+            {/* Breadcrumb */}
+            <div className="px-1">
+                <Breadcrumb separator=">">
+                    {renderBreadcrumbItems()}
+                </Breadcrumb>
+            </div>
 
             <ManageAccount
-                show={showManageAccount}
-                onCancel={() => setShowManageAccount(false)}
+                isModalOpen={showManageAccount}
+                setIsModalOpen={setShowManageAccount}
             />
         </>
     );
