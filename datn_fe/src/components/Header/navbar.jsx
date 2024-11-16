@@ -22,6 +22,9 @@ import Head from "./head.jsx";
 import { FaBookQuran } from "react-icons/fa6";
 import { CiHome } from "react-icons/ci";
 import { GrProductHunt } from "react-icons/gr";
+import { SearchBar } from './SearchBar';
+import { SearchResultsList } from './SearchResultsList';
+
 
 const Navbar = (props) => {
     const [openDrawer, setOpenDrawer] = useState(false);
@@ -32,13 +35,20 @@ const Navbar = (props) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const carts = useSelector(state => state.order.carts);
-
     const [showManageAccount, setShowManageAccount] = useState(false);
+    const [results, setResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-
+    const [visible, setVisible] = useState(false);
+    const [isSticky, setIsSticky] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    //fix
     const handleSearch = (value) => {
+        setResults([]);
         if(value.trim()){
             navigate('/product', { state: { searchTerm: value.trim() } });
+        }else {
+            // Nếu không có từ khóa, gọi API lấy toàn bộ sản phẩm
+            navigate('/product', { state: { searchTerm: "" } });
         }
     };
 
@@ -121,8 +131,6 @@ const Navbar = (props) => {
         },
     ];
 
-    const [visible, setVisible] = useState(false);
-
     const showDrawer = () => {
         setVisible(true);
     };
@@ -131,22 +139,17 @@ const Navbar = (props) => {
         setVisible(false);
     };
 
-    const [isSticky, setIsSticky] = useState(false);
-
     useEffect(() => {
         const handleScroll = () => {
             setIsSticky(window.scrollY > 100);
         };
-
         window.addEventListener("scroll", handleScroll);
-
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/storage/avatar/${user?.imageUrl}`;
-    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -195,13 +198,17 @@ const Navbar = (props) => {
                         </div>
 
                         <div className="search-bar">
-                            <Input.Search
-                                placeholder="Search "
-                                enterButton
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onSearch={handleSearch}
-                            />
+                            <SearchBar
+                                setResults={setResults}
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                handleSearch={handleSearch}/>
+                            {results.length > 0 && (
+                                <SearchResultsList
+                                    results={results}
+                                    setResults={setResults}
+                                    setSearchTerm={setSearchTerm}/>
+                            )}
                         </div>
 
                         <div className="mobileHidden">
@@ -210,10 +217,12 @@ const Navbar = (props) => {
                                     <span onClick={() => navigate('/')}> <FaHome/> <p>{t('home')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
+                                    <span
+                                        onClick={() => navigate('/product')}> <GrProductHunt/> <p>{t('product')}</p></span>
                                 </div>
                                 <div>
-                                    <span onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
+                                    <span
+                                        onClick={() => navigate('/about')}> <MdContactSupport/> <p>{t('about')}</p></span>
                                 </div>
                                 <div>
                                     <span onClick={() => navigate('/contact')}> <MdContactPhone /> <p>{t('contact')}</p></span>
@@ -315,6 +324,8 @@ const Navbar = (props) => {
             </div>
 
             <ManageAccount
+                // show={showManageAccount}
+                // onCancel={() => setShowManageAccount(false)}
                 isModalOpen={showManageAccount}
                 setIsModalOpen={setShowManageAccount}
             />

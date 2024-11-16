@@ -28,7 +28,7 @@ const ViewDetail = (props) => {
         const parse = new DOMParser();
         const doc = parse.parseFromString(description, 'text/html');
         const listItems = doc.querySelectorAll('ul li');
-
+        window.scrollTo({top: 0, behavior: 'smooth'});
         let tableRows = [];
         listItems.forEach(item => {
             const [key, value] = item.textContent.split(':');
