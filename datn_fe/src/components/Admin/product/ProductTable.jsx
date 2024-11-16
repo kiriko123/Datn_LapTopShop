@@ -199,8 +199,8 @@ const BookTable = () => {
                     }}/>
                     <Popconfirm
                         placement="leftTop"
-                        title="Xác nhận xóa book"
-                        description="Bạn có chắc chắn muốn xóa book này?"
+                        title="Xác nhận xóa sản phẩm"
+                        description="Bạn có chắc chắn muốn xóa sản phẩm này?"
                         onConfirm={() => handleDeleteBook(record.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -236,7 +236,7 @@ const BookTable = () => {
     const handleDeleteBook = async (productId) => {
         const res = await callDeleteProduct(productId);
         if (res?.data?.statusCode === 204) {
-            message.success('Xóa book thành công');
+            message.success('Xóa sản phẩm thành công');
             await fetchProduct()
         } else {
             notification.error({
