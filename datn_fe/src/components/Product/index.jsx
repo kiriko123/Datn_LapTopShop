@@ -232,6 +232,8 @@ const Product = () => {
         }
 
         setFilter(f); // Update filter
+        //Khi ở trang 2 mà lọc 1 sản phẩm khác chỉ có 1 trang thì lỗi
+        setCurrent(1); // Reset về trang 1
     };
 
 
