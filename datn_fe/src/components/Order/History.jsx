@@ -231,18 +231,33 @@ const History = () => {
                     <Descriptions.Item label="Địa chỉ nhận hàng">{selectedOrder?.receiverAddress}</Descriptions.Item>
                     <Descriptions.Item label="Người nhận">{selectedOrder?.receiverName}</Descriptions.Item>
                     <Descriptions.Item label="Số điện thoại">{selectedOrder?.receiverPhone}</Descriptions.Item>
-                    <Descriptions.Item label="Sản phẩm">
-                        <ul>
-                            {selectedOrder?.orderDetails?.map((item) => (
-                                <li key={item.id}>
-                                    {item.productName} x {item.quantity}
-                                </li>
-                            ))}
-                        </ul>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Tổng tiền" span={2}>
-                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedOrder?.totalPrice)}
-                    </Descriptions.Item>
+                    <Descriptions.Item label="Chi tiết sản phẩm">
+    {selectedOrder && selectedOrder.orderDetails ? (
+        selectedOrder.orderDetails.map((item, index) => {
+            const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+            return (
+                <div key={index} style={{ marginBottom: '16px' }}>
+                    <b>{index + 1}. {item.productName}</b>
+                    <div>
+                        <Image
+                            src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
+                            alt={item.productName}
+                            width={50}
+                        />
+                        <div>
+                            Số lượng: {item.quantity}, 
+                            Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}, 
+                            Giảm giá: {item.discount}%, 
+                            Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
+                        </div>
+                    </div>
+                </div>
+            );
+        })
+    ) : (
+        <p>Chưa có chi tiết sản phẩm</p>
+    )}
+</Descriptions.Item>
                 </Descriptions>
             </Drawer>
 
