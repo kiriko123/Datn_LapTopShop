@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Row, Col, Button, Select } from 'antd';
-import { ExportOutlined, ReloadOutlined, EditTwoTone } from '@ant-design/icons';
+import { ExportOutlined, ReloadOutlined, EditTwoTone, EyeOutlined } from '@ant-design/icons';
+import {FaEye} from "react-icons/fa";
 import { callFetchOrder, callOrdersByYear, callOrdersByMonth } from "../../../services/api.js";
 import * as XLSX from "xlsx";
 import moment from "moment/moment.js";
+import StatisticViewDetail from './StatisticsViewDetail.jsx';
 
 const { Option } = Select;
 
@@ -23,6 +25,13 @@ const StatisticTable = () => {
         status: true,
         action: true,
     });
+    const [openViewDetail, setOpenViewDetail] = useState(false); // State for view detail modal
+    const [dataViewDetail, setDataViewDetail] = useState(null); // State to hold order details for view detail modal
+
+    const handleViewDetail = (order) => {
+        setDataViewDetail(order); // Set data for the selected order
+        setOpenViewDetail(true); // Open the modal
+    };
 
     useEffect(() => {
         fetchOrders();
@@ -106,7 +115,12 @@ const StatisticTable = () => {
         selectedColumns.action && {
             title: 'Action',
             render: (text, record) => (
-                <EditTwoTone twoToneColor="#f57800" style={{ cursor: "pointer" }} />
+                <div style={{display: 'flex', alignItems: 'center', gap: 15}}>
+                    <FaEye style={{cursor: 'pointer'}} 
+                    onClick={() => handleViewDetail(record)}
+                    />
+                    
+                </div>
             ),
         },
     ].filter(Boolean);
@@ -144,7 +158,7 @@ const StatisticTable = () => {
         const currentYear = moment().year();  // Lấy năm hiện tại
         const years = Array.from({ length: currentYear - 2019 }, (_, index) => currentYear - index);  // Tạo mảng các năm từ 2020 đến năm hiện tại
         const months = Array.from({ length: 12 }, (_, index) => index + 1);  // Tạo mảng các tháng từ 1 đến 12
-    
+
         return (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 15 }}>
                 <div style={{ display: 'flex', gap: 15 }}>
@@ -177,34 +191,40 @@ const StatisticTable = () => {
             </div>
         );
     };
-    
+
     return (
         <>
             <Table
-    title={renderHeader}
-    loading={isLoading}
-    columns={columns}
-    dataSource={listOrder}
-    onChange={onChange}
-    rowKey="id"
-    scroll={{ x: 800 }}
-    pagination={{
-        current, // Trang hiện tại
-        pageSize, // Số lượng bản ghi mỗi trang
-        showSizeChanger: true, // Cho phép người dùng thay đổi số lượng bản ghi mỗi trang
-        total, // Tổng số bản ghi
-        showTotal: (total, range) => <div>{range[0]}-{range[1]} trên {total} bản ghi</div>,
-        onChange: (page, pageSize) => {
-            setCurrent(page); // Thay đổi trang hiện tại
-            setPageSize(pageSize); // Cập nhật số lượng bản ghi mỗi trang
-        }
-    }} 
-    footer={() => (
-        <div style={{ fontWeight: 'bold', textAlign: 'left', fontSize: '18px' }}>
-            Tổng Doanh Thu: <span style={{ color: 'red', fontSize: '20px' }}>{formatCurrency(calculateTotalRevenue())}</span>
-        </div>
-    )}
-/>
+                title={renderHeader}
+                loading={isLoading}
+                columns={columns}
+                dataSource={listOrder}
+                onChange={onChange}
+                rowKey="id"
+                scroll={{ x: 800 }}
+                pagination={{
+                    current, // Trang hiện tại
+                    pageSize, // Số lượng bản ghi mỗi trang
+                    showSizeChanger: true, // Cho phép người dùng thay đổi số lượng bản ghi mỗi trang
+                    total, // Tổng số bản ghi
+                    showTotal: (total, range) => <div>{range[0]}-{range[1]} trên {total} bản ghi</div>,
+                    onChange: (page, pageSize) => {
+                        setCurrent(page); // Thay đổi trang hiện tại
+                        setPageSize(pageSize); // Cập nhật số lượng bản ghi mỗi trang
+                    }
+                }}
+                footer={() => (
+                    <div style={{ fontWeight: 'bold', textAlign: 'left', fontSize: '18px' }}>
+                        Tổng Doanh Thu: <span style={{ color: 'red', fontSize: '20px' }}>{formatCurrency(calculateTotalRevenue())}</span>
+                    </div>
+                )}
+            />
+             <StatisticViewDetail
+             openViewDetail={openViewDetail}
+             setOpenViewDetail={setOpenViewDetail}
+             dataViewDetail={dataViewDetail}
+             setDataViewDetail={setDataViewDetail}
+             />
         </>
     );
 };
