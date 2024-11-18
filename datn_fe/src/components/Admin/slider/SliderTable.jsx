@@ -19,7 +19,7 @@ import SliderModalUpdate from "./SliderModalUpdate.jsx";
 const SliderTable = () => {
     const [listSlider, setListSlider] = useState([]);
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(2);
+    const [pageSize, setPageSize] = useState(5);
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState("");

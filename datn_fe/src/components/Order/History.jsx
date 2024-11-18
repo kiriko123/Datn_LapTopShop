@@ -148,7 +148,7 @@ const History = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
                     <EyeOutlined onClick={() => showDrawer(record)} style={{ cursor: 'pointer' }} />
                     <EditTwoTone
-                        twoToneColor={record.status === "DELIVERED" ? "rgba(255, 87, 34, 0.5)" : "#f57800"} 
+                        twoToneColor={record.status === "DELIVERED" ? "rgba(255, 87, 34, 0.5)" : "#f57800"}
                         style={{
                             cursor: record.status === "DELIVERED" ? "not-allowed" : "pointer",
                             opacity: record.status === "DELIVERED" ? 0.5 : 1,
@@ -226,39 +226,52 @@ const History = () => {
                 </div>
                 <Divider />
                 <Descriptions title="Thông tin đơn hàng" bordered>
-                    <Descriptions.Item label="Mã đơn hàng">{selectedOrder?.id}</Descriptions.Item>
-                    <Descriptions.Item label="Thời gian">{moment(selectedOrder?.createdAt).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
-                    <Descriptions.Item label="Địa chỉ nhận hàng">{selectedOrder?.receiverAddress}</Descriptions.Item>
-                    <Descriptions.Item label="Người nhận">{selectedOrder?.receiverName}</Descriptions.Item>
-                    <Descriptions.Item label="Số điện thoại">{selectedOrder?.receiverPhone}</Descriptions.Item>
+                    <Descriptions.Item label="Mã đơn hàng" span={12} >{selectedOrder?.id}</Descriptions.Item>
+                    <Descriptions.Item label="Thời gian" span={12}>{moment(selectedOrder?.createdAt).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
+                    <Descriptions.Item label="Địa chỉ nhận hàng" span={12}>{selectedOrder?.receiverAddress}</Descriptions.Item>
+                    <Descriptions.Item label="Người nhận" span={12}>{selectedOrder?.receiverName}</Descriptions.Item>
+                    <Descriptions.Item label="Số điện thoại" span={12}>{selectedOrder?.receiverPhone}</Descriptions.Item>
                     <Descriptions.Item label="Chi tiết sản phẩm">
-                        {selectedOrder && selectedOrder.orderDetails ? (
-                            selectedOrder.orderDetails.map((item, index) => {
-                                const priceAfterDiscount = item.price - (item.price * item.discount / 100);
-                                return (
-                                    <div key={index} style={{ marginBottom: '16px' }}>
-                                        <b>{index + 1}. {item.productName}</b>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <Image
-                                                src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
-                                                alt={item.productName}
-                                                width={50}
-                                            />
+                    {selectedOrder && selectedOrder.orderDetails ? (
+                        selectedOrder.orderDetails.map((item, index) => {
+                            const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+                            return (
+                                <div key={index} style={{ marginBottom: '16px', marginTop: '30px' }}>
+
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <Image
+                                            src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
+                                            alt={item.productName}
+                                            width={130}
+                                            preview={false}
+                                        />
+                                        <div>
                                             <div>
-                                                Số lượng: {item.quantity},
-                                                Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)},
-                                                Giảm giá: {item.discount}%,
+                                                <b>{index + 1}. {item.productName}</b>
+                                            </div>
+                                            <div>
+                                                Số lượng: {item.quantity}
+                                            </div>
+                                            <div>
+                                                Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                                            </div>
+                                            <div>
+                                                Giảm giá: {item.discount}%
+                                            </div>
+                                            <div>
                                                 Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
                                             </div>
                                         </div>
                                     </div>
-                                );
-                            })
-                        ) : (
-                            <p>Chưa có chi tiết sản phẩm</p>
-                        )}
-                    </Descriptions.Item>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <p>Chưa có chi tiết sản phẩm</p>
+                    )}
+                </Descriptions.Item>
                 </Descriptions>
+                
             </Drawer>
 
             {openModalUpdate && (
