@@ -82,6 +82,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/product").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/product/{id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/voucher").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/user-voucher/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/brand").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/category").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/category/getAll").permitAll()

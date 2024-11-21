@@ -39,6 +39,12 @@ public class Order {
 
     String description;
 
+    @Column(name = "voucher_code")
+    private String voucherCode;
+
+    @Column(name = "voucher_value")
+    private float voucherValue;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;

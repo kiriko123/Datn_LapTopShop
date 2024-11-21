@@ -69,6 +69,15 @@ public class EmailServiceImpl implements EmailService {
                     .append("</tr>");
         }
 
+        // Thêm thông tin voucher vào email (nếu có)
+        if (order.getVoucherCode() != null && !order.getVoucherCode().isEmpty()) {
+            emailContent.append("<tr>")
+                    .append("<td colspan='5' style='border: 1px solid #dddddd; padding: 8px; text-align: right;'><strong>Voucher:</strong></td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'><strong>").append(order.getVoucherCode())
+                    .append(" - Giảm ").append(order.getVoucherValue()).append("%</strong></td>")
+                    .append("</tr>");
+        }
+
         // Hàng tổng tiền
         emailContent.append("<tr>")
                 .append("<td colspan='5' style='border: 1px solid #dddddd; padding: 8px; text-align: right;'><strong>Tổng tiền</strong></td>")
@@ -123,6 +132,14 @@ public class EmailServiceImpl implements EmailService {
                     .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(detail.getQuantity()).append("</td>")
                     .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append((int) detail.getDiscount()).append("%</td>")
                     .append("<td style='border: 1px solid #dddddd; padding: 8px;'>").append(currencyFormatter.format(total)).append(" VNĐ</td>")
+                    .append("</tr>");
+        }
+        // Thêm thông tin voucher vào email (nếu có)
+        if (order.getVoucherCode() != null && !order.getVoucherCode().isEmpty()) {
+            emailContent.append("<tr>")
+                    .append("<td colspan='5' style='border: 1px solid #dddddd; padding: 8px; text-align: right;'><strong>Voucher:</strong></td>")
+                    .append("<td style='border: 1px solid #dddddd; padding: 8px;'><strong>").append(order.getVoucherCode())
+                    .append(" - Giảm ").append(order.getVoucherValue()).append("%</strong></td>")
                     .append("</tr>");
         }
         emailContent.append("</table>");

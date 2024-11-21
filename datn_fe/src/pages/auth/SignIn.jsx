@@ -49,6 +49,13 @@ export default function SignIn() {
     setLoading(false);
 
     if (res?.data?.user) {
+      const userId = res.data.user.id; // Lấy userId từ phản hồi của API
+      const userRole = res.data.user.role; // Lấy vai trò người dùng từ phản hồi API
+      // Lưu userId vào localStorage
+      localStorage.setItem("userId", userId);
+      // Lưu vai trò vào localStorage
+      localStorage.setItem("userRole", userRole.name);
+
       // Kiểm tra "Remember me" và lưu username + password mã hóa
       if (remember) {
         const encryptedPassword = encryptPassword(password); // Mã hóa mật khẩu trước khi lưu

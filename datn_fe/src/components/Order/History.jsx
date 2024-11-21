@@ -35,10 +35,40 @@ const History = () => {
         return filteredHistory.filter(order => order.status === status).length;
     };
 
+    const [totalPriceBeforeDiscount, setTotalPriceBeforeDiscount] = useState(0);
+    const [totalPriceAfterVoucher, setTotalPriceAfterVoucher] = useState(0);
     const showDrawer = (record) => {
         setSelectedOrder(record);
         setSelectedStatus(record.status);
         setOpenDrawer(true);
+
+        // Tính toán tổng tiền trước và sau khi áp dụng voucher
+        const { totalPriceBeforeDiscount, totalPriceAfterVoucher } = calculateTotalPrice(record.orderDetails, record.voucherValue);
+
+        setTotalPriceBeforeDiscount(totalPriceBeforeDiscount);
+        setTotalPriceAfterVoucher(totalPriceAfterVoucher);
+    };
+
+    const calculateTotalPrice = (orderDetails, voucherValue) => {
+        let totalPriceBeforeDiscount = 0;
+
+        // Tính tổng giá trị đơn hàng trước khi áp dụng voucher
+        orderDetails.forEach(item => {
+            const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+            totalPriceBeforeDiscount += priceAfterDiscount * item.quantity;
+        });
+
+        // Tính tổng tiền sau khi áp dụng giảm giá cho từng sản phẩm
+        let totalPriceAfterVoucher = 0;
+        orderDetails.forEach(item => {
+            const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+            totalPriceAfterVoucher += priceAfterDiscount * item.quantity;
+        });
+
+        // Áp dụng voucher nếu có
+        totalPriceAfterVoucher = totalPriceAfterVoucher - (totalPriceAfterVoucher * (voucherValue / 100));
+
+        return { totalPriceBeforeDiscount, totalPriceAfterVoucher };
     };
 
     const closeDrawer = () => {
@@ -74,7 +104,7 @@ const History = () => {
                 return null;
         }
     };
-
+    const isVoucherApplied = selectedOrder?.voucherCode != null;
     // Bộ lọc theo trạng thái
     const handleStatusFilter = (status) => {
         setSelectedStatus(status);
@@ -231,6 +261,22 @@ const History = () => {
                     <Descriptions.Item label="Địa chỉ nhận hàng" span={12}>{selectedOrder?.receiverAddress}</Descriptions.Item>
                     <Descriptions.Item label="Người nhận" span={12}>{selectedOrder?.receiverName}</Descriptions.Item>
                     <Descriptions.Item label="Số điện thoại" span={12}>{selectedOrder?.receiverPhone}</Descriptions.Item>
+                    {/* Hiển thị Voucher đã sử dụng */}
+                    <Descriptions.Item label="Voucher đã sử dụng">
+                        {selectedOrder?.voucherCode
+                            ? `${selectedOrder.voucherCode} - Giảm giá: ${selectedOrder.voucherValue}%`
+                            : 'Chưa sử dụng voucher'}
+                    </Descriptions.Item>
+                    {isVoucherApplied ? (
+                        <Descriptions.Item label="Tổng giá trị sau giảm (Có voucher)" span={3}>
+
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPriceAfterVoucher)}
+                        </Descriptions.Item>
+                    ) : (
+                        <Descriptions.Item label="Tổng giá trị (Không có voucher)" span={3}>
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPriceBeforeDiscount)}
+                        </Descriptions.Item>
+                    )}
                     <Descriptions.Item label="Chi tiết sản phẩm">
                     {selectedOrder && selectedOrder.orderDetails ? (
                         selectedOrder.orderDetails.map((item, index) => {
@@ -271,7 +317,7 @@ const History = () => {
                     )}
                 </Descriptions.Item>
                 </Descriptions>
-                
+
             </Drawer>
 
             {openModalUpdate && (

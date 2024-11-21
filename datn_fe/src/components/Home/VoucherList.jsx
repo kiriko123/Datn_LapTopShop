@@ -40,29 +40,45 @@ const VoucherList = () => {
     };
 
     // Hàm xử lý nhấp vào voucher và lưu vào backend
-    const handleVoucherClick = async (voucherCode) => {
+    const handleVoucherClick = async (voucherId) => {
         const userId = localStorage.getItem("userId");  // Lấy userId lại mỗi lần click
+        const userRole = localStorage.getItem("userRole"); // Lấy vai trò từ localStorage
+
         console.log("userId:", userId);  // Đảm bảo rằng userId có giá trị hợp lệ
+        console.log("voucherId:", voucherId); // Log voucherId để kiểm tra
 
         if (!userId) {
             message.error('Bạn chưa đăng nhập, vui lòng đăng nhập để lưu voucher.');
             return;
         }
 
-        try {
-            const response = await axios.post('/api/voucher/save', {
-                userId, 
-                voucherCode,
-            });
+        // Kiểm tra nếu người dùng có vai trò ADMIN
+        if (userRole === 'ROLE_ADMIN') {
+            message.error('Admin không thể lưu voucher.');
+            return;
+        }
 
-            if (response.data.success) {
-                message.success(`Voucher ${voucherCode} đã được lưu thành công!`);
+        try {
+            // Gọi API claim voucher
+            const response = await axios.post(`http://localhost:8080/api/v1/user-voucher/${userId}/claim/${voucherId}`);
+
+            // Hiển thị thông báo từ response
+            const responseData = response.data;
+            if (responseData.message) {
+                message.error(responseData.message); // Thông báo từ backend
             } else {
-                message.error('Lỗi khi lưu voucher. Vui lòng thử lại.');
+                message.success('Voucher đã được lưu thành công!');
             }
         } catch (error) {
             console.error("Lỗi khi lưu voucher:", error);
-            message.error('Lỗi khi lưu voucher. Vui lòng thử lại.');
+
+            // Hiển thị lỗi chi tiết từ backend (nếu có)
+            if (error.response) {
+                const errorMessage = error.response.data.message || 'Lỗi khi lưu voucher. Vui lòng thử lại.';
+                message.error(errorMessage);
+            } else {
+                message.error('Lỗi khi lưu voucher. Vui lòng thử lại.');
+            }
         }
     };
 
@@ -82,7 +98,7 @@ const VoucherList = () => {
                             className="voucher-card" 
                             bordered={false}
                             hoverable
-                            onClick={() => handleVoucherClick(voucher.voucherCode)} // Xử lý sự kiện click
+                            onClick={() => handleVoucherClick(voucher.id)} // Xử lý sự kiện click
                         >
                             <div className="voucher-card__header">
                                 <h3>{voucher.voucherCode}</h3>

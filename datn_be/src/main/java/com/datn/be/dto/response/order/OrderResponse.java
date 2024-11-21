@@ -36,6 +36,10 @@ public class OrderResponse {
     String description;
 
     List<OrderDetailResponse> orderDetails;
+    // Thêm thông tin voucher vào OrderResponse
+    String voucherCode;  // Mã voucher
+    float voucherValue;  // Giá trị voucher
+
 
     @Getter
     @Setter
@@ -69,7 +73,7 @@ public class OrderResponse {
                     .build();
         }
     }
-    public static OrderResponse fromOrder(Order order, List<OrderDetailResponse> orderDetails) {
+    public static OrderResponse fromOrder(Order order, List<OrderDetailResponse> orderDetails, String voucherCode, float voucherValue) {
         return OrderResponse.builder()
                 .id(order.getId())
                 .receiverName(order.getReceiverName())
@@ -90,6 +94,9 @@ public class OrderResponse {
                                 .build()
                 )
                 .orderDetails(orderDetails)
+                // Thêm thông tin voucher vào OrderResponse
+                .voucherCode(order.getVoucherCode())  // Trả về mã voucher
+                .voucherValue(order.getVoucherValue())
                 .build();
     }
 }

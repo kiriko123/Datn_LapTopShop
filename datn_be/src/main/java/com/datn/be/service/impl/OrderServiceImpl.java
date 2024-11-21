@@ -4,13 +4,12 @@ import com.datn.be.dto.request.order.OrderCreateDTO;
 import com.datn.be.dto.request.order.UserOrderUpdateDTO;
 import com.datn.be.dto.response.ResultPaginationResponse;
 import com.datn.be.dto.response.order.OrderResponse;
+import com.datn.be.exception.InvalidDataException;
 import com.datn.be.exception.ResourceNotFoundException;
 import com.datn.be.model.Order;
 import com.datn.be.model.OrderDetail;
-import com.datn.be.repository.OrderDetailRepository;
-import com.datn.be.repository.OrderRepository;
-import com.datn.be.repository.ProductRepository;
-import com.datn.be.repository.UserRepository;
+import com.datn.be.model.Voucher;
+import com.datn.be.repository.*;
 import com.datn.be.service.EmailService;
 import com.datn.be.service.OrderService;
 import com.datn.be.util.constant.OrderStatus;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +32,8 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final EmailService emailService;
+    private final VoucherUserRepository voucherUserRepository;
+    private final VoucherRepository voucherRepository;
 
     @Override
     public Order createOrder(OrderCreateDTO orderCreateDTO) {
@@ -64,15 +66,34 @@ public class OrderServiceImpl implements OrderService {
             productRepository.save(product);
         });
 
+        // Kiểm tra và áp dụng voucher
+        float voucherDiscount = 0;
+        Voucher voucher = null;
+        if (orderCreateDTO.getVoucherCode() != null) {
+            voucher = voucherRepository.findByVoucherCode(orderCreateDTO.getVoucherCode())
+                    .orElseThrow(() -> new ResourceNotFoundException("Voucher không tồn tại"));
+
+            if (!voucher.isActive() || voucher.getEndDate().isBefore(Instant.now())) {
+                throw new InvalidDataException("Voucher đã hết hạn hoặc không còn hiệu lực.");
+            }
+
+            voucherDiscount = voucher.getVoucherValue();
+        }
+
+        // Tính toán giá cuối sau khi áp dụng voucher
+        float finalPrice = orderCreateDTO.getTotalPrice() - voucherDiscount;
+
         // Lưu đối tượng Order vào cơ sở dữ liệu để có ID cho quan hệ
         Order order = Order.builder()
                 .receiverName(orderCreateDTO.getReceiverName())
                 .receiverAddress(orderCreateDTO.getReceiverAddress())
                 .receiverPhone(orderCreateDTO.getReceiverPhone())
-                .totalPrice(orderCreateDTO.getTotalPrice())
+                .totalPrice(finalPrice)
                 .paymentMethod(orderCreateDTO.getPaymentMethod())
                 .status(orderCreateDTO.getStatus())
                 .user(user)
+                .voucherCode(voucher != null ? voucher.getVoucherCode() : null)  // Lưu mã voucher
+                .voucherValue(voucher != null ? voucher.getVoucherValue() : 0)    // Lưu giá trị voucher
                 .build();
 
         // Đảm bảo orderDetails không null
@@ -125,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
                             .map(OrderResponse.OrderDetailResponse::fromOrderDetail)
                             .toList();
 
-                    return OrderResponse.fromOrder(order, orderDetailResponses);
+                    return OrderResponse.fromOrder(order, orderDetailResponses, order.getVoucherCode(), order.getVoucherValue());
                 })
                 .toList();
 
@@ -156,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
                             .toList();
 
                     // Tạo OrderResponse từ Order và danh sách OrderDetailResponse
-                    return OrderResponse.fromOrder(order, orderDetailResponses);
+                    return OrderResponse.fromOrder(order, orderDetailResponses, order.getVoucherCode(), order.getVoucherValue());
                 })
                 .toList();
 
@@ -179,7 +200,7 @@ public class OrderServiceImpl implements OrderService {
                             .map(OrderResponse.OrderDetailResponse::fromOrderDetail)
                             .toList();
 
-                    return OrderResponse.fromOrder(order, orderDetailResponses);
+                    return OrderResponse.fromOrder(order, orderDetailResponses, order.getVoucherCode(), order.getVoucherValue());
                 })
                 .toList();
     }

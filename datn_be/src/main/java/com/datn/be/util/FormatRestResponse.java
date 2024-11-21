@@ -1,6 +1,7 @@
 package com.datn.be.util;
 
 import com.datn.be.dto.response.RestResponse;
+import com.datn.be.dto.response.voucher.UserVoucherResponseDTO;
 import com.datn.be.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
@@ -48,8 +49,17 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             return body;
         } else {
             res.setData(body);
-            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
-            res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
+//            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+//            res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
+            // Lấy message từ body nếu tồn tại
+            String customMessage = null;
+            if (body instanceof UserVoucherResponseDTO) {
+                customMessage = ((UserVoucherResponseDTO) body).getMessage();
+            }
+            ApiMessage annotationMessage = returnType.getMethodAnnotation(ApiMessage.class);
+
+            // Ưu tiên message từ body, sau đó đến annotation
+            res.setMessage(customMessage != null ? customMessage : (annotationMessage != null ? annotationMessage.value() : "CALL API SUCCESS"));
         }
 
         return res;

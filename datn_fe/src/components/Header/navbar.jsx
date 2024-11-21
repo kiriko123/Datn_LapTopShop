@@ -74,6 +74,8 @@ const Navbar = (props) => {
     };
 
     const handleLogout = async () => {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userRole")
         const res = await callLogout();
         if (res && res.statusCode === 200) {
             dispatch(doLogoutAction());

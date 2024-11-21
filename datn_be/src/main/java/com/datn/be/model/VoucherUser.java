@@ -15,7 +15,6 @@ import java.time.Instant;
 @Entity
 @Table(name = "voucher_user") // Đảm bảo tên bảng là voucher_user
 public class VoucherUser {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;  // ID của bản ghi
@@ -39,8 +38,8 @@ public class VoucherUser {
         if (this.createdAt == null) {
             this.createdAt = Instant.now();  // Đảm bảo createdAt luôn có giá trị khi thêm mới
         }
-        if (this.useDate == null) {
-            this.useDate = Instant.now();  // Mặc định useDate khi không có giá trị
-        }
+//        if (this.useDate == null) {
+//            this.useDate = Instant.now();  // Mặc định useDate khi không có giá trị
+//        }
     }
 }

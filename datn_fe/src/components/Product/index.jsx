@@ -21,57 +21,6 @@ const Product = () => {
     const [sortQuery, setSortQuery] = useState("sort=sold,desc");
     const [form] = Form.useForm();
 
-    // Lấy filter từ URL và giữ nguyên các filter trước đó
-    // useEffect(() => {
-    //     const params = new URLSearchParams(search);
-    //     const urlFilter = params.get('filter') || ''; // Lấy filter từ URL nếu có
-    //
-    //     // Kết hợp filter từ URL với filter mặc định
-    //     let combinedFilter = "filter=category.active:'true' and brand.active:'true' and active:'true' and quantity > 0";
-    //
-    //     if (urlFilter) {
-    //         combinedFilter += ` and (${urlFilter})`;  // Kết hợp filter từ URL với filter mặc định
-    //     }
-    //
-    //     setFilter(combinedFilter);  // Cập nhật filter state
-    //     console.log("Current Filter: ", urlFilter); // Kiểm tra filter hiện tại
-    //
-    //     // Cập nhật form với category tương ứng
-    //     const categoryMatches = urlFilter.match(/category\.name:'([^']+)'/);
-    //     if (categoryMatches && categoryMatches[1]) {
-    //         // Cập nhật giá trị cho category trong form
-    //         form.setFieldsValue({
-    //             category: [categoryMatches[1]] // Đặt giá trị cho category
-    //         });
-    //     } else {
-    //         // Nếu không có category nào được chọn, đặt lại giá trị cho category
-    //         form.setFieldsValue({
-    //             category: [] // Reset category nếu không có filter
-    //         });
-    //     }
-    //
-    //     // Cập nhật form với thương hiệu tương ứng
-    //     const brandMatches = urlFilter.match(/brand\.name:'([^']+)'/g) || [];
-    //     const selectedBrandNames = brandMatches.map(match => match.split(':')[1].replace(/'/g, ''));
-    //
-    //     // Cập nhật giá trị cho brand trong form
-    //     form.setFieldsValue({
-    //         brand: selectedBrandNames // Đặt giá trị cho thương hiệu
-    //     });
-    //
-    // }, [search]); // Theo dõi khi URL thay đổi
-
-
-    // useEffect(() => {
-    //     const term = location.state?.searchTerm;
-    //     if (term) {
-    //         setSearchTerm(term);
-    //         updateFilter({ searchTerm: term });
-    //     } else {
-    //         fetchProduct(); // Gọi API nếu không có từ khóa
-    //     }
-    // }, [location.state?.searchTerm]);
-
     useEffect(() => {
         const term = location.state?.searchTerm || ""; // Đặt mặc định là chuỗi rỗng
         setSearchTerm(term);
@@ -109,33 +58,10 @@ const Product = () => {
         fetchProduct();
     }, [current, pageSize, filter, sortQuery, searchTerm]); //searchTerm
 
-    // const fetchProduct = async () => {
-    //     setIsLoading(true);
-    //     let query = `page=${current}&size=${pageSize}`;
-    //     if (filter) {
-    //         query += `&${filter}`;
-    //     }
-    //     if (sortQuery) {
-    //         query += `&${sortQuery}`;
-    //     }
-    //
-    //     const res = await callFetchProduct(query);
-    //
-    //     if (res && res.data) {
-    //         setListProduct(res.data.result);
-    //         setTotal(res.data.meta.total);
-    //         if (res.data.result.length === 0) {
-    //             message.info("Không tìm thấy sản phẩm"); // Hiển thị thông báo khi không có sản phẩm nào
-    //         }
-    //     }
-    //     setIsLoading(false);
-    // };
-
     const [noProductMessageShown, setNoProductMessageShown] = useState(false);
 
     const fetchProduct = async () => {
         setIsLoading(true);
-
         // Hủy thông báo trước đó khi bắt đầu tìm kiếm mới
         message.destroy();
         setNoProductMessageShown(false); // Reset lại trạng thái khi bắt đầu tìm kiếm mới
@@ -162,7 +88,6 @@ const Product = () => {
         }
         setIsLoading(false);
     };
-
 
     // Kiểm tra nếu location.state có thương hiệu hoặc danh mục thì cập nhật filter
     useEffect(() => {
@@ -226,6 +151,7 @@ const Product = () => {
         if (values?.range?.from >= 0 && values?.range?.to >= 0) {
             f += ` and price>:${values.range.from} and price<:${values.range.to}`;
         }
+
         // Name filter
         if (values?.searchTerm) {
             f += ` and name~'${values.searchTerm}'`;
@@ -421,31 +347,6 @@ const Product = () => {
                                     </div>
                                 </Form.Item>
                                 <Divider />
-                                {/*<Form.Item*/}
-                                {/*    label="Đánh giá"*/}
-                                {/*    labelCol={{span: 24}}*/}
-                                {/*>*/}
-                                {/*    <div>*/}
-                                {/*        <Rate value={5} disabled style={{color: '#ffce3d', fontSize: 15}}/>*/}
-                                {/*        <span className="ant-rate-text"></span>*/}
-                                {/*    </div>*/}
-                                {/*    <div>*/}
-                                {/*        <Rate value={4} disabled style={{color: '#ffce3d', fontSize: 15}}/>*/}
-                                {/*        <span className="ant-rate-text">trở lên</span>*/}
-                                {/*    </div>*/}
-                                {/*    <div>*/}
-                                {/*        <Rate value={3} disabled style={{color: '#ffce3d', fontSize: 15}}/>*/}
-                                {/*        <span className="ant-rate-text">trở lên</span>*/}
-                                {/*    </div>*/}
-                                {/*    <div>*/}
-                                {/*        <Rate value={2} disabled style={{color: '#ffce3d', fontSize: 15}}/>*/}
-                                {/*        <span className="ant-rate-text">trở lên</span>*/}
-                                {/*    </div>*/}
-                                {/*    <div>*/}
-                                {/*        <Rate value={1} disabled style={{color: '#ffce3d', fontSize: 15}}/>*/}
-                                {/*        <span className="ant-rate-text">trở lên</span>*/}
-                                {/*    </div>*/}
-                                {/*</Form.Item>*/}
                             </Form>
                         </div>
                     </Col>

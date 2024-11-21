@@ -2,16 +2,18 @@ import { Col, Divider, Form, Radio, Row, message, notification } from 'antd';
 import { DeleteTwoTone, LoadingOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { doDeleteItemCartAction, doPlaceOrderAction } from '../../redux/order/orderSlice';
+import { doDeleteItemCartAction, doPlaceOrderAction,setVoucherAction } from '../../redux/order/orderSlice';
 import { Input } from 'antd';
 import { AiOutlineRollback } from "react-icons/ai";
 import CheckoutModal from './CheckoutModal';
 import LocationSelect from "./LocationSelect.jsx";
 import {callPlaceOrder} from "../../services/api.js";
 const { TextArea } = Input;
+import axios from 'axios'; // Import axios để gọi API
 
 const Payment = (props) => {
     const carts = useSelector(state => state.order.carts);
+    const selectedVoucher = useSelector(state => state.order.selectedVoucher); // Lấy voucher từ Redux
     const [totalPrice, setTotalPrice] = useState(0);
     const dispatch = useDispatch();
     const [isSubmit, setIsSubmit] = useState(false);
@@ -28,65 +30,27 @@ const Payment = (props) => {
     const [street, setStreet] = useState("");
 
     useEffect(() => {
-        if (carts && carts.length > 0) {
-            const sum = carts.reduce((acc, item) => {
-                const discount = item?.detail?.discount ?? 0;
-                const priceAfterDiscount = item?.detail?.price - (item?.detail?.price * discount / 100);
-                return acc + item.quantity * priceAfterDiscount;
-            }, 0);
-            setTotalPrice(sum);
-        } else {
-            setTotalPrice(0);
+        let sum = 0;
+        // Tính tổng tiền trước khi áp dụng voucher
+        carts.forEach(item => {
+            const currentBookPrice = item?.detail?.price ?? 0;
+            const discount = item?.detail?.discount ?? 0;
+            const priceAfterDiscount = currentBookPrice - (currentBookPrice * discount / 100);
+            sum += item.quantity * priceAfterDiscount;
+        });
+
+        // Áp dụng voucher (nếu có)
+        if (selectedVoucher) {
+            const discountValue = (selectedVoucher.voucher.voucherValue / 100) * sum;
+            sum -= discountValue;
         }
-        console.log(carts);
-    }, [carts]);
+
+        setTotalPrice(sum);
+    }, [carts, selectedVoucher]); // Lắng nghe sự thay đổi của carts và selectedVoucher
 
     const handlePaymentChange = (e) => {
         setPaymentMethod(e.target.value);
     };
-
-    // const handlePlaceOrder = async (paymentIntent = null) => {
-    //     setIsSubmit(true);
-    //
-    //
-    //     // Tạo danh sách chi tiết đơn hàng từ giỏ hàng
-    //     const detailOrder = carts.map(item => ({
-    //         productId: item.detail.id,
-    //         productName: item.detail.name,
-    //         price: item.detail.price,
-    //         discount: item.detail.discount,
-    //         quantity: item.quantity
-    //     }));
-    //
-    //     // Chuẩn bị dữ liệu cho đơn hàng
-    //     const data = {
-    //         receiverName: form.getFieldValue('name'),
-    //         receiverAddress: fullAddress,
-    //         receiverPhone: form.getFieldValue('phone'),
-    //         totalPrice: totalPrice,
-    //         paymentMethod: paymentMethod,
-    //         orderDetails: detailOrder,
-    //         userId: user.id,
-    //         status: 'PENDING',
-    //         paymentIntentId: paymentIntent?.id ?? null
-    //     };
-    // //
-    //     // Gọi API để đặt hàng
-    //     const res = await callPlaceOrder1(data);
-    //     console.log(res);
-    //     if (res && res.data){
-    //         message.success('Đặt hàng thành công!');
-    //         dispatch(doPlaceOrderAction()); // Xóa giỏ hàng sau khi đặt hàng thành công
-    //         props.setCurrentStep(2);
-    //     }else {
-    //         notification.error({
-    //             message: "Đã có lỗi xảy ra",
-    //             description: res.message || 'Không có thông điệp lỗi từ server',
-    //         });
-    //     }
-    //
-    //     setIsSubmit(false);
-    // };
 
     const handlePlaceOrder = async (paymentIntent = null) => {
         setIsSubmit(true);
@@ -111,7 +75,10 @@ const Payment = (props) => {
             status: 'PENDING',
             paymentMethod: paymentMethod,
             orderDetails: detailOrder,
-            paymentIntentId: paymentIntent?.id ?? null
+            paymentIntentId: paymentIntent?.id ?? null,
+            // Thêm thông tin voucher vào data gửi đi
+            voucherCode: selectedVoucher ? selectedVoucher.voucher.voucherCode : null,
+            voucherValue: selectedVoucher ? selectedVoucher.voucher.voucherValue : 0,
         };
         console.log("data",data);
 
@@ -121,6 +88,18 @@ const Payment = (props) => {
         
         if (res && res.data) {
             message.success('Đặt hàng thành công!');
+            // Gọi API để áp dụng voucher nếu có
+            if (selectedVoucher) {
+                const voucherId = selectedVoucher.voucher.id;
+                const applyVoucherRes = await axios.post(`http://localhost:8080/api/v1/user-voucher/${data.userId}/apply/${voucherId}`);
+
+                if (applyVoucherRes.data.statusCode === 200) {
+                    console.log('Voucher applied successfully!');
+                } else {
+                    console.log('Error applying voucher:', applyVoucherRes.data.message);
+                }
+            }
+
             dispatch(doPlaceOrderAction()); // Xóa giỏ hàng sau khi đặt hàng thành công
             props.setCurrentStep(2);
         } else {
