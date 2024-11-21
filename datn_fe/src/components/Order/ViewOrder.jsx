@@ -1,29 +1,80 @@
-import { Col, Divider, Empty, InputNumber, message, Row } from 'antd';
+import { Col, Divider, Empty, InputNumber, message, Row, Select } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { doDeleteItemCartAction, doUpdateCartAction } from '../../redux/order/orderSlice';
-import { callFetchBrand, callFetchCategory, callFetchProduct } from '../../services/api.js';
+import { doDeleteItemCartAction, doUpdateCartAction,setVoucherAction } from '../../redux/order/orderSlice';
+import {callFetchBrand, callFetchCategory,callFetchProduct, callApiGet } from '../../services/api.js';
+
+const { Option } = Select;
 
 const ViewOrder = (props) => {
     const carts = useSelector(state => state.order.carts);
     const [totalPrice, setTotalPrice] = useState(0);
     const dispatch = useDispatch();
     const user = useSelector(state => state.account.user);
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
+    const [userVouchers, setUserVouchers] = useState([]);
+
+    const fetchUserVouchers = async (userId) => {
+        try {
+            const response = await callApiGet(userId);
+            return response.data; // Trả về danh sách voucher
+        } catch (error) {
+            console.error("Error fetching user vouchers:", error);
+            return [];
+        }
+    };
+
+    // Xử lý khi người dùng chọn voucher
+    const handleVoucherSelect = (voucherId) => {
+        const voucher = userVouchers.find(v => v.id === voucherId);
+        setSelectedVoucher(voucher);  // Cập nhật voucher được chọn vào local state
+        dispatch(setVoucherAction(voucher));  // Dispatch action lưu voucher vào Redux store
+    };
+
+    // Khi người dùng chọn "Không sử dụng voucher"
+    const handleNoVoucher = () => {
+        setSelectedVoucher(null);  // Reset local state
+        dispatch(setVoucherAction(null));  // Dispatch action để reset voucher trong Redux
+    };
+
+    useEffect(() => {
+        // Reset voucher khi quay lại trang
+        setSelectedVoucher(null);  // Reset voucher trong local state
+        dispatch(setVoucherAction(null));  // Reset voucher trong Redux store
+    }, []);
+
+    useEffect(() => {
+        const fetchVouchers = async () => {
+            if (user?.id) {
+                const vouchers = await fetchUserVouchers(user.id);
+                setUserVouchers(vouchers);
+            }
+        };
+        fetchVouchers();
+    }, [user]);
+
 
     useEffect(() => {
         if (carts && carts.length > 0) {
             let sum = 0;
-            carts.map(item => {
-                const discount = item.detail.discount ?? 0;  // Lấy discount, mặc định là 0 nếu không có
-                const priceAfterDiscount = item.detail.price - (item.detail.price * discount / 100);  // Giá sau khi trừ discount
+            carts.forEach((item) => {
+                const discount = item.detail.discount ?? 0;
+                const priceAfterDiscount = item.detail.price - (item.detail.price * discount / 100);
                 sum += item.quantity * priceAfterDiscount;
             });
+
+            // Áp dụng voucher (nếu có)
+            if (selectedVoucher) {
+                const discountValue = (selectedVoucher.voucher.voucherValue / 100) * sum;
+                sum -= discountValue;
+            }
+
             setTotalPrice(sum);
         } else {
             setTotalPrice(0);
         }
-    }, [carts]);
+    }, [carts, selectedVoucher]);
 
     const handleOnChangeInput = (value, book) => {
         if (!value || value < 1) return;
@@ -60,7 +111,6 @@ const ViewOrder = (props) => {
         activeProducts.forEach(product => {
             activeProductMap[product.id] = product.active; // Đánh dấu sản phẩm có active=true
         });
-
 
         // Lấy danh sách thương hiệu từ API
         let brands = [];
@@ -181,6 +231,21 @@ const ViewOrder = (props) => {
             </Col>
             <Col md={6} xs={24}>
                 <div className='order-sum'>
+                    <div className="voucher-section">
+                        <h3>Chọn Voucher</h3>
+                        <Select
+                            value={selectedVoucher ? selectedVoucher.id : "none"}
+                            onChange={handleVoucherSelect}
+                            style={{width: "100%"}}
+                        >
+                            <Option value="none">Không sử dụng voucher</Option>
+                            {userVouchers.map((voucher) => (
+                                <Option key={voucher.id} value={voucher.id}>
+                                    {voucher.voucher.voucherCode} - Giảm {voucher.voucher.voucherValue}%
+                                </Option>
+                            ))}
+                        </Select>
+                    </div>
                     <div className='calculate'>
                         <span>Tạm tính</span>
                         <span>

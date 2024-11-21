@@ -236,5 +236,9 @@ export const callCreateVoucher = ({ voucherCode, voucherValue, description, star
 export const callUpdateVoucher = ({ id, voucherCode, voucherValue, description, startDate, endDate, active }) => {
     return axios.put('/api/v1/voucher', { id, voucherCode, voucherValue, description, startDate, endDate, active });
 }
+// voucher
+export const callApiGet  = (userId) => {
+    return axios.get(`/api/v1/user-voucher/${userId}/available-vouchers`);
+};
 
 
