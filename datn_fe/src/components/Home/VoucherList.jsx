@@ -65,7 +65,7 @@ const VoucherList = () => {
             // Hiển thị thông báo từ response
             const responseData = response.data;
             if (responseData.message) {
-                message.error(responseData.message); // Thông báo từ backend
+                message.info(responseData.message); // Thông báo từ backend
             } else {
                 message.success('Voucher đã được lưu thành công!');
             }

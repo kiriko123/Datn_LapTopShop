@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // Tính toán giá cuối sau khi áp dụng voucher
-        float finalPrice = orderCreateDTO.getTotalPrice() - voucherDiscount;
+        float finalPrice = orderCreateDTO.getTotalPrice();
 
         // Lưu đối tượng Order vào cơ sở dữ liệu để có ID cho quan hệ
         Order order = Order.builder()
