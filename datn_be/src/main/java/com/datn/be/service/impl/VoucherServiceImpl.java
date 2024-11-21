@@ -53,6 +53,7 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher voucher = Voucher.builder()
                 .voucherCode(voucherCreateRequestDTO.getVoucherCode())
                 .voucherValue(voucherCreateRequestDTO.getVoucherValue())
+                .priceApply(voucherCreateRequestDTO.getPriceApply())
                 .description(voucherCreateRequestDTO.getDescription())
                 .startDate(voucherCreateRequestDTO.getStartDate())
                 .endDate(voucherCreateRequestDTO.getEndDate())
@@ -67,6 +68,7 @@ public class VoucherServiceImpl implements VoucherService {
 
         voucher.setVoucherCode(voucherUpdateRequestDTO.getVoucherCode());
         voucher.setVoucherValue(voucherUpdateRequestDTO.getVoucherValue());
+        voucher.setPriceApply(voucherUpdateRequestDTO.getPriceApply());
         voucher.setDescription(voucherUpdateRequestDTO.getDescription());
         voucher.setStartDate(voucherUpdateRequestDTO.getStartDate());
         voucher.setEndDate(voucherUpdateRequestDTO.getEndDate());

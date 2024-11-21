@@ -14,7 +14,8 @@ const ViewOrder = (props) => {
     const user = useSelector(state => state.account.user);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
     const [userVouchers, setUserVouchers] = useState([]);
-
+    const [totalPriceNoVoucher, setTotalPriceNoVouhcer] = useState(0);
+    const [discountVoucher, setDiscountVoucher] = useState(0);
     const fetchUserVouchers = async (userId) => {
         try {
             const response = await callApiGet(userId);
@@ -28,6 +29,16 @@ const ViewOrder = (props) => {
     // Xử lý khi người dùng chọn voucher
     const handleVoucherSelect = (voucherId) => {
         const voucher = userVouchers.find(v => v.id === voucherId);
+        if (!voucher) return;
+
+        if (totalPriceNoVoucher < voucher.voucher.priceApply) {
+            message.error(`Tổng giá trị đơn hàng phải lớn hơn ${new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(voucher.voucher.priceApply)} để áp dụng voucher này.`);
+            return;
+        }
+
         setSelectedVoucher(voucher);  // Cập nhật voucher được chọn vào local state
         dispatch(setVoucherAction(voucher));  // Dispatch action lưu voucher vào Redux store
     };
@@ -49,10 +60,26 @@ const ViewOrder = (props) => {
             if (user?.id) {
                 const vouchers = await fetchUserVouchers(user.id);
                 setUserVouchers(vouchers);
+
+                // Lọc các voucher đủ điều kiện
+                const validVouchers = vouchers.filter(voucher =>
+                    totalPriceNoVoucher >= voucher.voucher.priceApply
+                );
+
+                // Tìm voucher có giá trị giảm giá lớn nhất
+                if (validVouchers.length > 0) {
+                    const bestVoucher = validVouchers.reduce((prev, current) =>
+                        prev.voucher.voucherValue > current.voucher.voucherValue ? prev : current
+                    );
+
+                    // Chọn voucher tốt nhất
+                    setSelectedVoucher(bestVoucher);
+                    dispatch(setVoucherAction(bestVoucher));
+                }
             }
         };
         fetchVouchers();
-    }, [user]);
+    }, [user, totalPriceNoVoucher]);
 
 
     useEffect(() => {
@@ -63,12 +90,16 @@ const ViewOrder = (props) => {
                 const priceAfterDiscount = item.detail.price - (item.detail.price * discount / 100);
                 sum += item.quantity * priceAfterDiscount;
             });
-
+            setTotalPriceNoVouhcer(sum);
             // Áp dụng voucher (nếu có)
             if (selectedVoucher) {
                 const discountValue = (selectedVoucher.voucher.voucherValue / 100) * sum;
                 sum -= discountValue;
+                setDiscountVoucher(discountValue);
+            }else{
+                setDiscountVoucher(0);
             }
+
 
             setTotalPrice(sum);
         } else {
@@ -235,31 +266,64 @@ const ViewOrder = (props) => {
                         <h3>Chọn Voucher</h3>
                         <Select
                             value={selectedVoucher ? selectedVoucher.id : "none"}
-                            onChange={handleVoucherSelect}
-                            style={{width: "100%"}}
+                            // onChange={handleVoucherSelect}
+                            onChange={(value) => {
+                                if (value === "none") {
+                                    handleNoVoucher();
+                                } else {
+                                    handleVoucherSelect(value);
+                                }
+                            }}
+                            style={{ width: "100%" }}
                         >
                             <Option value="none">Không sử dụng voucher</Option>
-                            {userVouchers.map((voucher) => (
-                                <Option key={voucher.id} value={voucher.id}>
-                                    {voucher.voucher.voucherCode} - Giảm {voucher.voucher.voucherValue}%
-                                </Option>
-                            ))}
+                            {userVouchers.map((voucher) => {
+                                const isDisabled = totalPriceNoVoucher < voucher.voucher.priceApply;
+                                return (
+                                    <Option
+                                        key={voucher.id}
+                                        value={voucher.id}
+                                        disabled={isDisabled} // Làm mờ voucher không đủ điều kiện
+                                    >
+                                        Giảm {voucher.voucher.voucherValue}% (Áp dụng từ {new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(voucher.voucher.priceApply)})
+                                    </Option>
+                                );
+                            })}
                         </Select>
                     </div>
                     <div className='calculate'>
                         <span>Tạm tính</span>
                         <span>
-                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice || 0)}
+                            {new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(totalPriceNoVoucher || 0)}
                         </span>
                     </div>
-                    <Divider style={{ margin: "10px 0" }} />
+                    <Divider style={{margin: "10px 0"}}/>
+                    <div className='calculate'>
+                        <span>Voucher giảm:</span>
+                        <span>
+                            {new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(discountVoucher || 0)}
+                        </span>
+                    </div>
+                    <Divider style={{margin: "10px 0"}}/>
                     <div className='calculate'>
                         <span>Tổng tiền</span>
                         <span className='sum-final'>
-                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice || 0)}
+                            {new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(totalPrice || 0)}
                         </span>
                     </div>
-                    <Divider style={{ margin: "10px 0" }} />
+                    <Divider style={{margin: "10px 0"}}/>
                     <button
                         onClick={() => handlePurchase()}
                     >

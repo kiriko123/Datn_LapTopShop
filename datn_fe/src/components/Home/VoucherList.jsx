@@ -93,12 +93,11 @@ const VoucherList = () => {
             ) : vouchers.length > 0 ? (
                 <div className="voucher-list__cards">
                     {vouchers.map((voucher) => (
-                        <Card 
-                            key={voucher.id} 
-                            className="voucher-card" 
+                        <Card
+                            key={voucher.id}
+                            className="voucher-card"
                             bordered={false}
                             hoverable
-                            onClick={() => handleVoucherClick(voucher.id)} // Xử lý sự kiện click
                         >
                             <div className="voucher-card__header">
                                 <h3>{voucher.voucherCode}</h3>
@@ -107,16 +106,32 @@ const VoucherList = () => {
                                 <strong>Mô tả:</strong> <span>{voucher.description}</span>
                             </div>
                             <div className="voucher-card__item">
-                                <strong>Ngày bắt đầu:</strong> <span>{moment(voucher.startDate).format('DD/MM/YYYY')}</span>
+                                <strong>Ngày bắt đầu:</strong>
+                                <span>{moment(voucher.startDate).format('DD/MM/YYYY')}</span>
                             </div>
                             <div className="voucher-card__item">
-                                <strong>Ngày kết thúc:</strong> <span>{moment(voucher.endDate).format('DD/MM/YYYY')}</span>
+                                <strong>Ngày kết thúc:</strong>
+                                <span>{moment(voucher.endDate).format('DD/MM/YYYY')}</span>
+                            </div>
+                            <div className="voucher-card__actions"
+                                 style={{
+                                     display: "flex",
+                                     justifyContent: "center",
+                                     alignItems: "center",
+                                     marginTop: "10px",
+                                 }}>
+                                <button
+                                    className="add-voucher-btn"
+                                    onClick={() => handleVoucherClick(voucher.id)} // Sự kiện click di chuyển vào nút Add
+                                >
+                                    Lưu
+                                </button>
                             </div>
                         </Card>
                     ))}
                 </div>
             ) : (
-                <Alert message="Không có voucher nào đang áp dụng." type="info" showIcon />
+                <Alert message="Không có voucher nào đang áp dụng." type="info" showIcon/>
             )}
             <div className="voucher-list__buy-container">
                 <Button className="voucher-button" onClick={handleBuyNow}>MUA NGAY</Button>

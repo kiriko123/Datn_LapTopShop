@@ -76,6 +76,10 @@ public class OrderServiceImpl implements OrderService {
             if (!voucher.isActive() || voucher.getEndDate().isBefore(Instant.now())) {
                 throw new InvalidDataException("Voucher đã hết hạn hoặc không còn hiệu lực.");
             }
+            // Kiểm tra điều kiện áp dụng (priceApply)
+            if (orderCreateDTO.getTotalPrice() < voucher.getPriceApply()) {
+                throw new InvalidDataException("Tổng giá trị đơn hàng không đủ điều kiện áp dụng voucher.");
+            }
 
             voucherDiscount = voucher.getVoucherValue();
         }

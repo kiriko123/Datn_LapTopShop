@@ -22,7 +22,7 @@ public class VoucherUpdateRequestDTO {
     @NotNull
     @PositiveOrZero
     float voucherValue;
-
+    float priceApply;
     String description;
 
     @NotNull

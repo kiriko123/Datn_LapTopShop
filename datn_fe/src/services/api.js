@@ -229,12 +229,12 @@ export const callDeleteVoucher = (voucherId) => {
     return axios.delete(`/api/v1/voucher/${voucherId}`);
 }
 
-export const callCreateVoucher = ({ voucherCode, voucherValue, description, startDate, endDate }) => {
-    return axios.post('/api/v1/voucher', { voucherCode, voucherValue, description, startDate, endDate });
+export const callCreateVoucher = ({ voucherCode, voucherValue, priceApply, description, startDate, endDate }) => {
+    return axios.post('/api/v1/voucher', { voucherCode, voucherValue, priceApply, description, startDate, endDate });
 }
 
-export const callUpdateVoucher = ({ id, voucherCode, voucherValue, description, startDate, endDate, active }) => {
-    return axios.put('/api/v1/voucher', { id, voucherCode, voucherValue, description, startDate, endDate, active });
+export const callUpdateVoucher = ({ id, voucherCode, voucherValue, priceApply, description, startDate, endDate, active }) => {
+    return axios.put('/api/v1/voucher', { id, voucherCode, voucherValue, priceApply, description, startDate, endDate, active });
 }
 // voucher
 export const callApiGet  = (userId) => {

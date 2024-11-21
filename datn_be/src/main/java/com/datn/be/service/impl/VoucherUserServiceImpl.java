@@ -47,12 +47,10 @@ public class VoucherUserServiceImpl implements VoucherUserService {
             if (voucherUser.getUseDate() != null) {
                 // Nếu voucher đã được sử dụng, cho phép người dùng claim lại voucher này
                 // Cập nhật useDate về null để người dùng có thể claim lại voucher
-                voucherUser.setUseDate(null);  // Reset lại useDate về null
-                voucherUserRepository.save(voucherUser); // Lưu lại bản ghi
+//                voucherUser.setUseDate(null);  // Reset lại useDate về null
+//                voucherUserRepository.save(voucherUser); // Lưu lại bản ghi
                 // Trả về thông báo đã reset voucher
-                return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Voucher đã được bạn sử dụng và bạn có thể lưu lại.");
-//                return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Bạn đã sử dụng voucher này rồi");
-
+               return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Bạn đã sử dụng voucher này rồi");
             } else {
                 // Nếu useDate là null, có nghĩa là voucher chưa được sử dụng
                 return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Bạn đã lưu voucher này rồi.");
