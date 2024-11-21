@@ -66,7 +66,7 @@ public class VoucherUserServiceImpl implements VoucherUserService {
                     .build();
             voucherUserRepository.save(voucherUser); // Lưu mới voucherUser
             // Trả về thông báo đã lưu thành công voucher
-            return UserVoucherResponseDTO.fromVoucherUser(voucherUser, null);
+            return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Lưu voucher thành công");
         }
     }
 

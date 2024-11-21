@@ -5,12 +5,14 @@ import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { TagOutlined } from '@ant-design/icons'; // Import icon từ Ant Design
 import './VoucherList.css';
-import axios from 'axios'; // Import axios để gọi API
+import axios from 'axios';
+import {useSelector} from "react-redux"; // Import axios để gọi API
 
 const VoucherList = () => {
     const [vouchers, setVouchers] = useState([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const user = useSelector(state => state.account.user);
 
     useEffect(() => {
         const fetchVouchers = async () => {
@@ -41,13 +43,11 @@ const VoucherList = () => {
 
     // Hàm xử lý nhấp vào voucher và lưu vào backend
     const handleVoucherClick = async (voucherId) => {
-        const userId = localStorage.getItem("userId");  // Lấy userId lại mỗi lần click
-        const userRole = localStorage.getItem("userRole"); // Lấy vai trò từ localStorage
+        const userId = user.id;
+        const userRole = user.role.name;
 
-        console.log("userId:", userId);  // Đảm bảo rằng userId có giá trị hợp lệ
-        console.log("voucherId:", voucherId); // Log voucherId để kiểm tra
 
-        if (!userId) {
+        if (user.id === '') {
             message.error('Bạn chưa đăng nhập, vui lòng đăng nhập để lưu voucher.');
             return;
         }
@@ -64,10 +64,10 @@ const VoucherList = () => {
 
             // Hiển thị thông báo từ response
             const responseData = response.data;
+
             if (responseData.message) {
-                message.info(responseData.message); // Thông báo từ backend
-            } else {
-                message.success('Voucher đã được lưu thành công!');
+                message.info(responseData.message);
+
             }
         } catch (error) {
             console.error("Lỗi khi lưu voucher:", error);
