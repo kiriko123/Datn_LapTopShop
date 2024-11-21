@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Col, Form, Input, Row, Select, theme } from 'antd';
+import {Button, Col, DatePicker, Form, Input, message, Row, Select, theme} from 'antd';
 const { Option } = Select;
 
 const InputSearch = (props) => {
@@ -32,11 +32,20 @@ const InputSearch = (props) => {
         if (values.paymentMethod) {
             queryParts.push(`paymentMethod~%27${values.paymentMethod}%27`);
         }
+        if (values.startdate && values.enddate) {
+            const startDateFormatted = values.startdate.format('YYYY-MM-DDTHH:mm:ss');
+            const endDateFormatted = values.enddate.format('YYYY-MM-DDTHH:mm:ss');
+            queryParts.push(`createdAt >: '${startDateFormatted}' and createdAt <: '${endDateFormatted}'`);
+        } else if (values.startdate || values.enddate) {
+            message.error("Both start date and end date must be filled in.");
+            return;
+        }
         if (queryParts.length > 0) {
             const query = `filter=${queryParts.join('%20and%20')}`;
             console.log("Search query:", query);
             props.handleSearch(query);
         }
+
     };
 
     return (
@@ -113,6 +122,34 @@ const InputSearch = (props) => {
                         label={`Phương thức thanh toán`}
                     >
                         <Input placeholder="Please input payment method!" />
+                    </Form.Item>
+                </Col>
+                <Col xs={12} sm={12} md={12} lg={6}>
+                    <Form.Item
+                        label="Start Date"
+                        name="startdate"
+                        labelCol={{ span: 24 }}
+                    >
+                        <DatePicker
+                            showTime
+                            format="YYYY-MM-DDTHH:mm:ss"
+                            size="small"  // Kích thước nhỏ
+                            className="border-gray-300 rounded-lg shadow-sm focus:ring-pink-500 focus:border-pink-500 w-full"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col xs={12} sm={12} md={12} lg={6}>
+                    <Form.Item
+                        label="End Date"
+                        name="enddate"
+                        labelCol={{ span: 24 }}
+                    >
+                        <DatePicker
+                            showTime
+                            format="YYYY-MM-DDTHH:mm:ss"
+                            size="small"  // Kích thước nhỏ
+                            className="border-gray-300 rounded-lg shadow-sm focus:ring-pink-500 focus:border-pink-500 w-full"
+                        />
                     </Form.Item>
                 </Col>
             </Row>

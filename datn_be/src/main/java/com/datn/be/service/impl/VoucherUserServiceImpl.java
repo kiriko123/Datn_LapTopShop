@@ -27,7 +27,7 @@ public class VoucherUserServiceImpl implements VoucherUserService {
     public UserVoucherResponseDTO claimVoucher(Long userId, Long voucherId) {
         // Kiểm tra người dùng
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vui lòng đăng nhập trước khi lưu voucher"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vui lòng đăng nhập để lưu và sử dụng voucher"));
 
         // Kiểm tra voucher
         Voucher voucher = voucherRepository.findById(voucherId)
@@ -51,6 +51,8 @@ public class VoucherUserServiceImpl implements VoucherUserService {
                 voucherUserRepository.save(voucherUser); // Lưu lại bản ghi
                 // Trả về thông báo đã reset voucher
                 return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Voucher đã được bạn sử dụng và bạn có thể lưu lại.");
+//                return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Bạn đã sử dụng voucher này rồi");
+
             } else {
                 // Nếu useDate là null, có nghĩa là voucher chưa được sử dụng
                 return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Bạn đã lưu voucher này rồi.");
@@ -64,7 +66,7 @@ public class VoucherUserServiceImpl implements VoucherUserService {
                     .build();
             voucherUserRepository.save(voucherUser); // Lưu mới voucherUser
             // Trả về thông báo đã lưu thành công voucher
-            return UserVoucherResponseDTO.fromVoucherUser(voucherUser, "Voucher đã được lưu thành công.");
+            return UserVoucherResponseDTO.fromVoucherUser(voucherUser, null);
         }
     }
 

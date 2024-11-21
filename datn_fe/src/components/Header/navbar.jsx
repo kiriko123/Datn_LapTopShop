@@ -24,6 +24,7 @@ import { CiHome } from "react-icons/ci";
 import { GrProductHunt } from "react-icons/gr";
 import { SearchBar } from './SearchBar';
 import { SearchResultsList } from './SearchResultsList';
+import { FaOpencart } from "react-icons/fa";
 
 
 const Navbar = (props) => {
@@ -196,7 +197,7 @@ const Navbar = (props) => {
                     <div className="nav">
                         <div className="logo">
                             <i className="fas"> <FaBookQuran /> </i>
-                            <a href="" onClick={() => navigate('/')}>Electronic Store</a>
+                            <a href="" onClick={() => navigate('/')}>Laptop Store</a>
                         </div>
 
                         <div className="search-bar">
@@ -281,37 +282,98 @@ const Navbar = (props) => {
                                 visible={visible}
                             >
                                 {isAuthenticated && user && (
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        paddingBottom: '10px',
-                                    }}>
-                                        <Space style={{ gap: '10px' }}>
+                                    <div className="flex justify-between items-center pb-2">
+                                        <div className="flex items-center gap-3">
                                             <Avatar src={urlAvatar} />
-                                            <span> {user?.name} </span>
-                                        </Space>
-                                        <i onClick={onClose} className="fas fa-times" style={{
-                                            cursor: 'pointer', fontSize: '20px'
-                                        }}></i>
+                                            <span className="font-medium">{user?.name}</span>
+                                        </div>
+                                        <i
+                                            onClick={onClose}
+                                            className="fas fa-times cursor-pointer text-2xl"
+                                        ></i>
                                     </div>
                                 )}
-                                <div className="nav-mobile">
-                                    <div onClick={() => navigate('/')}><FaHome /><span>{t('home')}</span></div>
-                                    <div onClick={() => navigate('/product')}><GrProductHunt /><span>{t('product')}</span></div>
-                                    <div onClick={() => navigate('/about')}><MdContactSupport /><span>{t('about')}</span></div>
-                                    <div onClick={() => navigate('/contact')}><MdContactPhone /><span>{t('contact')}</span></div>
-                                    {!isAuthenticated || user === null ? 
-                                        <div onClick={() => navigate('/auth')}><RiLoginCircleFill /><span>{t('login_register')}</span></div> :
+
+                                <div className="nav-mobile space-y-3">
+                                    <div
+                                        onClick={() => navigate('/')}
+                                        className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                    >
+                                        <FaHome />
+                                        <span>{t('home')}</span>
+                                    </div>
+                                    <div
+                                        onClick={() => navigate('/product')}
+                                        className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                    >
+                                        <GrProductHunt />
+                                        <span>{t('product')}</span>
+                                    </div>
+                                    <div
+                                        onClick={() => navigate('/about')}
+                                        className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                    >
+                                        <MdContactSupport />
+                                        <span>{t('about')}</span>
+                                    </div>
+                                    <div
+                                        onClick={() => navigate('/contact')}
+                                        className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                    >
+                                        <MdContactPhone />
+                                        <span>{t('contact')}</span>
+                                    </div>
+                                    {!isAuthenticated || user === null ? (
+                                        <div
+                                            onClick={() => navigate('/auth')}
+                                            className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                        >
+                                            <RiLoginCircleFill />
+                                            <span>{t('login_register')}</span>
+                                        </div>
+                                    ) : (
                                         <>
                                             {role !== 'ROLE_ADMIN' && (
-                                                <div onClick={() => navigate('/order')}>Giỏ hàng</div>
+                                                <div
+                                                    onClick={() => navigate('/order')}
+                                                    className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                                >
+                                                    <FaOpencart />
+                                                    Cart
+                                                </div>
                                             )}
-                                            <div onClick={() => navigate('/history')}><MdHistoryEdu /><span>History</span></div>
-                                            <div onClick={() => navigate('/admin')}><RiAdminFill /><span>Admin page</span></div>
-                                            <div onClick={handleLogout}><RiLogoutBoxFill /><span>{t('logout')}</span></div>
+                                            {role !== 'ROLE_ADMIN' && (
+
+                                                <div
+                                                    onClick={() => navigate('/history')}
+                                                    className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                                >
+                                                    <MdHistoryEdu/>
+                                                    <span>History</span>
+                                                </div>
+
+                                            )}
+
+                                            {role === 'ROLE_ADMIN' && (
+                                                <div
+                                                    onClick={() => navigate('/admin')}
+                                                    className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                                >
+                                                    <RiAdminFill/>
+                                                    <span>Admin page</span>
+                                                </div>
+                                            )}
+
+
+                                            <div
+                                                onClick={handleLogout}
+                                                className="flex items-center gap-2 cursor-pointer hover:text-purple-600 transition"
+                                            >
+                                                <RiLogoutBoxFill/>
+                                                <span>Logout</span>
+                                            </div>
                                         </>
-                                    }
+                                    )}
                                 </div>
                             </Drawer>
                         </div>
