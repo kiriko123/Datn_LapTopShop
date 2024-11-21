@@ -24,6 +24,7 @@ public class Voucher {
 
     String voucherCode;
     float voucherValue;
+    float priceApply;
     String description;
     Instant startDate;
     Instant endDate;

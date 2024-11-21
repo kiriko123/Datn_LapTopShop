@@ -8,7 +8,7 @@ const VoucherModalCreate = (props) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        const { voucherCode, voucherValue, startDate, endDate, active, description } = values;
+        const { voucherCode, voucherValue, priceApply, startDate, endDate, active, description } = values;
 
         // Chuyển đổi startDate và endDate thành định dạng ISO
         const isoStartDate = new Date(startDate).toISOString();
@@ -20,6 +20,7 @@ const VoucherModalCreate = (props) => {
             const res = await callCreateVoucher({
                 voucherCode,
                 voucherValue,
+                priceApply,
                 startDate: isoStartDate,
                 endDate: isoEndDate,
                 active,
@@ -87,6 +88,11 @@ const VoucherModalCreate = (props) => {
                     <Col xs={24} sm={12}>
                         <Form.Item label="Ngày kết thúc" name="endDate" rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc!' }]}>
                             <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24}>
+                        <Form.Item label="Tổng đơn hàng được áp dụng" name="priceApply" rules={[{ required: true, message: 'Vui lòng tổng đơn hàng có thể áp dụng!' }]}>
+                            <InputNumber min={1} style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
                     <Col xs={24}>

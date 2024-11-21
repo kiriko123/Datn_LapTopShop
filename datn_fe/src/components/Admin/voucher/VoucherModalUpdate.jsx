@@ -14,6 +14,7 @@ const VoucherModalUpdate = (props) => {
             form.setFieldsValue({
                 voucherCode: dataUpdate.voucherCode || '',
                 voucherValue: dataUpdate.voucherValue || 0,
+                priceApply: dataUpdate.priceApply || 1,
                 startDate: dataUpdate.startDate ? moment(dataUpdate.startDate) : null,
                 endDate: dataUpdate.endDate ? moment(dataUpdate.endDate) : null,
                 active: dataUpdate.active,
@@ -36,6 +37,7 @@ const VoucherModalUpdate = (props) => {
                 id: dataUpdate.id, // Thêm ID vào yêu cầu
                 voucherCode: values.voucherCode,
                 voucherValue: values.voucherValue,
+                priceApply: values.priceApply,
                 description: values.description,
                 startDate: isoStartDate,
                 endDate: isoEndDate,
@@ -121,6 +123,15 @@ const VoucherModalUpdate = (props) => {
                             rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc!' }]}
                         >
                             <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24}>
+                        <Form.Item
+                            label="Tổng đơn hàng được áp dụng(VND)"
+                            name="priceApply"
+                            rules={[{ required: true, message: 'Vui lòng tổng đơn hàng có thể áp dụng!' }]}
+                        >
+                            <InputNumber min={0} style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={12}>

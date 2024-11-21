@@ -15,7 +15,7 @@ public class VoucherCreateRequestDTO {
     @NotNull
     @PositiveOrZero
     float voucherValue;
-
+    float priceApply;
     String description;
 
     @NotNull
