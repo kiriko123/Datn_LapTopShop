@@ -30,7 +30,7 @@ public class VoucherUser {
     @Column(name = "use_date")
     Instant useDate;  // Lưu ngày sử dụng voucher của người dùng
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at")
     Instant createdAt = Instant.now();  // Lưu thời gian tạo bản ghi
 
     @PrePersist

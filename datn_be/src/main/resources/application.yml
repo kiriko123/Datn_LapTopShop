@@ -35,7 +35,7 @@ spring:
         format_sql: false
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     open-in-view: true
 khang:
   jwt:
@@ -54,7 +54,7 @@ payment:
   vnPay:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
     tmnCode: BAI2QNS0
-    secretKey: ZCKZD1H6CQBQ20T086FPSOO84KCMP0J9
+    secretKey: 4TWEULGX5857FVHOJ9B57N3KKSGAK1ME
     returnUrl: http://localhost:8080/api/v1/payment/vn-pay-callback
     version: 2.1.0
     command: pay

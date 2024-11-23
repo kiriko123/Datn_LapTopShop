@@ -20,6 +20,7 @@ const Product = () => {
     const [filter, setFilter] = useState("filter=category.active:'true' and brand.active:'true' and active:'true' and quantity > 0");
     const [sortQuery, setSortQuery] = useState("sort=sold,desc");
     const [form] = Form.useForm();
+    const [sortDirection, setSortDirection] = useState('asc');
 
     useEffect(() => {
         const term = location.state?.searchTerm || ""; // Đặt mặc định là chuỗi rỗng
@@ -196,6 +197,7 @@ const Product = () => {
             label: `Giá Cao Đến Thấp`,
             children: <></>,
         },
+        
     ];
 
     const nonAccentVietnamese = (str) => {
@@ -241,6 +243,17 @@ const Product = () => {
     const handleRedirectProduct = (product) => {
         const slug = convertSlug(product.name);
         navigate(`/product/${slug}?id=${product.id}`);
+    }
+
+    // Hàm sắp xếp theo giá * discount
+    const handleSortByDiscountedPrice = () => {
+        const sorted = [...products].sort((a,b) => {
+            const priceA = a.price * a.discount;
+            const priceB = b.price * b.discount;
+            return sortDirection === 'asc' ? priceA - priceB : priceB - priceA;
+        });
+        setSortDirection(sorted);
+        setSortDirection(sortDirection === "asc" ? "desc" : "asc"); 
     }
 
     return (

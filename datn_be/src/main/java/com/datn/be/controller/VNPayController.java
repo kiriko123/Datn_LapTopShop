@@ -23,7 +23,7 @@ public class VNPayController {
     public ResponseObject<VNPayDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
-            return new ResponseObject<>(HttpStatus.OK, "Success", new VNPayDTO.VNPayResponse("00", "Success", ""));
+            return new ResponseObject<>(HttpStatus.OK, "Success", new VNPayDTO.VNPayResponse("00", "Success", "http://localhost:3000/order"));
         } else {
             return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Failed", null);
         }

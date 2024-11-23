@@ -97,7 +97,7 @@ const OrderTable = () => {
 
     const columns = [
         selectedColumns.id && {
-            title: 'STT',
+            title: 'ID',
             dataIndex: 'id',
             sorter: true,
         },

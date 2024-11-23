@@ -151,6 +151,13 @@ export const callPlaceOrder = (data) => {
         ...data
     })
 }
+
+// Thanh toán VNPAY
+export const callVNPayPayment = (data) => {
+    return axios.post('/api/v1/payment/vnpay', data);
+};
+
+
 export const callOrderHistory = (id) => {
     return axios.get(`/api/v1/order/${id}`);
 }
