@@ -89,6 +89,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/category/getAll").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/brand/getAll").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/product").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/payment/vn-pay").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/payment/vn-pay-callback").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/user").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("ADMIN")

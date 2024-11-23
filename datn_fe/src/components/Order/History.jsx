@@ -129,6 +129,10 @@ const History = () => {
             render: (item, record, index) => (<>{index + 1}</>),
         },
         {
+            title: 'Mã đơn hàng',
+            dataIndex: 'id',
+        },
+        {
             title: 'Thời gian',
             dataIndex: 'createdAt',
             render: (item) => moment(item).format('DD-MM-YYYY hh:mm:ss'),
@@ -256,13 +260,13 @@ const History = () => {
                 </div>
                 <Divider />
                 <Descriptions title="Thông tin đơn hàng" bordered>
-                    <Descriptions.Item label="Mã đơn hàng" span={12} >{selectedOrder?.id}</Descriptions.Item>
-                    <Descriptions.Item label="Thời gian" span={12}>{moment(selectedOrder?.createdAt).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
+                    <Descriptions.Item label="Mã đơn hàng" span={6} >{selectedOrder?.id}</Descriptions.Item>
+                    <Descriptions.Item label="Thời gian" span={6}>{moment(selectedOrder?.createdAt).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
                     <Descriptions.Item label="Địa chỉ nhận hàng" span={12}>{selectedOrder?.receiverAddress}</Descriptions.Item>
-                    <Descriptions.Item label="Người nhận" span={12}>{selectedOrder?.receiverName}</Descriptions.Item>
-                    <Descriptions.Item label="Số điện thoại" span={12}>{selectedOrder?.receiverPhone}</Descriptions.Item>
+                    <Descriptions.Item label="Người nhận" span={6}>{selectedOrder?.receiverName}</Descriptions.Item>
+                    <Descriptions.Item label="Số điện thoại" span={6}>{selectedOrder?.receiverPhone}</Descriptions.Item>
                     {/* Hiển thị Voucher đã sử dụng */}
-                    <Descriptions.Item label="Voucher đã sử dụng">
+                    <Descriptions.Item span={12} label="Voucher đã sử dụng">
                         {selectedOrder?.voucherCode
                             ? `${selectedOrder.voucherCode} - Giảm giá: ${selectedOrder.voucherValue}%`
                             : 'Chưa sử dụng voucher'}

@@ -5,8 +5,28 @@ import {callAdminUpdateOrder, callFetchOrder, callUserUpdateOrder} from '../../.
 const OrderModalUpdate = (props) => {
     const { openModalUpdate, setOpenModalUpdate, dataUpdate, setDataUpdate, fetchOrder } = props;
     const [isSubmit, setIsSubmit] = useState(false);
+    const [validStatuses, setValidStatuses] = useState([]);
 
     const [form] = Form.useForm();
+
+
+    // Hàm xác định trạng thái hợp lệ
+    const getValidStatuses = (currentStatus) => {
+        switch (currentStatus) {
+            case 'PENDING':
+                return ['PROCESSING', 'CANCELLED'];
+            case 'PROCESSING':
+                return ['SHIPPING', 'CANCELLED'];
+            case 'SHIPPING':
+                return ['DELIVERED', 'CANCELLED'];
+            case 'DELIVERED':
+                return []; // Không thể thay đổi trạng thái nếu đã giao hàng
+            case 'CANCELLED':
+                return []; // Không thể thay đổi trạng thái nếu đã hủy
+            default:
+                return [];
+        }
+    };
 
     const onFinish = async (values) => {
         const { newStatus, description, receiverAddress } = values;
@@ -40,7 +60,11 @@ const OrderModalUpdate = (props) => {
             description: dataUpdate?.description,
             receiverAddress: dataUpdate?.receiverAddress // Địa chỉ
         });
-    }, [dataUpdate])
+
+        if (dataUpdate?.status) {
+            setValidStatuses(getValidStatuses(dataUpdate.status)); // Cập nhật trạng thái hợp lệ
+        }
+    }, [dataUpdate, form])
 
     return (
         <Modal
@@ -87,28 +111,22 @@ const OrderModalUpdate = (props) => {
                     </Select>
                 </Form.Item>
 
-                <Form.Item
+              {/* Chọn trạng thái mới */}
+              <Form.Item
                     labelCol={{ span: 24 }}
                     label="Trạng thái mới"
                     name="newStatus"
                     rules={[{ required: true, message: 'Vui lòng chọn trạng thái mới!' }]}
-
                 >
-                    {/*<Radio.Group >*/}
-                    {/*    <Radio value="PENDING">PENDING</Radio>*/}
-                    {/*    <Radio value="PROCESSING">PROCESSING</Radio>*/}
-                    {/*    <Radio value="SHIPPING">SHIPPING</Radio>*/}
-                    {/*    <Radio value="DELIVERED">DELIVERED</Radio>*/}
-                    {/*    <Radio value="CANCELLED">CANCELLED</Radio>*/}
-                    {/*</Radio.Group>*/}
                     <Select>
-                        <Select.Option value="PENDING">PENDING</Select.Option>
-                        <Select.Option value="PROCESSING">PROCESSING</Select.Option>
-                        <Select.Option value="SHIPPING">SHIPPING</Select.Option>
-                        <Select.Option value="DELIVERED">DELIVERED</Select.Option>
-                        <Select.Option value="CANCELLED">CANCELLED</Select.Option>
+                        {validStatuses.map((status) => (
+                            <Select.Option key={status} value={status}>
+                                {status}
+                            </Select.Option>
+                        ))}
                     </Select>
                 </Form.Item>
+
 
                 <Form.Item
                     labelCol={{ span: 24 }}

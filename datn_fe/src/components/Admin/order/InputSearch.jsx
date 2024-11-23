@@ -19,7 +19,9 @@ const InputSearch = (props) => {
 
     const onFinish = (values) => {
         let queryParts = [];
-
+        if (values.id) {
+            queryParts.push(`id=${values.id}`);
+        }
         if (values.receiverName) {
             queryParts.push(`receiverName~%27${values.receiverName}%27`);
         }
@@ -51,6 +53,15 @@ const InputSearch = (props) => {
     return (
         <Form form={form} name="advanced_search" style={formStyle} onFinish={onFinish}>
             <Row gutter={24} justify={"center"}>
+            <Col xs={12} sm={12} md={12} lg={5}>
+                    <Form.Item
+                        labelCol={{ span: 24 }}
+                        name={`id`}
+                        label={`ID`}
+                    >
+                        <Input placeholder="input id!" />
+                    </Form.Item>
+                </Col>
 
                 <Col xs={12} sm={12} md={12} lg={5}>
                     <Form.Item
