@@ -15,6 +15,8 @@ import * as XLSX from "xlsx";
 import OrderViewDetail from "./OrderViewDetail.jsx";
 import OrderModalUpdate from "./OrderModalUpdate.jsx";
 import moment from "moment/moment.js";
+import { render } from 'less';
+import { BsRecord } from 'react-icons/bs';
 
 const OrderTable = () => {
     const [listOrder, setListOrder] = useState([]);
@@ -97,8 +99,13 @@ const OrderTable = () => {
 
     const columns = [
         selectedColumns.id && {
-            title: 'ID',
+            title: 'MĐH',
             dataIndex: 'id',
+            render: (id, record) => {
+                // Đảm bảo record.createdAt là giá trị từ dữ liệu gốc
+                if (!record.createdAt) return id; // Tránh lỗi nếu `createdAt` không tồn tại
+                return `${moment(record.createdAt).format('YYYYMM')}${id}`;
+            },
             sorter: true,
         },
         selectedColumns.createdAt && {

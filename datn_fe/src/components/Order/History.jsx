@@ -131,6 +131,10 @@ const History = () => {
         {
             title: 'Mã đơn hàng',
             dataIndex: 'id',
+            render: (id, record) => {
+                if (!record.createdAt) return id; 
+                return `${moment(record.createdAt).format('YYYYMM')}${id}`;
+            },
         },
         {
             title: 'Thời gian',

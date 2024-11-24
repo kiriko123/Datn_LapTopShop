@@ -57,7 +57,7 @@ const InputSearch = (props) => {
                     <Form.Item
                         labelCol={{ span: 24 }}
                         name={`id`}
-                        label={`ID`}
+                        label={`Mã đơn hàng`}
                     >
                         <Input placeholder="input id!" />
                     </Form.Item>
