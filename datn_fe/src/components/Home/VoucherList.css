@@ -127,3 +127,19 @@
 .voucher-button:hover {
     background-color: #3B1E54; /* Màu đậm hơn khi hover */
 }
+.add-voucher-btn {
+    background-color: red; /* Màu nền */
+    color: #fff; /* Màu chữ */
+    padding: 5px 10px; /* Khoảng cách bên trong */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo góc */
+    font-size: 16px; /* Kích thước chữ */
+    cursor: pointer; /* Thay đổi con trỏ khi hover */
+    transition: background-color 0.3s ease; /* Hiệu ứng hover */
+    float: right;
+    margin-top: 10px;
+}
+
+.add-voucher-btn:hover {
+    background-color: #e55d00; /* Màu nền khi hover */
+}

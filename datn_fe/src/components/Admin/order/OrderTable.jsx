@@ -101,10 +101,8 @@ const OrderTable = () => {
         selectedColumns.id && {
             title: 'MĐH',
             dataIndex: 'id',
-            render: (id, record) => {
-                // Đảm bảo record.createdAt là giá trị từ dữ liệu gốc
-                if (!record.createdAt) return id; // Tránh lỗi nếu `createdAt` không tồn tại
-                return `${moment(record.createdAt).format('YYYYMM')}${id}`;
+            render: (item, record) => {
+                return `${moment(record.createdAt).format('YYYYMM')}${record.id}`;
             },
             sorter: true,
         },
