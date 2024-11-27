@@ -122,15 +122,13 @@ const History = () => {
     };
 
     const columns = [
-        {
-            title: 'STT',
-            dataIndex: 'index',
-            key: 'index',
-            render: (item, record, index) => (<>{index + 1}</>),
-        },
+        
         {
             title: 'Mã đơn hàng',
             dataIndex: 'id',
+           render: (item, record) => {
+            return `${moment(record.createdAt).format('YYYYMM')}${record.id}`
+           }
         },
         {
             title: 'Thời gian',
