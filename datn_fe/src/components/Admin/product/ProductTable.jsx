@@ -15,6 +15,7 @@ import {callDeleteProduct, callFetchProduct} from "../../../services/api.js";
 import ProductViewDetail from "./ProductViewDetail.jsx";
 import ProductModalCreate from "./ProductModelCreate.jsx";
 import ProductModalUpdate from "./ProductModalUpdate.jsx";
+import moment from "moment/moment.js";
 
 const BookTable = () => {
     const [listProduct, setListProduct] = useState([]);
@@ -171,11 +172,17 @@ const BookTable = () => {
         selectedColumns.createdAt && {
             title: 'CreatedAt',
             dataIndex: 'createdAt',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         selectedColumns.updatedAt && {
             title: 'UpdatedAt',
             dataIndex: 'updatedAt',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         selectedColumns.createdBy && {

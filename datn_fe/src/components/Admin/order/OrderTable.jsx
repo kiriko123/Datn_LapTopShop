@@ -15,8 +15,8 @@ import * as XLSX from "xlsx";
 import OrderViewDetail from "./OrderViewDetail.jsx";
 import OrderModalUpdate from "./OrderModalUpdate.jsx";
 import moment from "moment/moment.js";
-import { render } from 'less';
-import { BsRecord } from 'react-icons/bs';
+// import { render } from 'less';
+// import { BsRecord } from 'react-icons/bs';
 
 const OrderTable = () => {
     const [listOrder, setListOrder] = useState([]);
@@ -101,9 +101,9 @@ const OrderTable = () => {
         selectedColumns.id && {
             title: 'MĐH',
             dataIndex: 'id',
-            render: (item, record) => {
-                return `${moment(record.createdAt).format('YYYYMM')}${record.id}`;
-            },
+            // render: (item, record) => {
+            //     return `${moment(record.createdAt).format('YYYYMM')}${record.id}`;
+            // },
             sorter: true,
         },
         selectedColumns.createdAt && {
