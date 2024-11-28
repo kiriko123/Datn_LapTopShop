@@ -16,6 +16,7 @@ import BrandModalCreate from "./BrandModalCreate.jsx";
 import * as XLSX from "xlsx";
 import BrandModalUpdate from "./BrandModalUpdate.jsx";
 import { CgColorPicker } from "react-icons/cg";
+import moment from "moment/moment.js";
 
 const BrandTable = () => {
     const [listBrand, setListBrand] = useState([]);
@@ -143,11 +144,17 @@ const BrandTable = () => {
         selectedColumns.createdAt && {
             title: 'CreatedAt',
             dataIndex: 'createdAt',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         selectedColumns.updatedAt && {
             title: 'UpdatedAt',
             dataIndex: 'updatedAt',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         selectedColumns.createdBy && {

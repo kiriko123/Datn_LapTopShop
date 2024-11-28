@@ -15,7 +15,7 @@ import SliderViewDetail from "./SliderViewDetail.jsx";
 import SliderModalCreate from "./SliderModalCreate.jsx";
 import * as XLSX from "xlsx";
 import SliderModalUpdate from "./SliderModalUpdate.jsx";
-
+import moment from "moment/moment.js";
 const SliderTable = () => {
     const [listSlider, setListSlider] = useState([]);
     const [current, setCurrent] = useState(1);
@@ -121,11 +121,17 @@ const SliderTable = () => {
         selectedColumns.createdAt && {
             title: 'Created At',
             dataIndex: 'createdAt',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         selectedColumns.updatedAt && {
             title: 'Updated At',
             dataIndex: 'updatedAt',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         selectedColumns.createdBy && {

@@ -14,6 +14,7 @@ import { callDeleteVoucher, callFetchListVoucher } from "../../../services/api.j
 import VoucherViewDetail from "./VoucherViewDetail.jsx";
 import VoucherModalCreate from "./VoucherModalCreate.jsx";
 import VoucherModalUpdate from "./VoucherModalUpdate.jsx";
+import moment from "moment/moment.js";
 
 const VoucherTable = () => {
     const [listVouchers, setListVouchers] = useState([]);
@@ -45,6 +46,9 @@ const VoucherTable = () => {
         {
             title: 'Ngày hết hạn',
             dataIndex: 'endDate',
+            render: (item) => {
+                return moment(item).format('DD-MM-YYYY hh:mm:ss');
+            },
             sorter: true,
         },
         {
