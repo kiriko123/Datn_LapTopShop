@@ -166,6 +166,7 @@ const StatisticTable = () => {
                         placeholder="Chọn năm"
                         onChange={handleYearChange}
                         style={{ width: 120 }}
+                        value={year || undefined}
                     >
                         {years.map(year => (
                             <Option key={year} value={year}>{year}</Option>
@@ -176,6 +177,7 @@ const StatisticTable = () => {
                         onChange={handleMonthChange}
                         style={{ width: 120 }}
                         disabled={!year}
+                        value={month || undefined}
                     >
                         {months.map(month => (
                             <Option key={month} value={month}>{month}</Option>
@@ -184,9 +186,9 @@ const StatisticTable = () => {
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
                     <Button icon={<ExportOutlined />} type="primary" onClick={handleExportData}>Export</Button>
-                    <Button type="ghost" onClick={() => { setYear(null); setMonth(null); }}>
-                        <ReloadOutlined />
-                    </Button>
+                    <Button type="ghost" onClick={() => { setYear(""); setMonth(""); }}>
+    <ReloadOutlined />
+</Button>
                 </div>
             </div>
         );

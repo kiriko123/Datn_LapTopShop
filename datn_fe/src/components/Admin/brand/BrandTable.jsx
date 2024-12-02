@@ -108,18 +108,18 @@ const BrandTable = () => {
             sorter: true,
         },
         selectedColumns.name && {
-            title: 'Name',
+            title: 'Tên thương hiệu',
             dataIndex: 'name',
             sorter: true,
         },
         selectedColumns.description && {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
             sorter: true,
         },
 
         selectedColumns.thumbnail && {
-            title: 'Thumbnail',
+            title: 'Hình ảnh',
             dataIndex: 'thumbnail',
             sorter: true,
             render: (text, record) => {
@@ -135,28 +135,28 @@ const BrandTable = () => {
             }
         },
         selectedColumns.active && {
-            title: 'Active',
+            title: 'Kích hoạt',
             dataIndex: 'active',
             sorter: true,
             render: (enabled) => (enabled ? 'Actived' : 'Disabled'), // Chuyển đổi giá trị true/false
         },
         selectedColumns.createdAt && {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             sorter: true,
         },
         selectedColumns.updatedAt && {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             sorter: true,
         },
         selectedColumns.createdBy && {
-            title: 'CreatedBy',
+            title: 'Tạo bởi',
             dataIndex: 'createdBy',
             sorter: true,
         },
         selectedColumns.updatedBy && {
-            title: 'UpdatedBy',
+            title: 'Cập nhật bởi',
             dataIndex: 'updatedBy',
             sorter: true,
         },

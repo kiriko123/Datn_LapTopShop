@@ -68,12 +68,12 @@ const BookViewDetail = (props) => {
                     column={{ xs: 1, sm: 2 }} // Responsive cột
                 >
                     <Descriptions.Item label="Id">{dataViewDetail?.id}</Descriptions.Item>
-                    <Descriptions.Item label="Name">{dataViewDetail?.name}</Descriptions.Item>
-                    <Descriptions.Item label="Brand">{dataViewDetail?.brand?.name}</Descriptions.Item>
-                    <Descriptions.Item label="Price">{dataViewDetail?.price}</Descriptions.Item>
-                    <Descriptions.Item label="Quantity">{dataViewDetail?.quantity}</Descriptions.Item>
-                    <Descriptions.Item label="Sold">{dataViewDetail?.sold}</Descriptions.Item>
-                    <Descriptions.Item label="Discount">{dataViewDetail?.discount}</Descriptions.Item>
+                    <Descriptions.Item label="Tên sản phẩm">{dataViewDetail?.name}</Descriptions.Item>
+                    <Descriptions.Item label="Thương hiệu">{dataViewDetail?.brand?.name}</Descriptions.Item>
+                    <Descriptions.Item label="Giá">{dataViewDetail?.price}</Descriptions.Item>
+                    <Descriptions.Item label="Số lượng">{dataViewDetail?.quantity}</Descriptions.Item>
+                    <Descriptions.Item label="Đã bán">{dataViewDetail?.sold}</Descriptions.Item>
+                    <Descriptions.Item label="Giảm giá">{dataViewDetail?.discount}</Descriptions.Item>
                     <Descriptions.Item label="Sale">
                         {dataViewDetail?.sale ? 'Sale' : 'Not sale'}
                     </Descriptions.Item>
@@ -83,26 +83,26 @@ const BookViewDetail = (props) => {
                     <Descriptions.Item label="Active">
                         {dataViewDetail?.active ? 'Active' : 'Inactive'}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Category" span={2}>
+                    <Descriptions.Item label="Danh mục" span={2}>
                         <Badge status="processing" text={dataViewDetail?.category?.name} />
                     </Descriptions.Item>
-                    <Descriptions.Item label="Created At">
+                    <Descriptions.Item label="Ngày tạo">
                         {moment(dataViewDetail?.createdAt).format('DD-MM-YYYY hh:mm:ss')}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Updated At">
+                    <Descriptions.Item label="Ngày cập nhật">
                         {moment(dataViewDetail?.updatedAt).format('DD-MM-YYYY hh:mm:ss')}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Created By">
+                    <Descriptions.Item label="Tạo bởi">
                         {dataViewDetail?.createdBy}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Updated By">
+                    <Descriptions.Item label="Cập nhật bởi">
                         {dataViewDetail?.updatedBy}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Description">
+                    <Descriptions.Item label="Mô tả">
                         {dataViewDetail?.description}
                     </Descriptions.Item>
                 </Descriptions>
-                <Divider orientation="left">Product Images</Divider>
+                <Divider orientation="left">Hình ảnh sản phẩm</Divider>
 
                 <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"

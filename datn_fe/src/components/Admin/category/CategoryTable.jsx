@@ -104,7 +104,7 @@ const CategoryTable = () => {
             sorter: true,
         },
         selectedColumns.name && {
-            title: 'Name',
+            title: 'Tên danh mục',
             dataIndex: 'name',
             sorter: true,
         },
@@ -114,7 +114,7 @@ const CategoryTable = () => {
         //     sorter: true,
         // },
         selectedColumns.thumbnail && {
-            title: 'Thumbnail',
+            title: 'Hình ảnh',
             dataIndex: 'thumbnail',
             sorter: true,
             render: (text, record) => {
@@ -130,7 +130,7 @@ const CategoryTable = () => {
             }
         },
         selectedColumns.description && {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
             sorter: true,
         },
@@ -141,28 +141,28 @@ const CategoryTable = () => {
             render: (enabled) => (enabled ? 'Yes' : 'No'), // Chuyển đổi giá trị true/false
         },
         selectedColumns.active && {
-            title: 'Active',
+            title: 'Kích hoạt',
             dataIndex: 'active',
             sorter: true,
             render: (enabled) => (enabled ? 'Actived' : 'Disabled'), // Chuyển đổi giá trị true/false
         },
         selectedColumns.createdAt && {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             sorter: true,
         },
         selectedColumns.updatedAt && {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             sorter: true,
         },
         selectedColumns.createdBy && {
-            title: 'CreatedBy',
+            title: 'Tạo bởi',
             dataIndex: 'createdBy',
             sorter: true,
         },
         selectedColumns.updatedBy && {
-            title: 'UpdatedBy',
+            title: 'Cập nhật bởi',
             dataIndex: 'updatedBy',
             sorter: true,
         },
@@ -176,8 +176,8 @@ const CategoryTable = () => {
                     }} />
                     <Popconfirm
                         placement="leftTop"
-                        title="Xác nhận xóa category"
-                        description="Bạn có chắc chắn muốn xóa category này?"
+                        title="Xác nhận xóa danh mục"
+                        description="Bạn có chắc chắn muốn xóa danh mục này?"
                         onConfirm={() => handleDeleteCategory(record.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -213,7 +213,7 @@ const CategoryTable = () => {
     const handleDeleteCategory = async (categoryId) => {
         const res = await callDeleteCategory(categoryId);
         if (res?.data?.statusCode === 204) {
-            message.success('Xóa category thành công');
+            message.success('Xóa danh mục thành công');
             fetchCategories();
         } else {
             notification.error({

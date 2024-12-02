@@ -51,7 +51,7 @@ const UserInfo = (props) => {
         if (res && res.data) {
             dispatch(doUpdateUserInfoAction({ id, firstName, name, imageUrl: userAvatar, gender, age, phoneNumber, address }));
             notification.success({
-                message: "Cập nhật thông tin user thành công",
+                message: "Cập nhật thông tin tài khoản thành công",
             });
         } else {
             notification.error({
@@ -117,70 +117,70 @@ const UserInfo = (props) => {
                             </Col>
                             <Col xs={24} sm={8}>
                                 <Form.Item
-                                    label="Firstname"
+                                    label="Tên"
                                     name="firstName"
                                     initialValue={user?.firstName}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'FirstName không được để trống!'}]}
+                                    rules={[{required: true, message: 'Tên không được để trống!'}]}
                                 >
                                     <Input style={{borderRadius: '8px'}}/>
                                 </Form.Item>
                             </Col>
                             <Col xs={24} sm={8}>
                                 <Form.Item
-                                    label="Lastname"
+                                    label="Họ"
                                     name="name"
                                     initialValue={user?.name}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'Lastname không được để trống!'}]}
+                                    rules={[{required: true, message: 'Họ không được để trống!'}]}
                                 >
                                     <Input style={{borderRadius: '8px'}}/>
                                 </Form.Item>
                             </Col>
                             <Col xs={24} sm={8}>
                                 <Form.Item
-                                    label="Gender"
+                                    label="Giới tính"
                                     name="gender"
                                     initialValue={user?.gender}
-                                    rules={[{required: true, message: 'Please select your gender!'}]}
+                                    rules={[{required: true, message: 'Vui lòng chọn giới tính!'}]}
                                     labelCol={{ span: 24 }}
                                 >
                                     <Radio.Group>
-                                        <Radio value="MALE">Male</Radio>
-                                        <Radio value="FEMALE">Female</Radio>
-                                        <Radio value="OTHER">Other</Radio>
+                                        <Radio value="MALE">Nam</Radio>
+                                        <Radio value="FEMALE">Nữ</Radio>
+                                        <Radio value="OTHER">Khác</Radio>
                                     </Radio.Group>
                                 </Form.Item>
                             </Col>
                             <Col xs={24} sm={8}>
                                 <Form.Item
-                                    label="Phone number"
+                                    label="Số điện thoại"
                                     name="phoneNumber"
                                     initialValue={user?.phoneNumber}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'Phone number không được để trống!'}]}
+                                    rules={[{required: true, message: 'Số điện thoại không được để trống!'}]}
                                 >
                                     <Input style={{borderRadius: '8px'}}/>
                                 </Form.Item>
                             </Col>
                             <Col xs={24} sm={8}>
                                 <Form.Item
-                                    label="Age"
+                                    label="Tuổi"
                                     name="age"
                                     initialValue={user?.age}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'Please enter your age!'}]}
+                                    rules={[{required: true, message: 'Vui lòng nhập tuổi!'}]}
                                 >
                                     <InputNumber min={0} max={120} style={{width: '100%', borderRadius: '8px'}}/>
                                 </Form.Item>
                             </Col>
                             <Col xs={24} sm={24}>
                                 <Form.Item
-                                    label="Address"
+                                    label="Địa chỉ"
                                     name="address"
                                     initialValue={user?.address}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'Address không được để trống!'}]}
+                                    rules={[{required: true, message: 'Địa chỉ không được để trống!'}]}
                                 >
                                     <Input style={{borderRadius: '8px'}}/>
                                 </Form.Item>

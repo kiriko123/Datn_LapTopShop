@@ -295,7 +295,7 @@ const ProductModalUpdate = (props) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12}>
-                            <Form.Item label="Brand" name="brand"
+                            <Form.Item label="Thương hiệu" name="brand"
                                        rules={[{required: true, message: 'Vui lòng chọn thể loại!'}]}>
                                 <Select showSearch allowClear options={listBrand}/>
                             </Form.Item>
@@ -319,7 +319,7 @@ const ProductModalUpdate = (props) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={6}>
-                            <Form.Item label="Discount" name="discount"
+                            <Form.Item label="Giảm giá" name="discount"
                                        rules={[{required: true, message: 'Vui lòng nhập discount!'}]} initialValue={0}>
                                 <InputNumber min={1} style={{width: '100%'}} defaultValue={0}/>
                             </Form.Item>
@@ -368,7 +368,7 @@ const ProductModalUpdate = (props) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={24}>
-                            <Form.Item label="Description" name="description"
+                            <Form.Item label="Mô tả" name="description"
                                        rules={[{required: true, message: 'Vui lòng nhập description!'}]}>
                                 <TextArea rows={4}/>
                             </Form.Item>

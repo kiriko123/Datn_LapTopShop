@@ -115,7 +115,7 @@ const OrderTable = () => {
             sorter: true,
         },
         selectedColumns.totalPrice && {
-            title: 'Tổng số tiển',
+            title: 'Tổng số tiền',
             dataIndex: 'totalPrice',
             render: (item) => {
                 return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item);
@@ -139,12 +139,12 @@ const OrderTable = () => {
             sorter: true,
         },
         selectedColumns.paymentMethod && {
-            title: 'Payment Method',
+            title: 'Phương thức thanh toán',
             dataIndex: 'paymentMethod',
             sorter: true,
         },
         selectedColumns.description && {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
             sorter: true,
         },

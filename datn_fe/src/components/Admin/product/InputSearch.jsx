@@ -79,9 +79,9 @@ const InputSearch = (props) => {
                     <Form.Item
                         labelCol={{ span: 24 }}
                         name={`name`}
-                        label={`Name`}
+                        label={`Tên sản phẩm`}
                     >
-                        <Input placeholder="Please input name!" />
+                        <Input placeholder="Nhập tên sản phẩm!" />
                     </Form.Item>
                 </Col>
 
@@ -90,7 +90,7 @@ const InputSearch = (props) => {
                     <Form.Item
                         labelCol={{ span: 24 }}
                         name={`brand`}
-                        label={`Brand`}
+                        label={`Thương hiệu`}
                     >
                         <Select
                             defaultValue={null}
@@ -106,11 +106,11 @@ const InputSearch = (props) => {
                     <Form.Item
                         labelCol={{ span: 24 }}
                         name={`active`}
-                        label={`Active`}
+                        label={`Kích hoạt`}
                     >
-                        <Select placeholder="Select active">
+                        <Select>
                             <Option value="true">Active</Option>
-                            <Option value="false">Inactive</Option>
+                            <Option value="false">Disable</Option>
                         </Select>
                     </Form.Item>
                 </Col>
@@ -120,7 +120,7 @@ const InputSearch = (props) => {
                     <Form.Item
                         labelCol={{ span: 24 }}
                         name={`category`}
-                        label={`Category`}
+                        label={`Danh mục`}
                     >
                         <Select
                             defaultValue={null}
@@ -134,7 +134,7 @@ const InputSearch = (props) => {
             <Row>
                 <Col span={24} style={{ textAlign: 'right' }}>
                     <Button type="primary" htmlType="submit">
-                        Search
+                        Tìm kiếm
                     </Button>
                     <Button
                         style={{ margin: '0 8px' }}
@@ -143,7 +143,7 @@ const InputSearch = (props) => {
                             props.setFilter("");
                         }}
                     >
-                        Clear
+                        Xóa
                     </Button>
                 </Col>
             </Row>
