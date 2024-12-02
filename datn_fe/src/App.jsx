@@ -89,7 +89,7 @@ export default function App() {
                 },
 
                 {
-                    path: "/order", //Làm rùi mà :(
+                    path: "/order", 
                     element: <OrderPage />
                 },
                 {

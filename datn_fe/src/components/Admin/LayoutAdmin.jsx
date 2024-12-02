@@ -35,18 +35,18 @@ const items = [
         icon: <AppstoreOutlined />
     },
     {
-        label: <Link to='/admin/user'>Users</Link>,
+        label: <Link to='/admin/user'>Khách hàng</Link>,
         key: 'user',
         icon: <UserOutlined />,
     },
     {
 
-        label: <Link to='/admin/category'>Categories</Link>,
+        label: <Link to='/admin/category'>Danh mục</Link>,
         key: 'category',
         icon: <BiCategoryAlt />
     },
     {
-        label: <Link to='/admin/product'>Product</Link>,
+        label: <Link to='/admin/product'>Sản phẩm</Link>,
         key: 'product',
         icon: <GrProductHunt />
     },
@@ -57,12 +57,12 @@ const items = [
 
     },
     {
-        label: <Link to='/admin/brand'>Brand</Link>,
+        label: <Link to='/admin/brand'>Thương hiệu</Link>,
         key: 'brand',
         icon: <TbBrandAirtable />
     },
     {
-        label: <Link to='/admin/order'>Orders</Link>,
+        label: <Link to='/admin/order'>Đơn hàng</Link>,
         key: 'order',
         icon: <DollarCircleOutlined />
     },
@@ -76,7 +76,7 @@ const items = [
 
     },
     {
-        label: <Link to='/admin/statistics'>statistics</Link>,
+        label: <Link to='/admin/statistics'>Thống kê</Link>,
         key: 'statistics',
         icon: <BarChartOutlined />
     }

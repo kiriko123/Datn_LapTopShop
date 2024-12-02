@@ -109,37 +109,37 @@ const BookTable = () => {
             sorter: true,
         },
         selectedColumns.name && {
-            title: 'Name',
+            title: 'Tên sản phẩm',
             dataIndex: 'name',
             sorter: true,
         },
         selectedColumns.category && {
-            title: 'Category',
+            title: 'Danh mục',
             dataIndex: ['category', 'name'],
             sorter: true,
         },
         selectedColumns.brand && {
-            title: 'Brand',
+            title: 'Thương hiệu',
             dataIndex: ['brand', 'name'],
             sorter: true,
         },
         selectedColumns.price && {
-            title: 'Price',
+            title: 'Giá',
             dataIndex: 'price',
             sorter: true,
         },
         selectedColumns.quantity && {
-            title: 'Quantity',
+            title: 'Số lượng',
             dataIndex: 'quantity',
             sorter: true,
         },
         selectedColumns.sold && {
-            title: 'Sold',
+            title: 'Đã bán',
             dataIndex: 'sold',
             sorter: true,
         },
         selectedColumns.discount && {
-            title: 'Discount',
+            title: 'Giảm giá',
             dataIndex: 'discount',
             sorter: true,
         },
@@ -156,13 +156,13 @@ const BookTable = () => {
             render: (active) => (active ? 'Hot' : 'Not hot'), // Chuyển đổi giá trị true/false
         },
         selectedColumns.active && {
-            title: 'Active',
+            title: 'Kích hoạt',
             dataIndex: 'active',
             sorter: true,
             render: (active) => (active ? 'Active' : 'Disabled'), // Chuyển đổi giá trị true/false
         },
         selectedColumns.description && {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
             sorter: true,
             render: (text) =>{
@@ -170,7 +170,7 @@ const BookTable = () => {
             },
         },
         selectedColumns.createdAt && {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             render: (item) => {
                 return moment(item).format('DD-MM-YYYY hh:mm:ss');
@@ -178,7 +178,7 @@ const BookTable = () => {
             sorter: true,
         },
         selectedColumns.updatedAt && {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             render: (item) => {
                 return moment(item).format('DD-MM-YYYY hh:mm:ss');
@@ -186,12 +186,12 @@ const BookTable = () => {
             sorter: true,
         },
         selectedColumns.createdBy && {
-            title: 'CreatedBy',
+            title: 'Tạo bởi',
             dataIndex: 'createdBy',
             sorter: true,
         },
         selectedColumns.updatedBy && {
-            title: 'UpdatedBy',
+            title: 'Cập nhật bởi',
             dataIndex: 'updatedBy',
             sorter: true,
         },

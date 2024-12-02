@@ -48,7 +48,7 @@ const BrandViewDetail = (props) => {
     return (
         <>
             <Drawer
-                title="Brand Detail"
+                title="Chi tiết thương hiệu"
                 width={"60vw"}
                 onClose={onClose}
                 open={openViewDetail}
@@ -58,22 +58,22 @@ const BrandViewDetail = (props) => {
                     column={2}
                 >
                     <Descriptions.Item label="Id">{dataViewDetail?.id}</Descriptions.Item>
-                    <Descriptions.Item label="Name">{dataViewDetail?.name}</Descriptions.Item>
-                    <Descriptions.Item label="Description" span={2}>{dataViewDetail?.description}</Descriptions.Item>
-                    <Descriptions.Item label="Created At">
+                    <Descriptions.Item label="Tên thương hiệu">{dataViewDetail?.name}</Descriptions.Item>
+                    <Descriptions.Item label="Mô tả" span={2}>{dataViewDetail?.description}</Descriptions.Item>
+                    <Descriptions.Item label="Ngày tạo">
                         {moment(dataViewDetail?.createdAt).format('DD-MM-YYYY hh:mm:ss')}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Updated At">
+                    <Descriptions.Item label="Ngày cập nhật">
                         {moment(dataViewDetail?.updatedAt).format('DD-MM-YYYY hh:mm:ss')}
                     </Descriptions.Item>
-                    <Descriptions.Item label="CreatedBy">
+                    <Descriptions.Item label="Tạo bởi">
                         {dataViewDetail?.createdBy}
                     </Descriptions.Item>
-                    <Descriptions.Item label="UpdatedBy">
+                    <Descriptions.Item label="Cập nhật bởi">
                         {dataViewDetail?.updatedBy}
                     </Descriptions.Item>
                 </Descriptions>
-                <Divider orientation="left" > Brand image </Divider>
+                <Divider orientation="left" > Ảnh thương hiệu </Divider>
 
                 <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"

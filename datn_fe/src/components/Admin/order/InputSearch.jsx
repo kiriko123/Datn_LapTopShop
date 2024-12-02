@@ -59,7 +59,7 @@ const InputSearch = (props) => {
                         name={`id`}
                         label={`Mã đơn hàng`}
                     >
-                        <Input placeholder="input id!" />
+                        <Input placeholder="Nhập id!" />
                     </Form.Item>
                 </Col>
 
@@ -69,7 +69,7 @@ const InputSearch = (props) => {
                         name={`receiverName`}
                         label={`Người nhận`}
                     >
-                        <Input placeholder="Please input receiver name!" />
+                        <Input placeholder="Nhập người nhận!" />
                     </Form.Item>
                 </Col>
 
@@ -79,7 +79,7 @@ const InputSearch = (props) => {
                         name={`receiverAddress`}
                         label={`Địa chỉ`}
                     >
-                        <Input placeholder="Please input receiver address!" />
+                        <Input placeholder="Nhập địa chỉ nhận hàng!" />
                     </Form.Item>
                 </Col>
 
@@ -132,12 +132,12 @@ const InputSearch = (props) => {
                         name={`paymentMethod`}
                         label={`Phương thức thanh toán`}
                     >
-                        <Input placeholder="Please input payment method!" />
+                        <Input placeholder="Nhập phương thức thanh toán!" />
                     </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={6}>
                     <Form.Item
-                        label="Start Date"
+                        label="Ngày bắt đầu"
                         name="startdate"
                         labelCol={{ span: 24 }}
                     >
@@ -151,7 +151,7 @@ const InputSearch = (props) => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={6}>
                     <Form.Item
-                        label="End Date"
+                        label="Ngày kết thúc"
                         name="enddate"
                         labelCol={{ span: 24 }}
                     >
@@ -168,7 +168,7 @@ const InputSearch = (props) => {
             <Row>
                 <Col span={24} style={{ textAlign: 'right' }}>
                     <Button type="primary" htmlType="submit">
-                        Search
+                        Tìm kiếm
                     </Button>
                     <Button
                         style={{ margin: '0 8px' }}
@@ -177,7 +177,7 @@ const InputSearch = (props) => {
                             props.setFilter("");
                         }}
                     >
-                        Clear
+                        Xóa
                     </Button>
                 </Col>
             </Row>

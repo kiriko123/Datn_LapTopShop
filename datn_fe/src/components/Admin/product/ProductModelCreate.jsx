@@ -67,7 +67,7 @@ const ProductModalCreate = (props) => {
         const res =
             await callCreateProduct({ name, price, discount, thumbnail, quantity, sold, description, sale, hot, images,  categoryId, brandId });
         if (res && res.data) {
-            message.success('Tạo mới product thành công');
+            message.success('Tạo mới sản phẩm thành công');
             form.resetFields();
             setDataSlider([]);
             setDataThumbnail([]);
