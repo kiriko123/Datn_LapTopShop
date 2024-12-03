@@ -19,8 +19,8 @@ const InputSearch = (props) => {
 
     const onFinish = (values) => {
         let queryParts = [];
-        if (values.id) {
-            queryParts.push(`id=${values.id}`);
+        if (values.orderNumber) {
+            queryParts.push(`orderNumber~%27${values.orderNumber}%27`);
         }
         if (values.receiverName) {
             queryParts.push(`receiverName~%27${values.receiverName}%27`);
@@ -56,10 +56,10 @@ const InputSearch = (props) => {
             <Col xs={12} sm={12} md={12} lg={5}>
                     <Form.Item
                         labelCol={{ span: 24 }}
-                        name={`id`}
+                        name={`orderNumber`}
                         label={`Mã đơn hàng`}
                     >
-                        <Input placeholder="Nhập id!" />
+                        <Input placeholder="Nhập MaDH!" />
                     </Form.Item>
                 </Col>
 

@@ -17,6 +17,7 @@ import java.util.List;
 public class OrderResponse {
 
     long id;
+    String orderNumber;
 
     String receiverName;
     String receiverPhone;
@@ -56,6 +57,7 @@ public class OrderResponse {
     @AllArgsConstructor
     public static class OrderDetailResponse{
         long id;
+
         String productName;
         float price;
         float discount;
@@ -76,6 +78,7 @@ public class OrderResponse {
     public static OrderResponse fromOrder(Order order, List<OrderDetailResponse> orderDetails, String voucherCode, float voucherValue) {
         return OrderResponse.builder()
                 .id(order.getId())
+                .orderNumber(order.getOrderNumber())
                 .receiverName(order.getReceiverName())
                 .receiverPhone(order.getReceiverPhone())
                 .receiverAddress(order.getReceiverAddress())

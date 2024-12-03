@@ -100,7 +100,7 @@ const OrderTable = () => {
     const columns = [
         selectedColumns.id && {
             title: 'MĐH',
-            dataIndex: 'id',
+            dataIndex: 'orderNumber',
             // render: (item, record) => {
             //     return `${moment(record.createdAt).format('YYYYMM')}${record.id}`;
             // },
