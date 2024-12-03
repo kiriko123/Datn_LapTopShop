@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+    @Column(name = "order_number")
+    String orderNumber;
 
     String receiverName;
 
@@ -57,10 +60,21 @@ public class Order {
     String createdBy;
     String updatedBy;
 
+    private String generateRandomNumber() {
+        int randomNumber = (int) (Math.random() * 900) + 100; // Tạo số từ 100 đến 999
+        return String.valueOf(randomNumber);
+    }
+    // Hàm định dạng createdAt
+    private String formatCreatedAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+        return formatter.format(this.createdAt.atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+    }
+
     @PrePersist
     public void handleBeforeCreate() {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.createdAt = Instant.now();
+        this.orderNumber = "HD" + generateRandomNumber() + formatCreatedAt();
     }
 
     @PreUpdate

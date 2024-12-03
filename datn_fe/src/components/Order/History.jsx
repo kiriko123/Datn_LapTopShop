@@ -125,9 +125,9 @@ const History = () => {
         
         {
             title: 'Mã đơn hàng',
-            dataIndex: 'id',
-            key: 'index',
-            render: (item, record, index) => (<>{index + 1}</>),
+            dataIndex: 'orderNumber',
+            // key: 'orderNumber',
+            // render: (item, record, index) => (<>{index + 1}</>),
            // render: (item, record) => {
            //  return `${moment(record.createdAt).format('YYYYMM')}${record.id}`
            // }
@@ -260,7 +260,7 @@ const History = () => {
                 </div>
                 <Divider />
                 <Descriptions title="Thông tin đơn hàng" bordered>
-                    <Descriptions.Item label="Mã đơn hàng" span={6} >{selectedOrder?.id}</Descriptions.Item>
+                    <Descriptions.Item label="Mã đơn hàng" span={6} >{selectedOrder?.orderNumber}</Descriptions.Item>
                     <Descriptions.Item label="Thời gian" span={6}>{moment(selectedOrder?.createdAt).format("YYYY-MM-DD HH:mm:ss")}</Descriptions.Item>
                     <Descriptions.Item label="Địa chỉ nhận hàng" span={12}>{selectedOrder?.receiverAddress}</Descriptions.Item>
                     <Descriptions.Item label="Người nhận" span={6}>{selectedOrder?.receiverName}</Descriptions.Item>
