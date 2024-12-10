@@ -3,14 +3,12 @@ import { Button, Divider, Form, Input, message, Modal, notification, Radio } fro
 import { callUserUpdateOrder } from '../../services/api';
 import { EditTwoTone, EyeOutlined, CheckCircleOutlined, HourglassOutlined, ScheduleOutlined, CloseCircleOutlined, TruckOutlined } from '@ant-design/icons';
 
-
 const UserOrderUpdate = (props) => {
     const { openModalUpdate, setOpenModalUpdate, dataUpdate, setDataUpdate, fetchCategory } = props;
     const [isSubmit, setIsSubmit] = useState(false);
 
     const [form] = Form.useForm();
 
-    // Hàm xử lý gửi form
     const onFinish = async (values) => {
         const { newStatus, description, receiverAddress } = values;
         setIsSubmit(true);
@@ -36,17 +34,15 @@ const UserOrderUpdate = (props) => {
         setIsSubmit(false);
     };
 
-    // Đặt giá trị mặc định cho form khi mở modal
     useEffect(() => {
         form.setFieldsValue({
-            currentStatus: dataUpdate?.status, // Trạng thái hiện tại
+            currentStatus: dataUpdate?.status,
             newStatus: dataUpdate?.status,
             description: dataUpdate?.description,
-            receiverAddress: dataUpdate?.receiverAddress // Địa chỉ nhận hàng
+            receiverAddress: dataUpdate?.receiverAddress
         });
     }, [dataUpdate]);
 
-    // Hàm trả về icon trạng thái
     const getStatusIcon = (status) => {
         switch (status) {
             case "PENDING":
@@ -64,11 +60,28 @@ const UserOrderUpdate = (props) => {
         }
     };
 
+    const translateStatus = (status) => {
+        switch (status) {
+            case "PENDING":
+                return "Chờ xác nhận";
+            case "PROCESSING":
+                return "Đang xử lý";
+            case "SHIPPING":
+                return "Đang giao hàng";
+            case "DELIVERED":
+                return "Đã giao hàng";
+            case "CANCELLED":
+                return "Hủy đơn hàng";
+            default:
+                return status;
+        }
+    };
+
     return (
         <Modal
             title="Cập nhật đơn hàng"
             open={openModalUpdate}
-            onOk={() => { form.submit() }} // Gọi onFinish khi người dùng click "Ok"
+            onOk={() => { form.submit(); }}
             onCancel={() => {
                 setOpenModalUpdate(false);
                 setDataUpdate(null);
@@ -87,18 +100,18 @@ const UserOrderUpdate = (props) => {
                 onFinish={onFinish}
                 autoComplete="off"
             >
-                {/* Hiển thị trạng thái hiện tại, không cho phép người dùng chỉnh sửa */}
+                {/* Hiển thị trạng thái hiện tại */}
                 <Form.Item
                     labelCol={{ span: 24 }}
                     label="Trạng thái hiện tại"
                     name="currentStatus"
                 >
                     <Radio.Group disabled>
-                        <Radio value="PENDING">{getStatusIcon("PENDING")} PENDING</Radio>
-                        <Radio value="PROCESSING">{getStatusIcon("PROCESSING")} PROCESSING</Radio>
-                        <Radio value="SHIPPING">{getStatusIcon("SHIPPING")} SHIPPING</Radio>
-                        <Radio value="DELIVERED">{getStatusIcon("DELIVERED")} DELIVERED</Radio>
-                        <Radio value="CANCELLED">{getStatusIcon("CANCELLED")} CANCELLED</Radio>
+                        <Radio value="PENDING">{getStatusIcon("PENDING")} {translateStatus("PENDING")}</Radio>
+                        <Radio value="PROCESSING">{getStatusIcon("PROCESSING")} {translateStatus("PROCESSING")}</Radio>
+                        <Radio value="SHIPPING">{getStatusIcon("SHIPPING")} {translateStatus("SHIPPING")}</Radio>
+                        <Radio value="DELIVERED">{getStatusIcon("DELIVERED")} {translateStatus("DELIVERED")}</Radio>
+                        <Radio value="CANCELLED">{getStatusIcon("CANCELLED")} {translateStatus("CANCELLED")}</Radio>
                     </Radio.Group>
                 </Form.Item>
 
@@ -110,8 +123,8 @@ const UserOrderUpdate = (props) => {
                     rules={[{ required: true, message: 'Vui lòng chọn trạng thái mới!' }]}
                 >
                     <Radio.Group>
-                        <Radio value="PENDING">{getStatusIcon("PENDING")} PENDING</Radio>
-                        <Radio value="CANCELLED">{getStatusIcon("CANCELLED")} CANCELLED</Radio>
+                        <Radio value="PENDING">{getStatusIcon("PENDING")} {translateStatus("PENDING")}</Radio>
+                        <Radio value="CANCELLED">{getStatusIcon("CANCELLED")} {translateStatus("CANCELLED")}</Radio>
                     </Radio.Group>
                 </Form.Item>
 

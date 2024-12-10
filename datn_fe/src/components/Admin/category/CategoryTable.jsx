@@ -245,7 +245,7 @@ const CategoryTable = () => {
 
     const renderHeader = () => (
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 15 }}>
-            <span>Table Categorie</span>
+            <span>Danh sách danh mục</span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 15 }}>
                 <Dropdown
                     overlay={columnSelector}

@@ -254,7 +254,7 @@ const UserTable = () => {
 
     const renderHeader = () => (
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 15 }}>
-            <span>Table Users</span>
+            <span>Danh sách khách hàng</span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 15 }}>
                 <Dropdown
                     overlay={columnSelector}
