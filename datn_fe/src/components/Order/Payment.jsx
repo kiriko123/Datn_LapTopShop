@@ -121,9 +121,9 @@ const Payment = (props) => {
             return; // Prevent form submission if address is incomplete
         }
 
-        if (paymentMethod === 'cod') {
+        if (paymentMethod === 'Thanh toán khi nhận hàng') {
             handlePlaceOrder();
-        } else if (paymentMethod === 'pay with Stripe') {
+        } else if (paymentMethod === 'Thanh toán bằng Stripe') {
             setIsCheckoutModalVisible(true);
         }
     };
@@ -214,8 +214,8 @@ const Payment = (props) => {
                         <div className='method'>
                             <div>Hình thức thanh toán</div>
                             <Radio.Group onChange={handlePaymentChange} value={paymentMethod}>
-                                <Radio value="cod">Thanh toán khi nhận hàng</Radio>
-                                <Radio value="pay with Stripe">Thanh toán bằng Stripe</Radio>
+                                <Radio value="Thanh toán khi nhận hàng">Thanh toán khi nhận hàng</Radio>
+                                <Radio value="Thanh toán bằng Stripe">Thanh toán bằng Stripe</Radio>
                             </Radio.Group>
                         </div>
                     </Form>

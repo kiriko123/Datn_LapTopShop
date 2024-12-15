@@ -101,11 +101,11 @@ const InputSearch = (props) => {
                             }}
                         >
 
-                            <Option value="PENDING">PENDING</Option>
-                            <Option value="PROCESSING">PROCESSING</Option>
-                            <Option value="SHIPPING">SHIPPING</Option>
-                            <Option value="DELIVERED">DELIVERED</Option>
-                            <Option value="CANCELLED">CANCELLED</Option>
+                            <Option value="PENDING">Chờ xác nhận</Option>
+                            <Option value="PROCESSING">Đang xử lý</Option>
+                            <Option value="SHIPPING">Đang giao hàng</Option>
+                            <Option value="DELIVERED">Đã giao hàng</Option>
+                            <Option value="CANCELLED">Hủy đơn hàng</Option>
                         </Select>
                     </Form.Item>
                 </Col>

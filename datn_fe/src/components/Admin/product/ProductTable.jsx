@@ -264,7 +264,7 @@ const BookTable = () => {
 
     const renderHeader = () => (
         <div style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 15}}>
-            <span>Table Products</span>
+            <span>Danh sách sản phẩm</span>
             <div style={{display: 'flex', flexWrap: 'wrap', gap: 15}}>
                 <Dropdown
                     overlay={columnSelector}

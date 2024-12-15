@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Row, Col, Popconfirm, Button, message, notification, Dropdown, Checkbox, Menu } from 'antd';
+import { Table, Row, Col, Popconfirm, Button, message, notification, Dropdown, Checkbox, Menu, Tag } from 'antd';
 import {
     ExportOutlined,
     CloudUploadOutlined,
@@ -40,6 +40,8 @@ const OrderTable = () => {
         let query = `page=${current}&size=${pageSize}`;
         if (filter) query += `&${filter}`;
         if (sortQuery) query += `&${sortQuery}`;
+        else query += `&sort=createdAt,desc`; // Mặc định sắp xếp theo thời gian giảm dần
+    
         const res = await callFetchOrder(query);
         if (res && res.data) {
             setListOrder(res.data.result);
@@ -95,7 +97,22 @@ const OrderTable = () => {
         </Menu>
     );
 
-
+    const mapStatusToVietnamese = (status) => {
+        switch (status) {
+            case "PENDING":
+                return "Chờ xác nhận";
+            case "PROCESSING":
+                return "Đang xử lý";
+            case "SHIPPING":
+                return "Đang giao hàng";
+            case "DELIVERED":
+                return "Đã giao hàng";
+            case "CANCELLED":
+                return "Đã hủy";
+            default:
+                return "Không xác định";
+        }
+    };
 
     const columns = [
         selectedColumns.id && {
@@ -136,6 +153,11 @@ const OrderTable = () => {
         selectedColumns.status && {
             title: 'Trạng thái',
             dataIndex: 'status',
+            render: (status) => (
+                <Tag>
+                    {mapStatusToVietnamese(status)}
+                </Tag>
+            ),
             sorter: true,
         },
         selectedColumns.paymentMethod && {
@@ -197,7 +219,7 @@ const OrderTable = () => {
 
     const renderHeader = () => (
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 15 }}>
-            <span>Table Orders</span>
+            <span>Danh sách đơn hàng</span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 15 }}>
                 <Dropdown
                     overlay={columnSelector}

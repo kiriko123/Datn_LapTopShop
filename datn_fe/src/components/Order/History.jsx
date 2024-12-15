@@ -89,6 +89,22 @@ const History = () => {
                 return 0;
         }
     };
+    const mapStatusToVietnamese = (status) => {
+        switch (status) {
+            case "PENDING":
+                return "Chờ xác nhận";
+            case "PROCESSING":
+                return "Đang xử lý";
+            case "SHIPPING":
+                return "Đang giao hàng";
+            case "DELIVERED":
+                return "Đã giao hàng";
+            case "CANCELLED":
+                return "Đã hủy";
+            default:
+                return "Không xác định";
+        }
+    };
 
     const getStatusIcon = (status) => {
         switch (status) {
@@ -122,15 +138,15 @@ const History = () => {
     };
 
     const columns = [
-        
+
         {
             title: 'Mã đơn hàng',
             dataIndex: 'orderNumber',
             // key: 'orderNumber',
             // render: (item, record, index) => (<>{index + 1}</>),
-           // render: (item, record) => {
-           //  return `${moment(record.createdAt).format('YYYYMM')}${record.id}`
-           // }
+            // render: (item, record) => {
+            //  return `${moment(record.createdAt).format('YYYYMM')}${record.id}`
+            // }
         },
         {
             title: 'Thời gian',
@@ -151,10 +167,10 @@ const History = () => {
             dataIndex: 'receiverAddress',
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'status',
             filters: [
-                { text: 'Đang chờ', value: 'PENDING' },
+                { text: 'Chờ xác nhận', value: 'PENDING' },
                 { text: 'Đang xử lý', value: 'PROCESSING' },
                 { text: 'Đang giao hàng', value: 'SHIPPING' },
                 { text: 'Đã giao', value: 'DELIVERED' },
@@ -163,16 +179,16 @@ const History = () => {
             onFilter: (value, record) => record.status.indexOf(value) === 0,
             render: (status) => (
                 <Tag color={status === "DELIVERED" ? "green" : status === "CANCELLED" ? "red" : "orange"}>
-                    {status}
+                    {mapStatusToVietnamese(status)}
                 </Tag>
             ),
         },
         {
-            title: 'Payment method',
+            title: 'Phương thức thanh toán',
             dataIndex: 'paymentMethod',
         },
         {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
         },
         {
@@ -206,7 +222,7 @@ const History = () => {
                 <Badge count={countStatusOrders("PENDING")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
                     <div style={{ textAlign: 'center' }} onClick={() => handleStatusFilter("PENDING")}>
                         <HourglassOutlined style={{ fontSize: '30px' }} />
-                        <span style={{ display: 'block' }}>Đang chờ</span>
+                        <span style={{ display: 'block' }}>Chờ xác nhận</span>
                     </div>
                 </Badge>
                 <Badge count={countStatusOrders("PROCESSING")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
@@ -224,7 +240,7 @@ const History = () => {
                 <Badge count={countStatusOrders("DELIVERED")} offset={[0, 0]} style={{ marginLeft: '-10px' }}>
                     <div style={{ textAlign: 'center' }} onClick={() => handleStatusFilter("DELIVERED")}>
                         <CheckCircleOutlined style={{ fontSize: '30px' }} />
-                        <span style={{ display: 'block' }}>Đã giao</span>
+                        <span style={{ display: 'block' }}>Đã giao hàng</span>
                     </div>
                 </Badge>
             </div>
@@ -252,7 +268,7 @@ const History = () => {
                 {/* Thanh trạng thái đơn hàng */}
                 <div style={{ padding: '20px 0' }}>
                     <Steps current={getCurrentStep(selectedStatus)}>
-                        <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} description="Đang chờ" />
+                        <Step title={<HourglassOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} description="Chờ xác nhận" />
                         <Step title={<ScheduleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} description="Đang xử lý" />
                         <Step title={<TruckOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} description="Đang giao hàng" />
                         <Step title={<CheckCircleOutlined style={{ fontSize: '30px', fontWeight: 'bold' }} />} description="Đã giao" />
@@ -282,44 +298,44 @@ const History = () => {
                         </Descriptions.Item>
                     )}
                     <Descriptions.Item label="Chi tiết sản phẩm">
-                    {selectedOrder && selectedOrder.orderDetails ? (
-                        selectedOrder.orderDetails.map((item, index) => {
-                            const priceAfterDiscount = item.price - (item.price * item.discount / 100);
-                            return (
-                                <div key={index} style={{ marginBottom: '16px', marginTop: '30px' }}>
+                        {selectedOrder && selectedOrder.orderDetails ? (
+                            selectedOrder.orderDetails.map((item, index) => {
+                                const priceAfterDiscount = item.price - (item.price * item.discount / 100);
+                                return (
+                                    <div key={index} style={{ marginBottom: '16px', marginTop: '30px' }}>
 
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <Image
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
-                                            alt={item.productName}
-                                            width={130}
-                                            preview={false}
-                                        />
-                                        <div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <Image
+                                                src={`${import.meta.env.VITE_BACKEND_URL}/storage/product/${item.thumbnail}`}
+                                                alt={item.productName}
+                                                width={130}
+                                                preview={false}
+                                            />
                                             <div>
-                                                <b>{index + 1}. {item.productName}</b>
-                                            </div>
-                                            <div>
-                                                Số lượng: {item.quantity}
-                                            </div>
-                                            <div>
-                                                Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
-                                            </div>
-                                            <div>
-                                                Giảm giá: {item.discount}%
-                                            </div>
-                                            <div>
-                                                Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
+                                                <div>
+                                                    <b>{index + 1}. {item.productName}</b>
+                                                </div>
+                                                <div>
+                                                    Số lượng: {item.quantity}
+                                                </div>
+                                                <div>
+                                                    Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                                                </div>
+                                                <div>
+                                                    Giảm giá: {item.discount}%
+                                                </div>
+                                                <div>
+                                                    Giá sau giảm: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceAfterDiscount)}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <p>Chưa có chi tiết sản phẩm</p>
-                    )}
-                </Descriptions.Item>
+                                );
+                            })
+                        ) : (
+                            <p>Chưa có chi tiết sản phẩm</p>
+                        )}
+                    </Descriptions.Item>
                 </Descriptions>
 
             </Drawer>

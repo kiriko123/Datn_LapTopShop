@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {Select, Button, Col, Divider, Form, Input, InputNumber, message, Modal, notification, Row, Radio} from 'antd';
-import {callAdminUpdateOrder, callFetchOrder, callUserUpdateOrder} from '../../../services/api';
+import { Select, Button, Col, Divider, Form, Input, InputNumber, message, Modal, notification, Row, Radio } from 'antd';
+import { callAdminUpdateOrder, callFetchOrder, callUserUpdateOrder } from '../../../services/api';
 
 const OrderModalUpdate = (props) => {
     const { openModalUpdate, setOpenModalUpdate, dataUpdate, setDataUpdate, fetchOrder } = props;
@@ -27,6 +27,24 @@ const OrderModalUpdate = (props) => {
                 return [];
         }
     };
+
+    const mapStatusToVietnamese = (status) => {
+        switch (status) {
+            case "PENDING":
+                return "Chờ xác nhận";
+            case "PROCESSING":
+                return "Đang xử lý";
+            case "SHIPPING":
+                return "Đang giao hàng";
+            case "DELIVERED":
+                return "Đã giao hàng";
+            case "CANCELLED":
+                return "Hủy đơn hàng";
+            default:
+                return "Không xác định";
+        }
+    };
+
 
     const onFinish = async (values) => {
         const { newStatus, description, receiverAddress } = values;
@@ -56,7 +74,7 @@ const OrderModalUpdate = (props) => {
     useEffect(() => {
         form.setFieldsValue({
             currentStatus: dataUpdate?.status, // Đặt giá trị mặc định là trạng thái hiện tại
-            newStatus: dataUpdate?.status,
+            newStatus: mapStatusToVietnamese(dataUpdate?.status),
             description: dataUpdate?.description,
             receiverAddress: dataUpdate?.receiverAddress // Địa chỉ
         });
@@ -103,16 +121,14 @@ const OrderModalUpdate = (props) => {
                     {/*    <Radio value="CANCELLED">CANCELLED</Radio>*/}
                     {/*</Radio.Group>*/}
                     <Select disabled>
-                        <Select.Option value="PENDING">PENDING</Select.Option>
-                        <Select.Option value="PROCESSING">PROCESSING</Select.Option>
-                        <Select.Option value="SHIPPING">SHIPPING</Select.Option>
-                        <Select.Option value="DELIVERED">DELIVERED</Select.Option>
-                        <Select.Option value="CANCELLED">CANCELLED</Select.Option>
+                        <Select.Option value={dataUpdate?.status}>
+                            {mapStatusToVietnamese(dataUpdate?.status)}
+                        </Select.Option>
                     </Select>
                 </Form.Item>
 
-              {/* Chọn trạng thái mới */}
-              <Form.Item
+                {/* Chọn trạng thái mới */}
+                <Form.Item
                     labelCol={{ span: 24 }}
                     label="Trạng thái mới"
                     name="newStatus"
@@ -121,12 +137,11 @@ const OrderModalUpdate = (props) => {
                     <Select>
                         {validStatuses.map((status) => (
                             <Select.Option key={status} value={status}>
-                                {status}
+                                {mapStatusToVietnamese(status)}
                             </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>
-
 
                 <Form.Item
                     labelCol={{ span: 24 }}
