@@ -10,10 +10,10 @@ const UserModalUpdate = (props) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        const { id, name, firstName, email, age, gender, address, phoneNumber } = values;
+        const { id, name, firstName, email, age, gender, address, phoneNumber, enabled } = values;
         setIsSubmit(true)
         const res =
-            await callUpdateUser({id, name, firstName, email, age, gender, address, phoneNumber});
+            await callUpdateUser({id, name, firstName, email, age, gender, address, phoneNumber, enabled});
         if (res && res.data) {
             message.success('Cập nhật user thành công');
             setOpenModalUpdate(false);
@@ -82,13 +82,20 @@ const UserModalUpdate = (props) => {
 
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item label="Phone number" name="phoneNumber" rules={[{ required: true, message: 'Phone number không được để trống!' }]}>
+                            <Form.Item label="Phone number" name="phoneNumber"
+                                       rules={[
+                                           { required: true, message: 'Phone number không được để trống!' },
+                                           {
+                                               pattern: /^((\+|)84|0)(3|5|7|8|9)+([0-9]{8})\b/,
+                                               message: 'Số điện thoại không đúng định dạng!',
+                                           },
+                                       ]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item label="Age" name="age" rules={[{ required: true, message: 'Please enter your age!' }]}>
-                                <InputNumber min={0} max={120} style={{ width: '100%' }} />
+                                <InputNumber min={16} max={80} style={{ width: '100%' }} />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -105,6 +112,18 @@ const UserModalUpdate = (props) => {
                             <Radio value="OTHER">Other</Radio>
                         </Radio.Group>
                     </Form.Item>
+
+                    <Form.Item
+                        label="Enabled"
+                        name="enabled"
+                        rules={[{ required: true, message: 'Please select the status!' }]}
+                    >
+                        <Radio.Group>
+                            <Radio value={true}>Enabled</Radio>
+                            <Radio value={false}>Disable</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+
                 </Form>
             </Modal>
         </>

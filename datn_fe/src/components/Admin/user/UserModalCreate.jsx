@@ -57,9 +57,17 @@ const UserModalCreate = (props) => {
                     onFinish={onFinish}
                     autoComplete="off"
                 >
-                    <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email!' }]}>
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập email!' },
+                            { type: 'email', message: 'Email không đúng định dạng!' },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
+
 
                     <Row gutter={16}>
                         <Col span={12}>
@@ -76,16 +84,40 @@ const UserModalCreate = (props) => {
 
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
+                            <Form.Item
+                                label="Password"
+                                name="password"
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập mật khẩu!' },
+                                    { min: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự!' },
+                                ]}
+                            >
                                 <Input.Password />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Password confirm" name="passwordConfirm" rules={[{ required: true, message: 'Vui lòng nhập password confirm!' }]}>
+                            <Form.Item
+                                label="Password confirm"
+                                name="passwordConfirm"
+                                dependencies={['password']}
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập password confirm!' },
+                                    { min: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự!' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('password') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
+                                        },
+                                    }),
+                                ]}
+                            >
                                 <Input.Password />
                             </Form.Item>
                         </Col>
                     </Row>
+
 
                     <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Address không được để trống!' }]}>
                         <Input />
@@ -93,13 +125,24 @@ const UserModalCreate = (props) => {
 
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item label="Phone number" name="phoneNumber" rules={[{ required: true, message: 'Phone number không được để trống!' }]}>
+                            <Form.Item
+                                label="Phone number"
+                                name="phoneNumber"
+                                rules={[
+                                    { required: true, message: 'Phone number không được để trống!' },
+                                    {
+                                        pattern: /^((\+|)84|0)(3|5|7|8|9)+([0-9]{8})\b/,
+                                        message: 'Số điện thoại không đúng định dạng!',
+                                    },
+                                ]}
+                            >
                                 <Input />
                             </Form.Item>
+
                         </Col>
                         <Col span={12}>
                             <Form.Item label="Age" name="age" rules={[{ required: true, message: 'Please enter your age!' }]}>
-                                <InputNumber min={0} max={120} style={{ width: '100%' }} />
+                                <InputNumber min={16} max={80} style={{ width: '100%' }} />
                             </Form.Item>
                         </Col>
                     </Row>

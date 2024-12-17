@@ -15,7 +15,7 @@ const LocationSelect = ({ onAddressChange }) => {
     const [selectedWard, setSelectedWard] = useState(null); // Use null for initial value
 
     useEffect(() => {
-        axios.get("https://vapi.vnappmob.com/api/province/")
+        axios.get("https://vapi.vnappmob.com/api/v2/province/")
             .then((response) => {
                 setProvinces(response.data.results);
             });
@@ -23,7 +23,7 @@ const LocationSelect = ({ onAddressChange }) => {
 
     useEffect(() => {
         if (selectedProvince) {
-            axios.get(`https://vapi.vnappmob.com/api/province/district/${selectedProvince.province_id}`)
+            axios.get(`https://vapi.vnappmob.com/api/v2/province/district/${selectedProvince.province_id}`)
                 .then((response) => {
                     setDistricts(response.data.results);
                     setSelectedDistrict(null); // Reset district when province changes
@@ -38,7 +38,7 @@ const LocationSelect = ({ onAddressChange }) => {
 
     useEffect(() => {
         if (selectedDistrict) {
-            axios.get(`https://vapi.vnappmob.com/api/province/ward/${selectedDistrict.district_id}`)
+            axios.get(`https://vapi.vnappmob.com/api/v2/province/ward/${selectedDistrict.district_id}`)
                 .then((response) => {
                     setWards(response.data.results);
                     setSelectedWard(null); // Reset ward when district changes

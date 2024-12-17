@@ -1,5 +1,6 @@
 package com.datn.be.dto.request.user;
 
+import com.datn.be.util.annotation.PhoneNumber;
 import com.datn.be.util.constant.GenderEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -33,7 +34,10 @@ public class AdminCreateUserDTO {
 
     private String address;
 
+//    @PhoneNumber
     private String phoneNumber;
+
+
 
 
 }

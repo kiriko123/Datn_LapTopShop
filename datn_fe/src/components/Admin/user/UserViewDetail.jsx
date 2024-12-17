@@ -82,6 +82,9 @@ const UserViewDetail = (props) => {
                     <Descriptions.Item label="UpdatedBy">
                         {dataViewDetail?.updatedBy}
                     </Descriptions.Item>
+                    <Descriptions.Item label="IsGoogleAcount">
+                        {dataViewDetail?.googleAccount ? 'True' : 'False'}
+                    </Descriptions.Item>
                 </Descriptions>
             </Drawer>
 

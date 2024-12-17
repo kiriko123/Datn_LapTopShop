@@ -61,12 +61,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse update(AdminUpdateUserDTO adminUpdateUserDTO) {
         User user = this.findById(adminUpdateUserDTO.getId());
+
+        if(user.getRole().getName().equals("ROLE_ADMIN")) {
+            if(adminUpdateUserDTO.isEnabled() != user.isEnabled()){
+                throw new InvalidDataException("Admin role cannot be updated Enabled");
+            }
+        }
+
         user.setName(adminUpdateUserDTO.getName());
         user.setFirstName(adminUpdateUserDTO.getFirstName());
         user.setAddress(adminUpdateUserDTO.getAddress());
         user.setGender(adminUpdateUserDTO.getGender());
         user.setAge(adminUpdateUserDTO.getAge());
         user.setPhoneNumber(adminUpdateUserDTO.getPhoneNumber());
+        user.setEnabled(adminUpdateUserDTO.isEnabled());
         return UserResponse.fromUserToUserResponse(userRepository.save(user));
     }
 

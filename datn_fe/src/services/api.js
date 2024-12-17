@@ -46,8 +46,8 @@ export const callBulkCreateUser = (data) => {
     return axios.post('/api/v1/user/bulk-create', data);
 }
 
-export const callUpdateUser = ({ id, name, firstName, email, age, gender, address, phoneNumber }) => {
-    return axios.put(`/api/v1/user`, { id, name, firstName, email, age, gender, address, phoneNumber });
+export const callUpdateUser = ({ id, name, firstName, email, age, gender, address, phoneNumber, enabled }) => {
+    return axios.put(`/api/v1/user`, { id, name, firstName, email, age, gender, address, phoneNumber, enabled });
 }
 
 // Hàm cho file
