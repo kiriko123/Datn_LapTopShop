@@ -20,7 +20,7 @@ import UserModalUpdate from "./UserModalUpdate.jsx";
 const UserTable = () => {
     const [listUser, setListUser] = useState([]);
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState("");
@@ -28,7 +28,7 @@ const UserTable = () => {
     const [openViewDetail, setOpenViewDetail] = useState(false);
     const [dataViewDetail, setDataViewDetail] = useState(null);
     const [openModalCreate, setOpenModalCreate] = useState(false);
-
+    const [pageSize, setPageSize] = useState(5);
     const [openModalImport, setOpenModalImport] = useState(false);
 
     const [openModalUpdate, setOpenModalUpdate] = useState(false);
@@ -254,7 +254,7 @@ const UserTable = () => {
 
     const renderHeader = () => (
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 15 }}>
-            <span>Danh sách khách hàng</span>
+            <span>Danh sách User</span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 15 }}>
                 <Dropdown
                     overlay={columnSelector}

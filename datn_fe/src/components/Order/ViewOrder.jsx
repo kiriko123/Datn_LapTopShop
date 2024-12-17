@@ -1,9 +1,15 @@
-import { Col, Divider, Empty, InputNumber, message, Row, Select } from 'antd';
+import {Col, Divider, Empty, InputNumber, message, notification, Row, Select} from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { doDeleteItemCartAction, doUpdateCartAction,setVoucherAction } from '../../redux/order/orderSlice';
-import {callFetchBrand, callFetchCategory,callFetchProduct, callApiGet } from '../../services/api.js';
+import {
+    callFetchBrand,
+    callFetchCategory,
+    callFetchProduct,
+    callApiGet,
+    callFetchAllProduct
+} from '../../services/api.js';
 
 const { Option } = Select;
 
@@ -124,90 +130,92 @@ const ViewOrder = (props) => {
             return; // Thêm return để dừng xử lý tiếp theo
         }
 
-        let activeProducts = [];
-        try {
-            const response = await callFetchProduct("active=true");
-            console.log('Dữ liệu trả về từ API:', response);
-            activeProducts = response.data.result; // Lấy dữ liệu từ API
-            // if (!Array.isArray(activeProducts)) {
-            //     throw new Error("Dữ liệu trả về không phải là một mảng!");
-            // }
-        } catch (error) {
-            console.error('Lỗi khi lấy danh sách sản phẩm:', error);
-            message.error('Không thể kiểm tra trạng thái sản phẩm. Vui lòng thử lại sau!');
-            return;
-        }
-        // Chuyển danh sách sản phẩm thành một đối tượng để dễ kiểm tra
-        const activeProductMap = {};
-        activeProducts.forEach(product => {
-            activeProductMap[product.id] = product.active; // Đánh dấu sản phẩm có active=true
-        });
+        const result = await validateCart(carts);
 
-        // Lấy danh sách thương hiệu từ API
-        let brands = [];
-        try {
-            const response = await callFetchBrand();
-            brands = response.data; // Giả sử dữ liệu trả về là một mảng thương hiệu
-        } catch (error) {
-            console.error('Lỗi khi lấy danh sách thương hiệu:', error);
-            message.error('Không thể kiểm tra thương hiệu. Vui lòng thử lại sau!');
-            return; // Dừng hàm nếu không lấy được thương hiệu
-        }
+        if (!result.success) {
+            console.log("Giỏ hàng không hợp lệ:", result.errors);
 
-        // Chuyển đổi danh sách thương hiệu thành một đối tượng để dễ dàng kiểm tra
-        const brandMap = {};
-        brands.forEach(brand => {
-            brandMap[brand.id] = brand.active; // Giả sử thương hiệu có thuộc tính id và active
-        });
+            notification.error({
+                message: 'Lỗi',
+                description: result.errors.map((error, index) => (
+                    <>
+                        {error}
+                        {index < result.errors.length - 1 && <br />}
+                    </>
+                )),
+            });
 
-        // Lấy danh sách danh mục từ API
-        let categories = [];
-        try {
-            const response = await callFetchCategory();
-            categories = response.data; // Giả sử dữ liệu trả về là một mảng danh mục
-        } catch (error) {
-            console.error('Lỗi khi lấy danh sách danh mục:', error);
-            message.error('Không thể kiểm tra danh mục. Vui lòng thử lại sau!');
-            return; // Dừng hàm nếu không lấy được danh mục
-        }
-
-        // Chuyển đổi danh sách danh mục thành một đối tượng để dễ dàng kiểm tra
-        const categoryMap = {};
-        categories.forEach(category => {
-            categoryMap[category.id] = category.active; // Giả sử danh mục có thuộc tính id và active
-        });
-
-        // Tạo một đối tượng để lưu thông báo cho từng sản phẩm
-        let messages = {};
-
-        // Kiểm tra từng sản phẩm trong giỏ hàng
-        carts.forEach(cartItem => {
-            const productName = cartItem.detail.name;
-            const brandId = cartItem.detail.brand?.id; // Lấy ID thương hiệu
-            const categoryId = cartItem.detail.category?.id; // Lấy ID danh mục
-            const productId = cartItem.detail.id;
-
-            const isBrandActive = brandId ? brandMap[brandId] : false; // Kiểm tra hoạt động dựa trên brandMap
-            const isCategoryActive = categoryId ? categoryMap[categoryId] : false; // Kiểm tra hoạt động dựa trên categoryMap
-            const isProductActive = productId ? activeProductMap[productId] : false;
-
-            if (!isBrandActive || !isCategoryActive || !isProductActive) {
-                // Nếu sản phẩm không hoạt động, thêm tên sản phẩm vào messages
-                messages[productName] = true; // Chỉ cần lưu tên sản phẩm là đủ
-            }
-        });
-
-        // Kiểm tra nếu có thông báo
-        if (Object.keys(messages).length > 0) {
-            const productNames = Object.keys(messages).join(', ');
-            const inactiveMessage = `${productNames} Đã hết hàng. Vui lòng xóa sản phẩm để tiếp tục mua hàng.`;
-            message.error(inactiveMessage);
             return;
         }
 
 
         props.setCurrentStep(1);
     };
+
+    const validateCart = async (carts) => {
+        let products = [];
+        try {
+            // Call API lấy tất cả sản phẩm từ backend
+            let data = await callFetchAllProduct(); // Giả sử hàm này call API thành công
+            products = data.data;
+            // Danh sách lỗi nếu có sản phẩm không hợp lệ
+            let errors = [];
+
+            // Lặp qua từng sản phẩm trong giỏ hàng
+            carts.forEach((cartItem) => {
+                const productInBE = products.find((p) => p.id === cartItem.detail.id);
+
+                // Kiểm tra sản phẩm có tồn tại trong BE không
+                if (!productInBE) {
+                    errors.push(`Sản phẩm "${cartItem.detail.name}" không còn tồn tại.`);
+                    return;
+                }
+
+                // Kiểm tra trạng thái sản phẩm
+                if (!productInBE.active) {
+                    errors.push(`Sản phẩm "${cartItem.detail.name}" đã bị xóa.`);
+                    return;
+                }
+
+                // Kiểm tra brand và category
+                if (!productInBE.brand?.active || !productInBE.category?.active) {
+                    errors.push(`Thương hiệu hoặc danh mục của sản phẩm "${cartItem.detail.name}" đã bị xóa. Vui lòng xóa sản phẩm ra khỏi giỏ hàng`);
+                    return;
+                }
+
+                // Kiểm tra số lượng sản phẩm
+                if (cartItem.quantity > productInBE.quantity) {
+                    errors.push(
+                        `Sản phẩm "${cartItem.detail.name}" không đủ số lượng. Chỉ còn ${productInBE.quantity} sản phẩm.`
+                    );
+                    return;
+                }
+
+                // Kiểm tra giá và discount
+                if (
+                    cartItem.detail.price !== productInBE.price ||
+                    cartItem.detail.discount !== productInBE.discount
+                ) {
+                    errors.push(
+                        `Sản phẩm "${cartItem.detail.name}" có giá hoặc giảm giá không khớp với hệ thống. Vui lòng xóa và thêm lại`
+                    );
+                    return;
+                }
+
+            });
+
+            // Trả về kết quả
+            if (errors.length > 0) {
+                return { success: false, errors };
+            }
+
+            return { success: true, message: "Giỏ hàng hợp lệ." };
+        } catch (error) {
+            console.error("Lỗi khi validate giỏ hàng:", error);
+            return { success: false, errors: ["Lỗi hệ thống khi kiểm tra giỏ hàng."] };
+        }
+    };
+
 
 
     return (

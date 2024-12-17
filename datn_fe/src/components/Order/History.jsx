@@ -345,6 +345,7 @@ const History = () => {
                     openModalUpdate={openModalUpdate}
                     setOpenModalUpdate={setOpenModalUpdate}
                     dataUpdate={dataUpdate}
+                    fetchCategory={fetchHistory}
                 />
             )}
         </div>

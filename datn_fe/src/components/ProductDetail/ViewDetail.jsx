@@ -59,12 +59,23 @@ const ViewDetail = (props) => {
     };
 
     const handleChangeInput = (value) => {
-        if (!isNaN(value)) {
-            if (+value > 0 && +value < +dataProduct.quantity) {
-                setCurrentQuantity(+value);
+        // Loại bỏ ký tự không phải số ngay khi nhập
+        const numericValue = value.replace(/\D/g, '');
+
+        // Kiểm tra giá trị hợp lệ và cập nhật
+        if (numericValue === '') {
+            setCurrentQuantity(''); // Cho phép xóa toàn bộ input
+        } else {
+            const numberValue = +numericValue;
+
+            if (numberValue > 0 && numberValue <= +dataProduct.quantity) {
+                setCurrentQuantity(numberValue); // Cập nhật giá trị hợp lệ
+            } else if (numberValue > +dataProduct.quantity) {
+                setCurrentQuantity(+dataProduct.quantity); // Giới hạn max
             }
         }
     };
+
 
     const handleAddToCart = (quantity, book) => {
 

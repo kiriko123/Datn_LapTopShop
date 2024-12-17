@@ -56,7 +56,7 @@ const BookViewDetail = (props) => {
     return (
         <>
             <Drawer
-                title="Book Detail"
+                title="Product Detail"
                 width="90%"
                 // style={{ maxWidth: '600px' }} // Giới hạn chiều rộng tối đa của Drawer
                 onClose={onClose}

@@ -18,7 +18,7 @@ import ForgotPage from "./pages/forgot/forgot.jsx";
 import Voucher from "./components/Voucher/voucher.jsx";
 // import ViewOrder from "./components/Order/ViewOrder.jsx";
 
-// import SliderCRUD from "./components/Account/SliderCRUD.jsx"; // Thêm import cho SliderCRUD
+
 import ManageBrandPage from './pages/admin/brand/index.jsx';
 import ManageCategoryPage from "./pages/admin/category/index.jsx";
 import ManageSliderPage from "./pages/admin/slider/index.jsx";

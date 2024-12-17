@@ -140,6 +140,9 @@ export const callDeleteProduct = (productId) => {
 export const callFetchProductById = (id) => {
     return axios.get(`api/v1/product/${id}`)
 }
+export const callFetchAllProduct = () => {
+    return axios.get(`/api/v1/product/getAll`);
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 //////// check out ///////

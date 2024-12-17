@@ -53,6 +53,7 @@ const ProductDetailPage = () => {
     return (
         <>
             <ViewDetail dataProduct={dataProduct} />
+
             {dataProduct && <RatingForm productId={dataProduct.id} />}
 
         </>

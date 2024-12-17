@@ -1,11 +1,12 @@
 .rating-form {
-    max-width: 800px;
+    /*max-width: 800px;*/
     margin: 20px 0 20px 20px;
     /* Đưa sang lề trái */
     padding: 20px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
 }
 
 .rating-form h2 {

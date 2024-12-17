@@ -43,7 +43,7 @@ public class AccountServiceImpl implements AccountService {
                 .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
                 .role(roleRepository.findByName("ROLE_USER"))
                 .verificationCode(this.generateVerificationCode())
-                .verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15))
+                .verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(21600)) //15 days
                 .gender(GenderEnum.OTHER)
                 .imageUrl("user.png")
                 .enabled(false)
@@ -144,6 +144,14 @@ public class AccountServiceImpl implements AccountService {
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");
+        }
+
+        if(!user.isEnabled()){
+            throw new InvalidDataException("User is not enabled");
+        }
+
+        if(user.isGoogleAccount()){
+            throw new InvalidDataException("Account is a google account");
         }
 
         // Generate new verification code

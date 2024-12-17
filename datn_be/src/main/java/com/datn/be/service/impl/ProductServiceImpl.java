@@ -134,4 +134,9 @@ public class ProductServiceImpl implements ProductService {
         product.setActive(false);
         productRepository.save(product);
     }
+
+    @Override
+    public List<Product> getAll() {
+        return productRepository.findAll();
+    }
 }

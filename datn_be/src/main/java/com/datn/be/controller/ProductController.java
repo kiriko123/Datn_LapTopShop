@@ -54,4 +54,8 @@ public class ProductController {
         log.info("Get product : {}", id);
         return ResponseEntity.ok(productService.getProduct(id));
     }
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(productService.getAll());
+    }
 }

@@ -69,7 +69,10 @@ const ChangePassword = (props) => {
                                     label="Mật khẩu hiện tại"
                                     name="password"
                                     labelCol={{ span: 24 }}
-                                    rules={[{ required: true, message: "Mật khẩu không được để trống!" }]}
+                                    rules={[
+                                        { required: true, message: "Mật khẩu không được để trống!" },
+                                        { min: 5, message: "Mật khẩu hiện tại phải có ít nhất 5 ký tự!" },
+                                    ]}
                                 >
                                     <Input.Password style={{ borderRadius: "8px" }} />
                                 </Form.Item>
@@ -81,7 +84,7 @@ const ChangePassword = (props) => {
                                     labelCol={{ span: 24 }}
                                     rules={[
                                         { required: true, message: "Mật khẩu mới không được để trống!" },
-                                        { min: 6, message: "Mật khẩu mới phải có ít nhất 6 ký tự!" },
+                                        { min: 5, message: "Mật khẩu mới phải có ít nhất 5 ký tự!" },
                                     ]}
                                 >
                                     <Input.Password style={{ borderRadius: "8px" }} />
@@ -92,12 +95,24 @@ const ChangePassword = (props) => {
                                     label="Nhập lại mật khẩu mới"
                                     name="confirmPassword"
                                     labelCol={{ span: 24 }}
-                                    rules={[{ required: true, message: "Nhập lại mật khẩu không được để trống!" }]}
+                                    dependencies={['newPassword']}
+                                    rules={[
+                                        { required: true, message: "Nhập lại mật khẩu không được để trống!" },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value || getFieldValue('newPassword') === value) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject('Mật khẩu mới và nhập lại mật khẩu phải giống nhau!');
+                                            },
+                                        }),
+                                    ]}
                                 >
                                     <Input.Password style={{ borderRadius: "8px" }} />
                                 </Form.Item>
                             </Col>
                         </Row>
+
 
                         <Form.Item>
                             <Button

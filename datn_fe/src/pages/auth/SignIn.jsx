@@ -149,7 +149,7 @@ export default function SignIn() {
               type="primary"
               htmlType="submit"
               shape="round"
-              icon={<LoginOutlined />}
+              // icon={<LoginOutlined />}
               size="large"
           >
             Sign In

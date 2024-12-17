@@ -35,7 +35,7 @@ const items = [
         icon: <AppstoreOutlined />
     },
     {
-        label: <Link to='/admin/user'>Khách hàng</Link>,
+        label: <Link to='/admin/user'>User</Link>,
         key: 'user',
         icon: <UserOutlined />,
     },

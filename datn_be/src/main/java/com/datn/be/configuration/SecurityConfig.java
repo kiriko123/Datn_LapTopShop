@@ -93,6 +93,26 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/payment/vn-pay-callback").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/user").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.POST, "/api/v1/brand/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/brand/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/brand/**").hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.POST, "/api/v1/category/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/category/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/category/**").hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.POST, "/api/v1/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/product/**").hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.GET, "/api/v1/order").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/order/admin-update").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/order/**").hasRole("ADMIN")
+
+
 
                                 .requestMatchers("/admin/**").hasRole("ADMIN")  // Admin-only endpoints
                                 .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")  // Accessible to both roles

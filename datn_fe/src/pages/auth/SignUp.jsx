@@ -90,8 +90,8 @@ export default function SignUp() {
                   message: "Please input your first name.",
                 },
                 {
-                  min: 2,
-                  message: "Your first name must be at least 2 characters.",
+                  min: 1,
+                  message: "Your first name must be at least 1 characters.",
                 },
               ]}
             >
@@ -111,8 +111,8 @@ export default function SignUp() {
                   message: "Please input your last name.",
                 },
                 {
-                  min: 2,
-                  message: "Your last name must be at least 2 characters.",
+                  min: 1,
+                  message: "Your last name must be at least 1 characters.",
                 },
               ]}
             >
@@ -154,7 +154,7 @@ export default function SignUp() {
                   required: true,
                   message: "Please input your password.",
                 },
-                { min: 6, message: "Password must be minimum 5 characters." },
+                { min: 5, message: "Password must be minimum 5 characters." },
               ]}
             >
               <Input.Password placeholder="Password" size="large" />
@@ -212,10 +212,10 @@ export default function SignUp() {
           className="form-submit-btn"
           htmlType="submit"
           shape="round"
-          icon={<UserAddOutlined />}
+          // icon={<UserAddOutlined />}
           size="large"
         >
-          Sign Up
+          Register
         </Button>
       </Form>
     </>

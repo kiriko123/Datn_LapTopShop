@@ -7,7 +7,7 @@ import { Input } from 'antd';
 import { AiOutlineRollback } from "react-icons/ai";
 import CheckoutModal from './CheckoutModal';
 import LocationSelect from "./LocationSelect.jsx";
-import {callPlaceOrder} from "../../services/api.js";
+import {callFetchAllProduct, callPlaceOrder} from "../../services/api.js";
 const { TextArea } = Input;
 import axios from 'axios'; // Import axios để gọi API
 
@@ -112,7 +112,7 @@ const Payment = (props) => {
         setIsSubmit(false);
     };
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         if (!selectedProvince || !selectedDistrict || !selectedWard || !street) {
             notification.error({
                 message: 'Địa chỉ không đầy đủ!',
@@ -120,10 +120,41 @@ const Payment = (props) => {
             });
             return; // Prevent form submission if address is incomplete
         }
+        const result = await validateCart(carts);
+
+        if (!result.success) {
+            console.log("Giỏ hàng không hợp lệ:", result.errors);
+
+            notification.error({
+                message: 'Lỗi',
+                description: result.errors.map((error, index) => (
+                    <>
+                        {error}
+                        {index < result.errors.length - 1 && <br />}
+                    </>
+                )),
+            });
+
+            return;
+        }
 
         if (paymentMethod === 'Thanh toán khi nhận hàng') {
             handlePlaceOrder();
         } else if (paymentMethod === 'Thanh toán bằng Stripe') {
+            if (totalPrice > 99999999){
+                notification.error({
+                    message: 'Error!',
+                    description: 'Total amount must be no more than ₫99,999,999!',
+                });
+                return;
+            }
+            if (totalPrice < 15000) {
+                notification.error({
+                    message: 'Error!',
+                    description: 'Total amount must be no less than ₫15000!',
+                });
+                return;
+            }
             setIsCheckoutModalVisible(true);
         }
     };
@@ -136,6 +167,70 @@ const Payment = (props) => {
 
         let address = `${street ? street + ', ' : ''}${wardName ? wardName + ', ' : ''}${districtName ? districtName + ', ' : ''}${provinceName}`;
         setFullAddress(address.trim().replace(/,\s*$/, ''));
+    };
+
+    const validateCart = async (carts) => {
+        let products = [];
+        try {
+            // Call API lấy tất cả sản phẩm từ backend
+            let data = await callFetchAllProduct(); // Giả sử hàm này call API thành công
+            products = data.data;
+            // Danh sách lỗi nếu có sản phẩm không hợp lệ
+            let errors = [];
+
+            // Lặp qua từng sản phẩm trong giỏ hàng
+            carts.forEach((cartItem) => {
+                const productInBE = products.find((p) => p.id === cartItem.detail.id);
+
+                // Kiểm tra sản phẩm có tồn tại trong BE không
+                if (!productInBE) {
+                    errors.push(`Sản phẩm "${cartItem.detail.name}" không còn tồn tại.`);
+                    return;
+                }
+
+                // Kiểm tra trạng thái sản phẩm
+                if (!productInBE.active) {
+                    errors.push(`Sản phẩm "${cartItem.detail.name}" đã bị xóa.`);
+                    return;
+                }
+
+                // Kiểm tra brand và category
+                if (!productInBE.brand?.active || !productInBE.category?.active) {
+                    errors.push(`Thương hiệu hoặc danh mục của sản phẩm "${cartItem.detail.name}" đã bị xóa. Vui lòng xóa sản phẩm ra khỏi giỏ hàng`);
+                    return;
+                }
+
+                // Kiểm tra số lượng sản phẩm
+                if (cartItem.quantity > productInBE.quantity) {
+                    errors.push(
+                        `Sản phẩm "${cartItem.detail.name}" không đủ số lượng. Chỉ còn ${productInBE.quantity} sản phẩm.`
+                    );
+                    return;
+                }
+
+                // Kiểm tra giá và discount
+                if (
+                    cartItem.detail.price !== productInBE.price ||
+                    cartItem.detail.discount !== productInBE.discount
+                ) {
+                    errors.push(
+                        `Sản phẩm "${cartItem.detail.name}" có giá hoặc giảm giá không khớp với hệ thống. Vui lòng xóa và thêm lại`
+                    );
+                    return;
+                }
+
+            });
+
+            // Trả về kết quả
+            if (errors.length > 0) {
+                return { success: false, errors };
+            }
+
+            return { success: true, message: "Giỏ hàng hợp lệ." };
+        } catch (error) {
+            console.error("Lỗi khi validate giỏ hàng:", error);
+            return { success: false, errors: ["Lỗi hệ thống khi kiểm tra giỏ hàng."] };
+        }
     };
 
 

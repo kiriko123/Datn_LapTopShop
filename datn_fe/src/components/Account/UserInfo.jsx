@@ -158,22 +158,33 @@ const UserInfo = (props) => {
                                     name="phoneNumber"
                                     initialValue={user?.phoneNumber}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'Số điện thoại không được để trống!'}]}
+                                    rules={[
+                                        { required: true, message: 'Số điện thoại không được để trống!' },
+                                        {
+                                            pattern: /^((\+|)84|0)(3|5|7|8|9)+([0-9]{8})\b$/,
+                                            message: 'Số điện thoại không đúng định dạng!'
+                                        }
+                                    ]}
                                 >
-                                    <Input style={{borderRadius: '8px'}}/>
+                                    <Input style={{ borderRadius: '8px' }} />
                                 </Form.Item>
                             </Col>
+
                             <Col xs={24} sm={8}>
                                 <Form.Item
                                     label="Tuổi"
                                     name="age"
                                     initialValue={user?.age}
                                     labelCol={{ span: 24 }}
-                                    rules={[{required: true, message: 'Vui lòng nhập tuổi!'}]}
+                                    rules={[
+                                        { required: true, message: 'Vui lòng nhập tuổi!' },
+
+                                    ]}
                                 >
-                                    <InputNumber min={0} max={120} style={{width: '100%', borderRadius: '8px'}}/>
+                                    <InputNumber min={16} max={80} style={{ width: '100%', borderRadius: '8px' }} />
                                 </Form.Item>
                             </Col>
+
                             <Col xs={24} sm={24}>
                                 <Form.Item
                                     label="Địa chỉ"

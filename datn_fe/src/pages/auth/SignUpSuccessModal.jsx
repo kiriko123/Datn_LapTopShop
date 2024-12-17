@@ -21,7 +21,7 @@ function SignUpSuccessModal(props) {
             <Button
               type="primary"
               shape="round"
-              icon={<LoginOutlined />}
+              // icon={<LoginOutlined />}
               key="console"
               onClick={handleRedirect}
             >

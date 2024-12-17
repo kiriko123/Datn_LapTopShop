@@ -1,5 +1,6 @@
 package com.datn.be.dto.request.product;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -21,12 +22,13 @@ public class ProductUpdateDTO {
     @Min(1)
     float price;
 
-    @Min(1)
+    @Min(0)
+    @Max(100)
     float discount;
 
     String thumbnail;
 
-    @Min(1)
+    @Min(0)
     int quantity;
 
     @Min(0)

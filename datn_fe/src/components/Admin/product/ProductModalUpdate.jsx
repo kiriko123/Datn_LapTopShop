@@ -315,13 +315,13 @@ const ProductModalUpdate = (props) => {
                         <Col xs={24} sm={12} md={6}>
                             <Form.Item label="Số lượng" name="quantity"
                                        rules={[{required: true, message: 'Vui lòng nhập số lượng!'}]}>
-                                <InputNumber min={1} style={{width: '100%'}}/>
+                                <InputNumber min={0} style={{width: '100%'}}/>
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={6}>
                             <Form.Item label="Giảm giá" name="discount"
                                        rules={[{required: true, message: 'Vui lòng nhập discount!'}]} initialValue={0}>
-                                <InputNumber min={1} style={{width: '100%'}} defaultValue={0}/>
+                                <InputNumber min={0} style={{width: '100%'}} defaultValue={0}/>
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={6}>
