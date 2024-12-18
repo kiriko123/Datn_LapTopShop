@@ -97,19 +97,29 @@ const ViewOrder = (props) => {
                 sum += item.quantity * priceAfterDiscount;
             });
             setTotalPriceNoVouhcer(sum);
-            // Áp dụng voucher (nếu có)
-            if (selectedVoucher) {
+            // Kiểm tra nếu voucher không còn hợp lệ
+            if (selectedVoucher && sum < selectedVoucher.voucher.priceApply) {
+                // Reset voucher
+                setSelectedVoucher(null);
+                dispatch(setVoucherAction(null));
+                message.error("Tổng giá trị đơn hàng không còn đủ để áp dụng voucher hiện tại. Voucher đã được chọn lại.");
+            }
+
+            // Áp dụng voucher (nếu còn hợp lệ)
+            if (selectedVoucher && sum >= selectedVoucher.voucher.priceApply) {
                 const discountValue = (selectedVoucher.voucher.voucherValue / 100) * sum;
                 sum -= discountValue;
                 setDiscountVoucher(discountValue);
-            }else{
+            } else {
                 setDiscountVoucher(0);
             }
-
-
             setTotalPrice(sum);
         } else {
+            // Reset khi không có sản phẩm trong giỏ hàng
             setTotalPrice(0);
+            setDiscountVoucher(0);
+            setSelectedVoucher(null);
+            dispatch(setVoucherAction(null));
         }
     }, [carts, selectedVoucher]);
 
